@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 
 const userSchema = mongoose.Schema({
   user_id: {
-    type: int,
+    type: String,
   },
   email: {
     type: String,
@@ -22,7 +22,8 @@ const userSchema = mongoose.Schema({
     type: String,
   },
   birth: {
-    type: Timestamp,
+    type: String,
+    Timestamp: true,
   },
   name: {
     type: String,
