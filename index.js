@@ -10,8 +10,14 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 const mongoose = require("mongoose");
+
+// MongoDB 연결 시 dbName 지정
 mongoose
-  .connect(config.mongoURI, {})
+  .connect(config.mongoURI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    dbName: "instagram_clone", // 데이터베이스 이름 설정
+  })
   .then(() => console.log("MongoDB connected.."))
   .catch((err) => console.log(err));
 
@@ -19,19 +25,16 @@ app.get("/", (req, res) => {
   res.send("hello world");
 });
 
+// 사용자 가입 처리
 app.post("/auth/sign-up", async (req, res) => {
   const user = new User(req.body);
 
-  const result = await user
-    .save()
-    .then(() => {
-      res.status(200).json({
-        success: true,
-      });
-    })
-    .catch((err) => {
-      res.json({ success: false, err });
-    });
+  try {
+    await user.save(); // 사용자 저장
+    res.status(200).json({ success: true });
+  } catch (err) {
+    res.status(500).json({ success: false, err }); // 오류 처리
+  }
 });
 
 app.listen(port, () => {

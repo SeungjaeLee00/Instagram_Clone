@@ -1,5 +1,7 @@
 const { Timestamp } = require("mongodb");
 const mongoose = require("mongoose");
+const bcrypt = require("bcrypt");
+const saltRounds = 10;
 
 const userSchema = mongoose.Schema({
   user_id: {
@@ -52,6 +54,29 @@ const userSchema = mongoose.Schema({
   },
 });
 
-const User = mongoose.model("User", userSchema); // 모델이 스키마 감싸주기
+userSchema.pre("save", function (next) {
+  // userModel에 user정보를 저장하기 전에 처리됨
+  var user = this;
 
-module.exports = { User }; // 다른 곳에서도 사용할 수 있게 export
+  if (user.isModified("password")) {
+    // password가 변환될 때만 암호화
+    // 비밀번호를 암호화 시키기
+    bcrypt.genSalt(saltRounds, function (err, salt) {
+      // salt 만들기
+      if (err) return next(err);
+
+      bcrypt.hash(user.password, salt, function (err, hash) {
+        if (err) return next(err);
+        user.password = hash; // 암호화 키 만드는 데 성공했으면, 원래 비밀번호랑 hash 바꾸고
+        next(); // index.js로 돌아가기
+      });
+    });
+  } else {
+    // 비밀번호 말고 다른 걸 바꿀 경우
+    next(); // next() 없으면 계속 머물게 됨
+  }
+});
+
+const User = mongoose.model("User", userSchema);
+
+module.exports = { User };
