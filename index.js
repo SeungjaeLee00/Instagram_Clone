@@ -2,7 +2,8 @@ const express = require("express");
 const app = express();
 const port = 3000;
 const bodyParser = require("body-parser");
-const cookieParser = require("cookie-parser")
+const cookieParser = require("cookie-parser");
+const {auth} = require("./routes/auth");
 
 const config = require("./config/key");
 const { User } = require("./models/User");
@@ -69,7 +70,7 @@ app.post("/auth/login", (req, res) => {
     .json({
       loginSuccess: true,
       userId: user.id,
-    })
+    });
   })
   //에러
   .catch((err) => {
@@ -77,9 +78,29 @@ app.post("/auth/login", (req, res) => {
     return res.status(400).json({
       loginSuccess: false,
       message: err.message
-    })
+    });
   })  
 });
+
+// 로그아웃
+app.get('/auth/logout', auth, (req, res) => {
+  User.findOneAndUpdate({_id: req.user._id},
+    {token: ""}
+  )
+  .then(() => {
+    return res.status(200).json({
+      logoutSuccess: true,
+    });
+  })
+  .catch((err)=>{
+    return res.status(400).json({
+      logoutSuccess: false,
+      message: err.message
+    });
+  })
+})
+
+
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
