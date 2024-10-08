@@ -2,6 +2,7 @@ const { Timestamp } = require("mongodb");
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const saltRounds = 10;
+const jwt = require('jsonwebtoken');
 
 const userSchema = mongoose.Schema({
   user_id: {
@@ -41,7 +42,7 @@ const userSchema = mongoose.Schema({
   },
   image: String,
   token: {
-    type: Number,
+    type: String,
   },
   role: {
     // user가 관리자가 될 수도 있고 일반유저가 될 수도 있기 때문
@@ -76,6 +77,24 @@ userSchema.pre("save", function (next) {
     next(); // next() 없으면 계속 머물게 됨
   }
 });
+
+// 비밀번호 비교
+userSchema.methods.comparePassword = function(plainPassword){
+  const user = this;
+  return bcrypt.compare(plainPassword, user.password);
+}
+
+// 토큰 생성
+userSchema.methods.generateToken = function(){
+  var user = this;
+
+  // jwt 이용해 webtoken 생성
+  const token = jwt.sign(user._id.toHexString(), 'secretToken');
+  user.token = token;
+
+  console.log("로그인 성공", this.token);
+  return user.save();
+}
 
 const User = mongoose.model("User", userSchema);
 
