@@ -6,7 +6,7 @@ const cookieParser = require("cookie-parser");
 const {auth} = require("./routes/auth");
 
 const config = require("./config/key");
-const { User } = require("./models/User");
+const signUpRoutes = require("./routes/auth/signUp");
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -24,21 +24,7 @@ mongoose
   .then(() => console.log("MongoDB connected.."))
   .catch((err) => console.log(err));
 
-app.get("/", (req, res) => {
-  res.send("hello world");
-});
-
-// 사용자 가입 처리
-app.post("/auth/sign-up", async (req, res) => {
-  const user = new User(req.body);
-
-  try {
-    await user.save(); // 사용자 저장
-    res.status(200).json({ success: true });
-  } catch (err) {
-    res.status(500).json({ success: false, err }); // 오류 처리
-  }
-});
+app.use("/auth/sign-up", signUpRoutes);
 
 
 app.listen(port, () => {
