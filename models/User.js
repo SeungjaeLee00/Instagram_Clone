@@ -31,10 +31,6 @@ const userSchema = mongoose.Schema({
     type: String,
     maxlength: 50,
   },
-  nickname: {
-    type: String,
-    maxlength: 50,
-  },
   introduce: {
     type: String,
     maxlength: 100,
@@ -44,13 +40,23 @@ const userSchema = mongoose.Schema({
     type: Number,
   },
   role: {
-    // user가 관리자가 될 수도 있고 일반유저가 될 수도 있기 때문
+    // user는 관리자 또는 일반인
     type: Number, // 예를 들어, number가 1이면 관리자, 0이면 일반유저
     default: 0,
   },
   tokenExp: {
     // token이 유효하는 기간
     type: Number,
+  },
+  emailVerificationCode: {
+    type: String, // 인증 코드를 저장할 필드
+  },
+  emailVerificationCodeExpires: {
+    type: Date, // 인증코드 유효기간
+  },
+  isEmailVerified: {
+    type: Boolean, // 이메일 인증 여부
+    default: false, // 기본값: 인증되지 않음
   },
 });
 
