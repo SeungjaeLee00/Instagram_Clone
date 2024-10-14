@@ -1,5 +1,17 @@
+const express = require("express");
+const app = express.Router();
+const { User } = require("../../models/User");
+
+const bodyParser = require("body-parser");
+const cookieParser = require("cookie-parser");
+
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+app.use(cookieParser());
+
+
 // 사용자 로그인 
-app.post("/auth/login", (req, res) => {
+app.post("/", (req, res) => {
     User.findOne({email: req.body.email})
     .then(async (user) =>{
       if(!user) {
@@ -39,3 +51,5 @@ app.post("/auth/login", (req, res) => {
       });
     })  
   });
+
+  module.exports = app;

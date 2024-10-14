@@ -1,5 +1,15 @@
+const express = require("express");
+const app = express.Router();
+
+const { User } = require("../../models/User");
+const {auth} = require("../auth");
+
+//
+const cookieParser = require("cookie-parser");
+app.use(cookieParser());
+
 // 로그아웃
-app.get('/auth/logout', auth, (req, res) => {
+app.get('/', auth, (req, res) => {
     User.findOneAndUpdate({_id: req.user._id},
       {token: ""}
     )
@@ -14,4 +24,6 @@ app.get('/auth/logout', auth, (req, res) => {
         message: err.message
       });
     })
-  })
+})
+
+module.exports = app;

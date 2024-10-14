@@ -1,4 +1,4 @@
-const {User} = require('../models/User');
+const { User } = require("../models/User");
 
 let auth = (req, res, next) => {
     // 클라이언트로부터 쿠키 가져오기
