@@ -1,6 +1,9 @@
 const express = require("express");
 const app = express();
 const port = 3000;
+const bodyParser = require("body-parser");
+const cookieParser = require("cookie-parser");
+const { auth } = require("./routes/auth");
 
 const config = require("./config/key");
 const signUpRoutes = require("./routes/auth/signUp");
@@ -20,9 +23,8 @@ mongoose
   .catch((err) => console.log(err));
 
 app.use("/auth/sign-up", signUpRoutes);
-app.use("/auth/login", loginRoutes)
+app.use("/auth/login", loginRoutes);
 app.use("/auth/logout", logoutRoutes);
-
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
