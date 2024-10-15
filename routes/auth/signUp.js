@@ -5,6 +5,8 @@ const crypto = require("crypto");
 const bcrypt = require("bcrypt");
 const { sendVerificationEmail } = require("../../utils/sendEmail"); // 이메일 전송 유틸
 
+router.use(express.json());
+
 // 회원가입 처리 및 이메일 인증 코드 발송
 router.post("/", async (req, res) => {
   const { email } = req.body;
