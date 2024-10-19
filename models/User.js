@@ -109,18 +109,7 @@ userSchema.methods.generateToken = function(){
 // 토큰 삭제
 userSchema.statics.findByToken = function(token){
   const user = this;
-
-  // try{
-  //   const decoded = jwt.verify(token, 'secretToken');
-  //   console.log(decoded);
-  //   return user.findOne({
-  //     "_id": decoded,
-  //     "token": token
-  //   });
-  // } catch(error){
-  //   throw new Error("유효하지 않은 토큰입니다.");
-  // };
-
+  
   return Util.promisify(jwt.verify)(token, 'secretToken')
   .then((decoded) => {
     return user.findOne({

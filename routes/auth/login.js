@@ -27,7 +27,7 @@ app.post("/", (req, res) => {
     })
     // 비밀번호 확인 결과
     .then(({isMatch, user}) => {
-      console.log("비밀번호 일치", isMatch); // 매칭 확인 로그
+      console.log("비밀번호 일치"); // 매칭 확인 로그
   
       // 비밀번호가 일치하지 않을 경우
       if(!isMatch){
