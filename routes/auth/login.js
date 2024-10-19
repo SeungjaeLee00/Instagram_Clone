@@ -14,7 +14,10 @@ app.use(cookieParser());
 app.post("/", (req, res) => {
     User.findOne({email: req.body.email})
     .then(async (user) =>{
-      if(!user) {
+      const isValid = user.isEmailVerified;
+
+      // userEmail이 유효할 경우에만 로그인
+      if(!(user, isValid)) {
         throw new Error ("제공된 이메일에 해당하는 유저가 없습니다.");
       }
   
@@ -47,9 +50,10 @@ app.post("/", (req, res) => {
       console.log(err);
       return res.status(400).json({
         loginSuccess: false,
-        message: err.message
+        message: err.message,
       });
     })  
+
   });
 
   module.exports = app;

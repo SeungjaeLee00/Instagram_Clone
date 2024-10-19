@@ -48,7 +48,7 @@ const userSchema = mongoose.Schema({
   },
   tokenExp: {
     // token이 유효하는 기간
-    type: Number,
+    type: String,
   },
   emailVerificationCode: {
     type: String, // 인증 코드를 저장할 필드
@@ -94,10 +94,14 @@ userSchema.methods.comparePassword = function(plainPassword){
 // 토큰 생성
 userSchema.methods.generateToken = function(){
   var user = this;
+  const payload = { _id : user._id.toHexString() };
 
+  console.log(payload);
   // jwt 이용해 webtoken 생성
-  const token = jwt.sign(user._id.toHexString(), 'secretToken');
+  // const token = jwt.sign(user._id.toHexString(), 'secretToken');
+  const token = jwt.sign(payload, 'secretToken', {expiresIn: "10s"});
   user.token = token;
+  console.log(token);
 
   return user.save();
 }
@@ -105,6 +109,17 @@ userSchema.methods.generateToken = function(){
 // 토큰 삭제
 userSchema.statics.findByToken = function(token){
   const user = this;
+
+  // try{
+  //   const decoded = jwt.verify(token, 'secretToken');
+  //   console.log(decoded);
+  //   return user.findOne({
+  //     "_id": decoded,
+  //     "token": token
+  //   });
+  // } catch(error){
+  //   throw new Error("유효하지 않은 토큰입니다.");
+  // };
 
   return Util.promisify(jwt.verify)(token, 'secretToken')
   .then((decoded) => {
