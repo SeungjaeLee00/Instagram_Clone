@@ -99,14 +99,13 @@ userSchema.methods.generateToken = function(){
   console.log(payload);
   // jwt 이용해 webtoken 생성
   // const token = jwt.sign(user._id.toHexString(), 'secretToken');
-  const token = jwt.sign(payload, 'secretToken', {expiresIn: "10s"});
+  const token = jwt.sign(payload, 'secretToken', {expiresIn: "10m"});
   user.token = token;
-  console.log(token);
 
   return user.save();
 }
 
-// 토큰 삭제
+// 토큰 찾기
 userSchema.statics.findByToken = function(token){
   const user = this;
   

@@ -7,6 +7,10 @@ const signUpRoutes = require("./routes/auth/signUp");
 const loginRoutes = require("./routes/auth/login");
 const logoutRoutes = require("./routes/auth/logout");
 
+// 마이페이지
+const EditProfileRoutes = require("./routes/profile/EditProfile");
+const SearchProfileRoutes = require("./routes/profile/SearchProfile");
+
 const mongoose = require("mongoose");
 
 // MongoDB 연결 시 dbName 지정
@@ -20,9 +24,11 @@ mongoose
   .catch((err) => console.log(err));
 
 app.use("/auth/sign-up", signUpRoutes);
-app.use("/auth/login", loginRoutes)
+app.use("/auth/login", loginRoutes);
 app.use("/auth/logout", logoutRoutes);
 
+app.use("/profile/editProfile", EditProfileRoutes);
+// app.use("/profile/searchProfile", SearchProfileRoutes);
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
