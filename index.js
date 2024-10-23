@@ -2,13 +2,14 @@ const express = require("express");
 const app = express();
 const port = 3000;
 const bodyParser = require("body-parser");
-const cookieParser = require("cookie-parser");
-const { auth } = require("./routes/auth");
 
 const config = require("./config/key");
 const signUpRoutes = require("./routes/auth/signUp");
 const loginRoutes = require("./routes/auth/login");
 const logoutRoutes = require("./routes/auth/logout");
+const resetPasswordRoute = require("./routes/auth/resetPassword");
+const resetPasswordRequestRoute = require("./routes/auth/resetPasswordRequest");
+const verifyCodeRoute = require("./routes/auth/verifyCode");
 
 const mongoose = require("mongoose");
 
@@ -22,9 +23,15 @@ mongoose
   .then(() => console.log("MongoDB connected.."))
   .catch((err) => console.log(err));
 
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
 app.use("/auth/sign-up", signUpRoutes);
 app.use("/auth/login", loginRoutes);
 app.use("/auth/logout", logoutRoutes);
+app.use("/auth", resetPasswordRoute);
+app.use("/auth", resetPasswordRequestRoute);
+app.use("/auth", verifyCodeRoute);
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
