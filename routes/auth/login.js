@@ -12,7 +12,12 @@ app.use(cookieParser());
 
 // 사용자 로그인 
 app.post("/", (req, res) => {
-    User.findOne({email: req.body.email})
+    User.findOne({
+      $or: [
+        // email이나 user_id로 로그인 가능
+      { email: req.body.emailOrUsername }, 
+      { user_id: req.body.emailOrUsername }
+  ]})
     .then(async (user) =>{
       const isValid = user.isEmailVerified;
 

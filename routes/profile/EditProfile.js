@@ -11,7 +11,7 @@ router.use(cookieParser());
 
 // 사용자 정보 수정(이름, 회원id)
 router.patch('/', auth, (req, res) => {
-  const { new_name, new_id } = req.body;
+  const { new_name, new_user_id } = req.body;
 
   User.findById(req.user._id)
   .then((user)=>{
@@ -20,7 +20,7 @@ router.patch('/', auth, (req, res) => {
     });
 
     user.name = new_name || user.name;
-    user.user_id = new_id || user.user_id;
+    user.user_id = new_user_id || user.user_id;
 
     user.save();
     return res.json({ 
