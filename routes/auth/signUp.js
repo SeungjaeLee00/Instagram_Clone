@@ -15,12 +15,35 @@ router.post("/", async (req, res) => {
     // 이메일이 이미 존재하는지 확인
     const existingUser = await User.findOne({ email });
     if (existingUser) {
+      // 이메일 인증이 이미 완료된 사용자라면 회원가입을 막음
+      if (existingUser.isEmailVerified) {
+        return res
+          .status(400)
+          .json({ success: false, message: "이미 가입된 사용자입니다." });
+      }
+      // 이미 존재하는 사용자가 인증코드를 재요청한 경우, 인증코드 재전송 처리
+      const emailVerificationCode = crypto.randomBytes(3).toString("hex"); // 6자리 코드 생성
+      existingUser.emailVerificationCode = emailVerificationCode;
+      existingUser.emailVerificationCodeExpires = Date.now() + 3600000; // 인증 코드 유효시간 1시간
+
+      // 이메일로 인증번호 재전송
+      const emailSent = await sendVerificationEmail(
+        email,
+        emailVerificationCode
+      );
+      if (!emailSent) {
+        return res
+          .status(500)
+          .json({ success: false, message: "이메일 전송 실패" });
+      }
+
+      await existingUser.save(); // 변경된 인증코드 저장
       return res
-        .status(400)
-        .json({ success: false, message: "이미 가입된 사용자입니다." });
+        .status(200)
+        .json({ success: true, message: "인증코드가 재전송되었습니다." });
     }
 
-    // 이메일로 보낼 인증번호 생성
+    // 새로운 사용자에 대한 인증코드 생성 및 이메일 전송
     const emailVerificationCode = crypto.randomBytes(3).toString("hex"); // 6자리 코드 생성
 
     const user = new User({
@@ -64,13 +87,14 @@ router.post("/verify-email", async (req, res) => {
       });
     }
 
+    // 인증코드 일치 여부 확인
     if (user.emailVerificationCode !== verificationCode) {
       return res
         .status(400)
         .json({ success: false, message: "인증코드가 일치하지 않습니다." });
     }
 
-    // 인증 코드가 만료되었는지 확인
+    // 인증 코드가 만료 여부 확인
     if (user.emailVerificationCodeExpires < Date.now()) {
       return res
         .status(400)
@@ -78,8 +102,6 @@ router.post("/verify-email", async (req, res) => {
     }
 
     user.isEmailVerified = true; // 이메일 인증 완료
-
-    // 이메일 인증 여부만 true로 변경
     user.emailVerificationCode = undefined; // 인증코드 삭제
     user.emailVerificationCodeExpires = undefined; // 인증 코드 만료 시간 삭제
 
