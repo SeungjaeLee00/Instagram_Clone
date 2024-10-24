@@ -1,9 +1,9 @@
 const { Timestamp } = require("mongodb");
 const mongoose = require("mongoose");
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 const saltRounds = 10;
-const jwt = require('jsonwebtoken');
-const Util = require('util')
+const jwt = require("jsonwebtoken");
+const Util = require("util");
 
 const userSchema = mongoose.Schema({
   user_id: {
@@ -60,39 +60,62 @@ const userSchema = mongoose.Schema({
     type: Boolean, // 이메일 인증 여부
     default: false, // 기본값: 인증되지 않음
   },
+  // 비밀번호 재설정 관련 필드 추가
+  passwordResetCode: {
+    type: String,
+    default: null,
+  },
+  passwordResetExpires: {
+    type: Date,
+    default: null,
+  },
 });
 
 userSchema.pre("save", function (next) {
-  // userModel에 user정보를 저장하기 전에 처리됨
   var user = this;
 
+  // 비밀번호가 변경된 경우 또는 새 사용자일 때만 암호화
   if (user.isModified("password")) {
-    // password가 변환될 때만 암호화
-    // 비밀번호를 암호화 시키기
-    bcrypt.genSalt(saltRounds, function (err, salt) {
-      // salt 만들기
-      if (err) return next(err);
+    // 비밀번호가 이미 bcrypt 해시된 상태인지 확인
+    const passwordHashed = user.password.startsWith("$2a$");
 
-      bcrypt.hash(user.password, salt, function (err, hash) {
+    if (!passwordHashed) {
+      // 암호화되지 않은 비밀번호만 처리
+      bcrypt.genSalt(saltRounds, function (err, salt) {
         if (err) return next(err);
-        user.password = hash; // 암호화 키 만드는 데 성공했으면, 원래 비밀번호랑 hash 바꾸고
-        next(); // index.js로 돌아가기
+
+        bcrypt.hash(user.password, salt, function (err, hash) {
+          if (err) return next(err);
+          user.password = hash;
+          next();
+        });
       });
-    });
+    } else {
+      next(); // 이미 암호화된 경우, 다시 암호화하지 않음
+    }
   } else {
-    // 비밀번호 말고 다른 걸 바꿀 경우
-    next(); // next() 없으면 계속 머물게 됨
+    next(); // 비밀번호가 수정되지 않은 경우 그대로 진행
   }
 });
 
 // 비밀번호 비교
-userSchema.methods.comparePassword = function(plainPassword){
+userSchema.methods.comparePassword = async function (plainPassword) {
   const user = this;
-  return bcrypt.compare(plainPassword, user.password);
-}
+  // console.log("평문 비밀번호:", plainPassword);
+  // console.log("암호화된 비밀번호:", user.password);
+
+  try {
+    const isMatch = await bcrypt.compare(plainPassword, user.password);
+    console.log("비교 결과:", isMatch);
+    return isMatch;
+  } catch (err) {
+    console.error("비밀번호 비교 중 오류 발생:", err);
+    throw err;
+  }
+};
 
 // 토큰 생성
-userSchema.methods.generateToken = function(){
+userSchema.methods.generateToken = function () {
   var user = this;
   const payload = { _id : user._id.toHexString() };
 
@@ -103,7 +126,7 @@ userSchema.methods.generateToken = function(){
   user.token = token;
 
   return user.save();
-}
+};
 
 // 토큰 찾기
 userSchema.statics.findByToken = function(token){

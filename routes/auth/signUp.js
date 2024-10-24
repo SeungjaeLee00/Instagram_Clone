@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const { User } = require("../../models/User");
 const crypto = require("crypto");
-const bcrypt = require("bcrypt");
+// const bcrypt = require("bcryptjs");
 const { sendVerificationEmail } = require("../../utils/sendEmail"); // 이메일 전송 유틸
 
 router.use(express.json());
@@ -11,16 +11,24 @@ router.use(express.json());
 router.post("/", async (req, res) => {
   const { email } = req.body;
 
-  // 이메일로 보낼 인증번호 생성
-  const emailVerificationCode = crypto.randomBytes(3).toString("hex"); // 6자리 코드 생성
-
-  const user = new User({
-    ...req.body,
-    emailVerificationCode, // 생성된 인증코드 저장
-    emailVerificationCodeExpires: Date.now() + 3600000, // 인증 코드 생성하고 유효시간, 1시간 후 만료
-  });
-
   try {
+    // 이메일이 이미 존재하는지 확인
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res
+        .status(400)
+        .json({ success: false, message: "이미 가입된 사용자입니다." });
+    }
+
+    // 이메일로 보낼 인증번호 생성
+    const emailVerificationCode = crypto.randomBytes(3).toString("hex"); // 6자리 코드 생성
+
+    const user = new User({
+      ...req.body,
+      emailVerificationCode, // 생성된 인증코드 저장
+      emailVerificationCodeExpires: Date.now() + 3600000, // 인증 코드 유효시간 1시간
+    });
+
     // 이메일로 인증번호 전송
     const emailSent = await sendVerificationEmail(email, emailVerificationCode);
     if (!emailSent) {
@@ -47,6 +55,15 @@ router.post("/verify-email", async (req, res) => {
       return res
         .status(400)
         .json({ success: false, message: "사용자를 찾을 수 없습니다." });
+
+    // 이메일이 이미 인증되었는지 확인
+    if (user.isEmailVerified) {
+      return res.status(400).json({
+        success: false,
+        message: "이미 이메일 인증이 완료되었습니다.",
+      });
+    }
+
     if (user.emailVerificationCode !== verificationCode) {
       return res
         .status(400)
