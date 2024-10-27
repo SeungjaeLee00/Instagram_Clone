@@ -24,7 +24,7 @@ router.post("/", async (req, res) => {
       // 이미 존재하는 사용자가 인증코드를 재요청한 경우, 인증코드 재전송 처리
       const emailVerificationCode = crypto.randomBytes(3).toString("hex"); // 6자리 코드 생성
       existingUser.emailVerificationCode = emailVerificationCode;
-      existingUser.emailVerificationCodeExpires = Date.now() + 3600000; // 인증 코드 유효시간 1시간
+      existingUser.emailVerificationCodeExpires = Date.now() + 300000; // 인증 코드 유효시간 5분
 
       // 이메일로 인증번호 재전송
       const emailSent = await sendVerificationEmail(
@@ -49,7 +49,7 @@ router.post("/", async (req, res) => {
     const user = new User({
       ...req.body,
       emailVerificationCode, // 생성된 인증코드 저장
-      emailVerificationCodeExpires: Date.now() + 3600000, // 인증 코드 유효시간 1시간
+      emailVerificationCodeExpires: Date.now() + 300000, // 인증 코드 유효시간 5분
     });
 
     // 이메일로 인증번호 전송
