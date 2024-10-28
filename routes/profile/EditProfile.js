@@ -9,25 +9,18 @@ const cookieParser = require("cookie-parser");
 router.use(cookieParser());
 
 const multer = require('multer');
-const path = require('path')
 
-const upload = multer({
-  storage: multer.diskStorage({
-    destination: (req, file, done) => {
-      done(null, 'uploads/');
-    },
-    filename: (req, file, done) => {
-      const ext = path.extname(file.originalname);
-      const filename = path.basename(file.originalname, ext) + Date.now() + ext;
-      done(null, filename);
-    }
-  }),
-});
+// AWS
+const { PutObjectCommand } = require("@aws-sdk/client-s3");
+const storage = multer.memoryStorage();
+const upload = multer({ storage });
+const s3 = require("../../config/s3"); // s3 클라이언트 가져오기
+
 
 // 사용자 정보 수정(이름, 회원id, 자기소개)
 router.patch('/', auth, upload.single('file'), (req, res) => {
   const { new_name, new_user_id, new_introduce } = req.body;
-
+  
   User.findById(req.user._id)
   .then((user)=>{
     if(!user) return res.status(404).json({ 
@@ -39,12 +32,24 @@ router.patch('/', auth, upload.single('file'), (req, res) => {
     user.user_id = new_user_id || user.user_id;
     user.introduce = new_introduce || user.introduce;
 
-    // 파일 있을 경우 경로 저장
+    // 파일 있을 경우 AWS에 업로드
     if (req.file) {
-      const imagePath = req.file.path;
-      user.image = imagePath;
-    }
+      const filename = req.file.originalname;
 
+      // S3에 업로드할 파일 설정
+      const uploadParams = {
+        Bucket: "insta-clone-coding-swim",
+        Key: filename,
+        Body: req.file.buffer,
+        ACL: "public-read",
+        ContentType: req.file.mimetype,
+      };
+
+       // S3에 파일 업로드
+       const uploadResult = s3.send(new PutObjectCommand(uploadParams));
+       user.image = `https://${uploadParams.Bucket}.s3.${process.env.AWS_REGION}.amazonaws.com/${filename}`;
+    }
+    
     user.save()
     .then(() => {
       return res.json({ 
@@ -60,7 +65,8 @@ router.patch('/', auth, upload.single('file'), (req, res) => {
   }) 
   .catch ((err) => {
     return res.status(500).json({ 
-        message: '서버 오류' 
+        message: '서버 오류',
+        error: err.message
     });
   });
 });

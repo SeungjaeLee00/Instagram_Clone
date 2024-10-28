@@ -1,9 +1,14 @@
-const AWS = require('aws-sdk');
+// s3.js
+const { S3Client } = require("@aws-sdk/client-s3");
+require("dotenv").config();
 
-const s3 = new AWS.S3({
+// S3 클라이언트 인스턴스 생성
+const s3 = new S3Client({
+  region: process.env.AWS_REGION,
+  credentials: {
     accessKeyId: process.env.AWS_ACCESS_KEY_ID,
     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-    region: process.env.AWS_REGION
+  },
 });
 
 module.exports = s3;
