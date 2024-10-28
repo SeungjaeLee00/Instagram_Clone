@@ -22,8 +22,8 @@ router.post("/reset-password", async (req, res) => {
 
     // 암호화된 비밀번호를 user 객체에 할당
     user.password = hashedPassword;
-    user.passwordResetCode = undefined; // 인증코드 제거
-    user.passwordResetExpires = undefined; // 인증코드 만료 시간 제거
+    user.passwordResetCode = null; // 인증코드 제거
+    user.passwordResetExpires = null; // 인증코드 만료 시간 제거
     await user.save(); // 사용자 정보 저장
 
     // 저장된 사용자 정보를 불러와서 확인

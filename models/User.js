@@ -114,35 +114,29 @@ userSchema.methods.comparePassword = async function (plainPassword) {
   }
 };
 
-// 토큰 생성
+// 토큰 생성 메서드
 userSchema.methods.generateToken = function () {
-  var user = this;
-  const payload = { _id : user._id.toHexString() };
-
-  console.log(payload);
-  // jwt 이용해 webtoken 생성
-  // const token = jwt.sign(user._id.toHexString(), 'secretToken');
-  const token = jwt.sign(payload, 'secretToken', {expiresIn: "10m"});
-  user.token = token;
-
-  return user.save();
+  const payload = { _id: this._id.toHexString() };
+  const token = jwt.sign(payload, "secretToken", { expiresIn: "10m" });
+  this.token = token;
+  return this.save().then(() => token);
 };
 
 // 토큰 찾기
-userSchema.statics.findByToken = function(token){
+userSchema.statics.findByToken = function (token) {
   const user = this;
-  
-  return Util.promisify(jwt.verify)(token, 'secretToken')
-  .then((decoded) => {
-    return user.findOne({
-      "_id": decoded,
-      "token": token
+
+  return Util.promisify(jwt.verify)(token, "secretToken")
+    .then((decoded) => {
+      return user.findOne({
+        _id: decoded,
+        token: token,
+      });
+    })
+    .catch((err) => {
+      throw new Error("유효하지 않은 토큰입니다.");
     });
-  })
-  .catch((err) => {
-    throw new Error("유효하지 않은 토큰입니다.");
-  })
-}
+};
 
 const User = mongoose.model("User", userSchema);
 
