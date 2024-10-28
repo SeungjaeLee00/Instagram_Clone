@@ -3,3 +3,6 @@
 dev.js
  
 .env
+
+# upload
+/uploads
