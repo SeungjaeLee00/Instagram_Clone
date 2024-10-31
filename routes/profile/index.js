@@ -6,6 +6,6 @@ const searchProfileRoutes = require("./SearchProfile");
 
 // 프로필 관련 라우트 설정
 router.use("/edit", editProfileRoutes);
-router.use("/search", searchProfileRoutes);
+// router.use("/search", searchProfileRoutes);
 
 module.exports = router;

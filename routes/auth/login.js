@@ -1,16 +1,16 @@
 const express = require("express");
-const app = express.Router();
+const router = express.Router();
 const { User } = require("../../models/User");
 
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
-app.use(cookieParser());
+router.use(bodyParser.urlencoded({ extended: true }));
+router.use(bodyParser.json());
+router.use(cookieParser());
 
 // 사용자 로그인
-app.post("/", (req, res) => {
+router.post("/", (req, res) => {
   User.findOne({
     $or: [
       { email: req.body.emailOrUsername },
@@ -59,4 +59,4 @@ app.post("/", (req, res) => {
     });
 });
 
-module.exports = app;
+module.exports = router;
