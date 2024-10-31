@@ -4,7 +4,4 @@ dev.js
  
 .env
 
-# upload
-/uploads
-
 s3.js
