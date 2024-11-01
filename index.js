@@ -6,14 +6,9 @@ const bodyParser = require("body-parser");
 const config = require("./config/key");
 const mongoose = require("mongoose");
 
-// 인증 관련 라우트
 const authRoutes = require("./routes/auth/index");
-
-// 프로필 관련 라우트
 const profileRoutes = require("./routes/profile/index");
-
-// 게시물 관련 라우트
-// const postRoutes = require("./routes/post");
+const postRoutes = require("./routes/post");
 
 // MongoDB 연결
 mongoose
@@ -32,7 +27,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // 라우트 등록
 app.use("/auth", authRoutes);
 app.use("/profile", profileRoutes);
-// app.use("/post", postRoutes);
+app.use("/post", postRoutes);
 
 app.use("/dm/chatroom", chatroomRoutes);
 app.use("/dm/chatroom/message", MessageRoutes);

@@ -1,4 +1,3 @@
-const { Timestamp } = require("mongodb");
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 const saltRounds = 10;
@@ -119,7 +118,8 @@ userSchema.methods.generateToken = function () {
   const payload = { _id: this._id.toHexString() };
   const token = jwt.sign(payload, "secretToken", { expiresIn: "10m" });
   this.token = token;
-  return this.save().then(() => this);
+  // user를 저장한 후, user와 token을 함께 반환
+  return this.save().then(() => ({ token, user: this }));
 };
 
 // 토큰 찾기

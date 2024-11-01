@@ -4,7 +4,6 @@ const router = express.Router();
 const { User } = require("../../models/User");
 const { auth } = require("../auth");
 
-//
 const cookieParser = require("cookie-parser");
 router.use(cookieParser());
 
