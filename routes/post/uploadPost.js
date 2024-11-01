@@ -28,29 +28,28 @@ router.post("/", auth, upload, async (req, res) => {
     // S3 업로드할 이미지 URL 배열 생성
     const imageUrls = [];
 
-    // if (req.files) {
-    //   for (let file of req.files) {
-    //     const filename = `${Date.now()}_${file.originalname}`;
-    //     const uploadParams = {
-    //       Bucket: "your-bucket-name",
-    //       Key: filename,
-    //       Body: file.buffer,
-    //       ACL: "public-read",
-    //       ContentType: file.mimetype,
-    //     };
+    if (req.files) {
+      for (let file of req.files) {
+        const filename = `${Date.now()}_${file.originalname}`;
+        const uploadParams = {
+          Bucket: "post-jae",
+          Key: filename,
+          Body: file.buffer,
+          ContentType: file.mimetype,
+        };
 
-    //     // S3에 파일 업로드
-    //     await s3.send(new PutObjectCommand(uploadParams));
-    //     const imageUrl = `https://${uploadParams.Bucket}.s3.${process.env.AWS_REGION}.amazonaws.com/${filename}`;
-    //     imageUrls.push(imageUrl);
-    //   }
-    // }
+        // S3에 파일 업로드
+        await s3.send(new PutObjectCommand(uploadParams));
+        const imageUrl = `https://${uploadParams.Bucket}.s3.${process.env.AWS_REGION}.amazonaws.com/${filename}`;
+        imageUrls.push(imageUrl);
+      }
+    }
 
     // 새로운 게시물 생성 및 저장
     const newPost = new Post({
       user: userId,
       text: text,
-      //   images: imageUrls,
+      images: imageUrls,
     });
 
     await newPost.save();

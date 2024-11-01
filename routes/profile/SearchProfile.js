@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 const { User } = require("../../models/User");
-const {auth} = require("../auth");
+const { auth } = require("../auth");
 
 // auth에서 로그인 쿠키 인증된 경우만 프로필 수정 가능
 // 사용자 로그인 상태 확인
