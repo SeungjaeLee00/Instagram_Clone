@@ -7,6 +7,6 @@ const deletePostRoutes = require("./deletePost");
 
 router.use("/upload", uploadPostRoutes);
 router.use("/edit", editPostRoutes);
-// router.use("/delete", deletePostRoutes);
+router.use("/delete", deletePostRoutes);
 
 module.exports = router;

@@ -8,7 +8,7 @@ const cookieParser = require("cookie-parser");
 router.use(cookieParser());
 
 const { DeleteObjectCommand } = require("@aws-sdk/client-s3");
-const s3 = require("../../config/s3"); // S3 클라이언트 가져오기
+const s3 = require("../../config/s3");
 
 // 게시물 삭제
 router.delete("/:id", auth, async (req, res) => {
