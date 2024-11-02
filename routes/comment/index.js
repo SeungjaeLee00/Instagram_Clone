@@ -1,8 +1,10 @@
 const express = require("express");
 const router = express.Router();
 
-const createComment = require("./createComment");
+const createCommentRoutes = require("./createComment");
+const deleteCommentRoutes = require("./deleteComment");
 
-// router.use("/create", createComment);
+router.use("/create", createCommentRoutes);
+// router.use("/delete", deleteCommentRoutes);
 
 module.exports = router;
