@@ -22,6 +22,13 @@ const postSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  comments: [
+    {
+      // 댓글을 저장할 필드 추가
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Comment", // Comment 모델을 참조
+    },
+  ],
 });
 
 // 게시물 모델 생성

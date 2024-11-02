@@ -9,6 +9,7 @@ const mongoose = require("mongoose");
 const authRoutes = require("./routes/auth/index");
 const profileRoutes = require("./routes/profile/index");
 const postRoutes = require("./routes/post");
+const commentRoutes = require("./routes/comment");
 
 // MongoDB 연결
 mongoose
@@ -28,6 +29,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use("/auth", authRoutes);
 app.use("/profile", profileRoutes);
 app.use("/post", postRoutes);
+app.use("/comment", commentRoutes);
 
 app.use("/dm/chatroom", chatroomRoutes);
 app.use("/dm/chatroom/message", MessageRoutes);
