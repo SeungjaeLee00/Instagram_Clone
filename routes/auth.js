@@ -9,7 +9,7 @@ let auth = (req, res, next) => {
   User.findByToken(token)
     .then((user) => {
       if (!user) {
-        throw new Error("유효하지 않은 토큰입니다.");
+        throw new Error("유효하지 않은 토큰입니다."); // 사용자 없음
       }
       console.log("Authenticated user:", user); // 사용자 로그
       req.token = token;
@@ -20,7 +20,10 @@ let auth = (req, res, next) => {
       console.error("Authentication error:", err.message); // 에러 로그
       return res.status(401).json({
         isAuth: false,
-        message: err.message,
+        message:
+          err.message === "유효하지 않은 토큰입니다."
+            ? "로그인이 필요합니다."
+            : err.message,
       });
     });
 };

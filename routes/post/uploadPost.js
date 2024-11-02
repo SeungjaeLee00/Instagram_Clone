@@ -24,31 +24,36 @@ router.post("/", auth, upload, async (req, res) => {
     });
   }
 
+  // 이미지가 최소 한 장 이상 포함되었는지 확인
+  if (!req.files || req.files.length === 0) {
+    return res.status(400).json({
+      message: "최소 1장의 이미지를 포함해야 게시물을 업로드할 수 있습니다.",
+    });
+  }
+
   try {
     // S3 업로드할 이미지 URL 배열 생성
     const imageUrls = [];
 
-    if (req.files) {
-      for (let file of req.files) {
-        const filename = `${Date.now()}_${file.originalname}`;
-        const uploadParams = {
-          Bucket: "post-jae",
-          Key: filename,
-          Body: file.buffer,
-          ContentType: file.mimetype,
-        };
+    for (let file of req.files) {
+      const filename = `${Date.now()}_${file.originalname}`;
+      const uploadParams = {
+        Bucket: "post-jae",
+        Key: filename,
+        Body: file.buffer,
+        ContentType: file.mimetype,
+      };
 
-        // S3에 파일 업로드
-        await s3.send(new PutObjectCommand(uploadParams));
-        const imageUrl = `https://${uploadParams.Bucket}.s3.${process.env.AWS_REGION}.amazonaws.com/${filename}`;
-        imageUrls.push(imageUrl);
-      }
+      // S3에 파일 업로드
+      await s3.send(new PutObjectCommand(uploadParams));
+      const imageUrl = `https://${uploadParams.Bucket}.s3.${process.env.AWS_REGION}.amazonaws.com/${filename}`;
+      imageUrls.push(imageUrl);
     }
 
     // 새로운 게시물 생성 및 저장
     const newPost = new Post({
       user: userId,
-      text: text,
+      text: text || "",
       images: imageUrls,
     });
 
