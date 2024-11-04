@@ -13,7 +13,11 @@ const verifyCodeRoute = require("./routes/auth/verifyCode");
 
 // 마이페이지
 const EditProfileRoutes = require("./routes/profile/EditProfile");
-const SearchProfileRoutes = require("./routes/profile/SearchProfile");
+// const SearchProfileRoutes = require("./routes/profile/SearchProfile");
+
+//DM
+const chatroomRoutes = require("./routes/chat/chatroom");
+const MessageRoutes = require("./routes/chat/chat");
 
 const mongoose = require("mongoose");
 
@@ -39,6 +43,9 @@ app.use("/auth", resetPasswordRequestRoute);
 app.use("/auth", verifyCodeRoute);
 app.use("/profile/editProfile", EditProfileRoutes);
 // app.use("/profile/searchProfile", SearchProfileRoutes);
+
+app.use("/dm/chatroom", chatroomRoutes);
+app.use("/dm/chatroom/message", MessageRoutes);
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);

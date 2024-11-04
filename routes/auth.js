@@ -3,7 +3,7 @@ const { User } = require("../models/User");
 let auth = (req, res, next) => {
     // 클라이언트로부터 쿠키 가져오기
     let token = req.cookies.x_auth;
-
+    
     // 토큰 복호화 후 user 찾기
     User.findByToken(token)
     .then((user) => {    
@@ -17,7 +17,7 @@ let auth = (req, res, next) => {
     .catch((err) => { 
         return res.status(401).json({
             isAuth: false,
-            message: err.message
+            message: err.message,
         });
     });
 }

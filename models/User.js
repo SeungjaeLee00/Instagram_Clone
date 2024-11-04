@@ -119,7 +119,7 @@ userSchema.methods.generateToken = function () {
   const payload = { _id: this._id.toHexString() };
   const token = jwt.sign(payload, "secretToken", { expiresIn: "10m" });
   this.token = token;
-  return this.save().then(() => token);
+  return this.save().then(() => this);
 };
 
 // 토큰 찾기

@@ -6,3 +6,5 @@ dev.js
 
 # upload
 /uploads
+
+s3.js
