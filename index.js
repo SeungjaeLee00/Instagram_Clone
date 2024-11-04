@@ -12,6 +12,7 @@ const postRoutes = require("./routes/post/index");
 const commentRoutes = require("./routes/comment/index");
 const chatRoutes = require("./routes/chat/index");
 const searchRoutes = require("./routes/search/index");
+const likeRoutes = require("./routes/like/index");
 
 // MongoDB 연결
 mongoose
@@ -34,6 +35,7 @@ app.use("/post", postRoutes);
 app.use("/comment", commentRoutes);
 app.use("/search", searchRoutes);
 app.use("/dm", chatRoutes);
+app.use("/likes", likeRoutes);
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);

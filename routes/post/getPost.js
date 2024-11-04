@@ -1,10 +1,9 @@
-// 게시물 조회
 const express = require("express");
 const router = express.Router();
 const { Post } = require("../../models/Post");
-const { Comment } = require("../../models/Comment");
+const { Like } = require("../../models/Like");
 
-// 게시물 조회
+// 게시물 단건 조회
 router.get("/:id", async (req, res) => {
   const { id } = req.params;
 
@@ -18,7 +17,14 @@ router.get("/:id", async (req, res) => {
       return res.status(404).json({ message: "게시물을 찾을 수 없습니다." });
     }
 
-    return res.status(200).json({ post });
+    const likesCount = post.likes.length; // 좋아요 수
+
+    return res.status(200).json({
+      post: {
+        ...post.toObject(), // 기존 게시물
+        likesCount, // 좋아요 수 추가
+      },
+    });
   } catch (error) {
     return res.status(500).json({
       message: "게시물 조회 중 오류가 발생했습니다.",

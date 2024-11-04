@@ -10,7 +10,7 @@ const { User } = require("../../models/User");
 const { Post } = require("../../models/Post");
 
 // 닉네임으로 사용자 검색
-router.get("/", async (req, res) => {
+router.get("/", auth, async (req, res) => {
   const { user_id } = req.query;
   if (!user_id) {
     return res.status(400).json({ message: "user_id를 입력해주세요." });

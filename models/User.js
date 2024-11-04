@@ -5,6 +5,7 @@ const jwt = require("jsonwebtoken");
 const Util = require("util");
 
 const userSchema = mongoose.Schema({
+  // 닉네임
   user_id: {
     type: String,
     required: true, // 필드 반드시 필요
