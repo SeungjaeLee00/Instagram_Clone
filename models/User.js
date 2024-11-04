@@ -7,6 +7,7 @@ const Util = require("util");
 const userSchema = mongoose.Schema({
   user_id: {
     type: String,
+    required: true, // 필드 반드시 필요
   },
   email: {
     type: String,

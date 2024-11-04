@@ -8,8 +8,10 @@ const mongoose = require("mongoose");
 
 const authRoutes = require("./routes/auth/index");
 const profileRoutes = require("./routes/profile/index");
-const postRoutes = require("./routes/post");
-const commentRoutes = require("./routes/comment");
+const postRoutes = require("./routes/post/index");
+const commentRoutes = require("./routes/comment/index");
+const chatRoutes = require("./routes/chat/index");
+const searchRoutes = require("./routes/search/index");
 
 // MongoDB 연결
 mongoose
@@ -30,9 +32,8 @@ app.use("/auth", authRoutes);
 app.use("/profile", profileRoutes);
 app.use("/post", postRoutes);
 app.use("/comment", commentRoutes);
-
-app.use("/dm/chatroom", chatroomRoutes);
-app.use("/dm/chatroom/message", MessageRoutes);
+app.use("/search", searchRoutes);
+app.use("/dm", chatRoutes);
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
