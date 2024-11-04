@@ -6,7 +6,6 @@ const { auth } = require("../auth");
 const cookieParser = require("cookie-parser");
 router.use(cookieParser());
 
-const { Like } = require("../../models/Like");
 const { Post } = require("../../models/Post");
 
 // 게시물 좋아요 API

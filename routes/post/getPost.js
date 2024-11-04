@@ -9,9 +9,11 @@ router.get("/:id", async (req, res) => {
 
   try {
     const post = await Post.findById(id)
-      // populate 사용하면 어떤 컬렉션에서 ObjectId를 이용해서 다른 컬렉션의 정보를 담아 출력할 수 잇음
-      .populate("comments") // 게시물의 댓글을 populate
-      .populate("user", "username"); // 게시물 작성자의 정보도 populate (선택 사항)
+      .populate({
+        path: "comments",
+        populate: { path: "user", select: "username" }, // 댓글 작성자 정보 포함
+      })
+      .populate("user", "username");
 
     if (!post) {
       return res.status(404).json({ message: "게시물을 찾을 수 없습니다." });
@@ -19,10 +21,17 @@ router.get("/:id", async (req, res) => {
 
     const likesCount = post.likes.length; // 좋아요 수
 
+    // 각 댓글에 대한 좋아요 수 추가
+    const commentsWithLikeCount = post.comments.map((comment) => ({
+      ...comment.toObject(),
+      likesCount: comment.likes.length, // 댓글의 좋아요 수
+    }));
+
     return res.status(200).json({
       post: {
-        ...post.toObject(), // 기존 게시물
-        likesCount, // 좋아요 수 추가
+        ...post.toObject(),
+        likesCount,
+        comments: commentsWithLikeCount,
       },
     });
   } catch (error) {
