@@ -1,11 +1,12 @@
 const express = require("express");
-const app = express();
-const port = 3000;
+const http = require("http");
 const bodyParser = require("body-parser");
-
-const config = require("./config/key");
 const mongoose = require("mongoose");
 
+// Socket.IO 연결, initSocket 함수를 가져옴
+const { initSocket } = require("./server");
+
+const config = require("./config/key");
 const authRoutes = require("./routes/auth/index");
 const profileRoutes = require("./routes/profile/index");
 const postRoutes = require("./routes/post/index");
@@ -13,6 +14,9 @@ const commentRoutes = require("./routes/comment/index");
 const chatRoutes = require("./routes/chat/index");
 const searchRoutes = require("./routes/search/index");
 const likeRoutes = require("./routes/like/index");
+
+const app = express();
+const server = http.createServer(app); // HTTP 서버 생성
 
 // MongoDB 연결
 mongoose
@@ -37,6 +41,12 @@ app.use("/search", searchRoutes);
 app.use("/dm", chatRoutes);
 app.use("/likes", likeRoutes);
 
-app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`);
+// 서버 초기화
+initSocket(server);
+
+// 서버 시작
+server.listen(3000, () => {
+  console.log(`Server is running on port 3000`);
 });
+
+module.exports = app;

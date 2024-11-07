@@ -5,6 +5,8 @@ const { Post } = require("../../models/Post"); // 게시물 모델
 const { auth } = require("../auth");
 
 const cookieParser = require("cookie-parser");
+const { emitComment } = require("../../server"); // server.js의 emit 함수 사용
+
 router.use(cookieParser());
 
 router.post("/:postId", auth, async (req, res) => {
@@ -30,13 +32,17 @@ router.post("/:postId", auth, async (req, res) => {
 
     await newComment.save(); // 댓글 DB에 저장
 
-    // // 게시물에 댓글 추가
-    // post.comments.push(newComment._id);
-    // await post.save();
-
     // 게시물의 comments 배열에 댓글 ID 추가
     await Post.findByIdAndUpdate(postId, {
       $push: { comments: newComment._id },
+    });
+
+    // emitComment 호출
+    emitComment({
+      postId: postId,
+      commentId: newComment._id,
+      commentText: newComment.text,
+      commenterId: userId,
     });
 
     return res.status(201).json({
