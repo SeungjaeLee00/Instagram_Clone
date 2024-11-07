@@ -7,6 +7,7 @@ const cookieParser = require("cookie-parser");
 router.use(cookieParser());
 
 const { Post } = require("../../models/Post");
+const { emitPostLike } = require("../../server"); // 알림 emit 함수 가져오기
 
 // 게시물 좋아요 API
 router.post("/:postId/like", auth, async (req, res) => {
@@ -33,6 +34,14 @@ router.post("/:postId/like", auth, async (req, res) => {
       // 좋아요 추가
       post.likes.push(userId); // likes 배열에 사용자 ID 추가
       await post.save(); // 변경사항 저장
+
+      // 좋아요 알림 emit
+      emitPostLike({
+        postId: postId,
+        likerId: userId,
+        message: "게시물을 좋아합니다",
+      });
+
       return res.status(201).json({ message: "좋아요가 추가되었습니다." });
     }
   } catch (error) {

@@ -33,4 +33,14 @@ function emitCommentLike(data) {
   }
 }
 
-module.exports = { initSocket, emitComment, emitCommentLike };
+function emitPostLike(data) {
+  if (!io) {
+    console.error("Socket.io is not initialized.");
+    return;
+  } else {
+    io.emit("like-post", data);
+    console.log("Emitting like-post event:", data);
+  }
+}
+
+module.exports = { initSocket, emitComment, emitCommentLike, emitPostLike };
