@@ -14,6 +14,7 @@ const commentRoutes = require("./routes/comment/index");
 const chatRoutes = require("./routes/chat/index");
 const searchRoutes = require("./routes/search/index");
 const likeRoutes = require("./routes/like/index");
+const adminRoutes = require("./routes/admin/index");
 
 const app = express();
 const server = http.createServer(app); // HTTP 서버 생성
@@ -40,6 +41,7 @@ app.use("/comment", commentRoutes);
 app.use("/search", searchRoutes);
 app.use("/dm", chatRoutes);
 app.use("/likes", likeRoutes);
+app.use("/admin", adminRoutes);
 
 // 서버 초기화
 initSocket(server);
