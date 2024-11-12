@@ -3,6 +3,6 @@ const router = express.Router();
 
 const adminSignupRoutes = require("./adminSignup");
 
-router.use("/sign-up", adminSignupRoutes);
+router.use("/adminSignup", adminSignupRoutes);
 
 module.exports = router;

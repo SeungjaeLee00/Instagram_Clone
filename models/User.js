@@ -44,15 +44,10 @@ const userSchema = mongoose.Schema({
   },
   role: {
     // user는 관리자 또는 일반인
-    type: Number, // 예를 들어, number가 1이면 관리자, 0이면 일반유저
-    default: 0,
+    type: String, // 문자열로 변경
+    enum: ["user", "admin"], // 가능한 값 설정
+    default: "user", // 기본값: 일반 사용자
   },
-  // role: {
-  //   // user는 관리자 또는 일반인
-  //   type: String, // 문자열로 변경
-  //   enum: ['user', 'admin'], // 가능한 값 설정
-  //   default: 'user', // 기본값: 일반 사용자
-  // },
   tokenExp: {
     // token이 유효하는 기간
     type: String,
