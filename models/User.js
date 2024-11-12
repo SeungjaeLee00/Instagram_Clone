@@ -7,6 +7,7 @@ const Util = require("util");
 const userSchema = mongoose.Schema({
   user_id: {
     type: String,
+    unique: 1,
   },
   email: {
     type: String,

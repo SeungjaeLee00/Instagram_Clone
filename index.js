@@ -10,6 +10,11 @@ const authRoutes = require("./routes/auth/index");
 const profileRoutes = require("./routes/profile/index");
 const postRoutes = require("./routes/post");
 const commentRoutes = require("./routes/comment");
+const dmRoutes = require("./routes/dm/index");
+
+// socket io 연결
+const{ initSocket } = require("./server");
+const server = require("http").createServer(app);
 
 // MongoDB 연결
 mongoose
@@ -30,10 +35,10 @@ app.use("/auth", authRoutes);
 app.use("/profile", profileRoutes);
 app.use("/post", postRoutes);
 app.use("/comment", commentRoutes);
+app.use("/dm", dmRoutes);
 
-app.use("/dm/chatroom", chatroomRoutes);
-app.use("/dm/chatroom/message", MessageRoutes);
+initSocket(server);
 
-app.listen(port, () => {
+server.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });

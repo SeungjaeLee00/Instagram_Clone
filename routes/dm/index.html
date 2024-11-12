@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Room</title>
+</head>
+<body>
+    <h2>Chat Room</h2>
+    <div id="chat">
+        <div id="messages"></div>
+        <input type="text" id="messageInput" placeholder="Type a message" />
+        <button onclick="sendMessage()">Send</button>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const userId = prompt("Enter your user ID:");
+
+        const socket = io('http://localhost:3000', {
+            query: { user_id: userId }
+        });
+
+        // 채팅룸 아이디
+        // 확인용으로 넣음 - 구현할 때는 클릭한 채딩방 Id로 들어가도록
+        const chatroomId = "6727d56d77c4625ccc945cec";  
+        socket.emit("joinChatroom", chatroomId);
+
+        let objectId = "";  // ObjectId를 저장할 변수
+
+        // 서버로부터 objectId를 받음
+        socket.on("userObjectId", (id) => {
+            objectId = id;  // 받아온 objectId를 저장
+            console.log("User's ObjectId:", objectId);
+        });
+
+        socket.on("previousMessages", (messages) => {
+            const messagesDiv = document.getElementById("messages");
+            messages.forEach((message) => {
+                const messageElement = document.createElement("div");
+                messageElement.id = message._id;
+                messageElement.innerHTML = `${message.user_id}: ${message.content} <button onclick="deleteMessage('${message._id}')">Delete</button>`;
+                messagesDiv.appendChild(messageElement);
+            });
+        });
+
+        socket.on("newMessage", (message) => {
+            const messagesDiv = document.getElementById("messages");
+            const messageElement = document.createElement("div");
+            messageElement.id = message._id;
+            messageElement.innerHTML = `${message.user_id}: ${message.content} <button onclick="deleteMessage('${message._id}')">Delete</button>`;
+            messagesDiv.appendChild(messageElement);
+        });
+
+        socket.on("messageDeleted", (messageId) => {
+            const messageElement = document.getElementById(messageId);
+            if (messageElement) {
+                messageElement.remove();
+            }
+        });
+
+        function sendMessage() {
+            const messageInput = document.getElementById("messageInput");
+            const message = messageInput.value;
+            socket.emit("sendMessage", message);  // 메시지 전송
+            messageInput.value = "";  // 입력란 비우기
+        }
+
+        function deleteMessage(messageId) {
+            if (confirm("메세지를 지우겠습니까?")) {
+                socket.emit("deleteMessage", { messageId: messageId});  // 삭제 요청 시 messageId 전달
+            }
+        }
+    </script>
+</body>
+</html>

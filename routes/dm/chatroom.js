@@ -35,4 +35,33 @@ router.get("/", auth, (req, res) => {
     })
 });
 
+// 채팅방이 없는 경우 만들기
+// :chatId => 채팅하고 싶은 상대의 _id
+router.post("/:chatId", auth, (res, req) => {
+    const userId = req.user._id;
+    const chatId = req.params._id;
+
+    const chatroom = new Chatroom({
+        members: [userId, chatId],
+        date: new Date(),
+        title: title
+    })
+
+    chatroom.save()
+    .then((result) => {
+        console.log({
+            message: "채팅방 저장 완료",
+            title: result.title,
+            members : result.members,
+            Date : result.date
+        });
+    })
+    .catch((error) => {
+        return res.status(500).json({ 
+            error: "채팅방 저장 실패",
+            Message: error 
+        });
+    });
+})
+
 module.exports = router ;
