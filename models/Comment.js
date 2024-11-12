@@ -20,6 +20,12 @@ const commentSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  likes: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User", // 좋아요를 누른 사용자 ID
+    },
+  ],
 });
 
 const Comment = mongoose.model("Comment", commentSchema);
