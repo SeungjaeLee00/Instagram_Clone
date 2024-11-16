@@ -166,6 +166,7 @@ router.get("/:chatroomId", auth, (req, res) => {
 router.delete("/:messageId", auth, async(req, res) => {
     const {messageId} = req.params;
     const userId = req.user._id;
+    console.log(userId);
 
     try{
         // 메세지 정보
@@ -179,7 +180,7 @@ router.delete("/:messageId", auth, async(req, res) => {
         }
 
         // 사용자 검증
-        const chatroom = await Chatroom.findOne({_id:message.chatroom, user_id: userId});
+        const chatroom = await Chatroom.findOne({_id:message.chatroom, members: userId});
         if(!chatroom){
             return res.status(403)
                 .json({
