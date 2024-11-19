@@ -3,6 +3,9 @@ const http = require("http");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 
+// CORS 설정
+// const cors = require("cors");
+
 // Socket.IO 연결, initSocket 함수를 가져옴
 const { initSocket } = require("./server");
 
@@ -18,6 +21,15 @@ const adminRoutes = require("./routes/admin/index");
 
 const app = express();
 const server = http.createServer(app); // HTTP 서버 생성
+
+// CORS 설정
+// app.use(
+//   cors({
+//     origin: "<http://localhost:3000>",
+//     methods: ["GET", "POST", "PUT", "DELETE"],
+//     credentials: true,
+//   })
+// );
 
 // MongoDB 연결
 mongoose
