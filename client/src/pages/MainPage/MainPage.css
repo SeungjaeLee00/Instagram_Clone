@@ -1,0 +1,19 @@
+.main-page {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* 왼쪽 고정 사이드바 스타일 */
+.feed-container {
+  flex-grow: 1;
+  padding: 20px;
+}
+
+@media (max-width: 768px) {
+  .main-page {
+    flex-direction: column;
+  }
+  .feed-container {
+    padding: 10px;
+  }
+}
