@@ -8,7 +8,7 @@ const adminPostRoutes = require("./admInDeletePost");
 
 router.use("/adminSignup", adminSignupRoutes);
 router.use("/adminDelete/users", adminUserRoutes);
-// router.use("/adminDelete/comments", adminCommentRoutes);
-// router.use("/adminDelete/posts", adminPostRoutes);
+router.use("/adminDelete/comments", adminCommentRoutes);
+router.use("/adminDelete/posts", adminPostRoutes);
 
 module.exports = router;
