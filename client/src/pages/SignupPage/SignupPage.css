@@ -1,0 +1,120 @@
+.signup-page {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 95vh;
+    font-family: Arial, sans-serif;
+}
+  
+.signup-content {
+    max-width: 350px;
+    width: 100%; 
+    text-align: center;
+    background-color: #fff;
+    border: 1px solid #dbdbdb;
+    padding: 20px;
+    margin-bottom: 15px;
+}
+
+/* 내부 콘텐츠 스타일 */
+.signup-content > * {
+    max-width: 300px; /* 내부 콘텐츠 최대 폭 제한 */
+    margin: 0 auto; 
+}
+
+/* Instagram 로고 */
+.signup-instalogo {
+    width: 170px; 
+    margin: 0 auto 30px; 
+    margin-top: 30px;
+    display: block;
+    cursor: pointer;
+}
+
+.signup-text {
+    font-size: 17px;
+    font-weight: bold;
+    color: #464646;
+    margin-bottom: 20px;
+}
+
+/* 입력 필드 스타일 */
+.signup-inputWrap {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top:20px;
+    margin-bottom: 20px;
+}
+
+.signup-input {
+    width: 100%;
+    padding: 12px;
+    font-size: 14px;
+    border: 1px solid #dbdbdb;
+    border-radius: 3px;
+    background-color: #fafafa;
+    box-sizing: border-box;
+}
+
+.signup-information {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    font-size: 13px;
+    color: #464646;
+}
+
+.signup-information a,
+.movetologin a {
+    color: #3897f0;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+/* 에러 메세지 */
+.errorMessageWrap {
+    /* min-height: 20px; 에러 메시지가 없는 경우에도 공간 확보 */
+    font-size: 13px;
+    color: red;
+  }
+
+/* 회원가입 버튼 스타일 */
+.signup-submitButton {
+    width: 100%;
+    padding: 10px;
+    background-color: #3897f0;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.signup-submitButton:disabled {
+    background-color: #b2dffc;
+}
+
+/* 회원가입 페이지 이동 섹션 */
+/* signup, login content 부분 동일한 스타일로 설정 */
+.moveToLogin {
+    max-width: 350px;
+    width: 100%; 
+    text-align: center;
+    background-color: #fff;
+    border: 1px solid #dbdbdb;
+    padding: 20px;
+}
+
+.moveToLogin-content {
+    display: center;
+    font-size: 14px;
+}
+
+.moveToLogin-content a {
+    color: #3897f0;
+    font-weight: bold;
+    text-decoration: none;
+}
