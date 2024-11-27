@@ -7,6 +7,8 @@
   align-items: flex-start; /* 확대 상태에서는 왼쪽 정렬 */
   height: 100vh; /* 화면 전체 높이 */
   padding: 20px;
+  position: fixed;
+  transition: width 0.3s ease; /* 너비 전환 애니메이션 */
 }
 
 .sidebar.collapsed {
@@ -86,18 +88,32 @@ ul {
   display: block; /* 축소 상태에서 short 로고 표시 */
 }
 
-/* 모바일 화면에서 로고와 메뉴 스타일 수정 */
+/* 화면 크기별 사이드바 자동 축소 */
 @media (max-width: 768px) {
   .sidebar {
-    width: 70px; /* 모바일에서 사이드바 너비 */
+    width: 50px; /* 모바일에서 자동으로 축소된 사이드바 너비 */
     padding: 10px;
+    align-items: center; /* 중앙 정렬 */
   }
 
-  .sidebar-item {
-    margin: 15px 0;
+  ul {
+    align-items: center; /* 모바일에서 리스트 중앙 정렬 */
   }
 
   .label {
     display: none; /* 모바일에서 라벨 숨기기 */
+  }
+
+  .icon {
+    font-size: 28px; /* 아이콘 크기 유지 */
+    margin-right: 0; /* 아이콘 간격 제거 */
+  }
+
+  .instagram-logo-long {
+    display: none; /* 모바일에서 long 로고 숨김 */
+  }
+
+  .instagram-logo-short {
+    display: block; /* 모바일에서 short 로고 표시 */
   }
 }
