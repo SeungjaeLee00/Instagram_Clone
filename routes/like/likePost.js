@@ -12,7 +12,12 @@ const { emitPostLike } = require("../../server"); // 알림 emit 함수 가져�
 // 게시물 좋아요 API
 router.post("/:postId/like", auth, async (req, res) => {
   const { postId } = req.params; // URL 파라미터에서 postId 가져오기
-  const userId = req.user.id; // 인증된 사용자 ID 가져오기
+
+  // 개발 환경일 경우 하드코딩된 사용자 ID 사용
+  const userId =
+    process.env.NODE_ENV === "development"
+      ? "67440c5d55bc0dfc2f5b629d"
+      : req.user.id; // 인증된 사용자 ID 가져오기
 
   try {
     // 게시물 조회

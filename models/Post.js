@@ -1,11 +1,9 @@
 const mongoose = require("mongoose");
 
 const postSchema = new mongoose.Schema({
-  user: {
-    // 사용자 ID (User 모델의 ObjectId)
+  user_id: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
-    required: true,
   },
   text: {
     type: String,

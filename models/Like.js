@@ -2,12 +2,14 @@ const mongoose = require("mongoose");
 
 const likeSchema = new mongoose.Schema({
   user_id: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId, // ObjectId로 수정
+    ref: "User", // User 모델을 참조
     required: true,
   },
   post_id: {
-    type: String,
-    required: false,
+    type: mongoose.Schema.Types.ObjectId, // ObjectId로 수정
+    ref: "Post", // Post 모델을 참조
+    required: true,
   },
   comment_id: {
     type: String,

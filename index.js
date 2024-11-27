@@ -4,7 +4,7 @@ const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 
 // CORS 설정
-// const cors = require("cors");
+const cors = require("cors"); // CORS 패키지 불러오기
 
 // Socket.IO 연결, initSocket 함수를 가져옴
 const { initSocket } = require("./server");
@@ -23,15 +23,6 @@ const followRoutes = require("./routes/follow/index");
 const app = express();
 const server = http.createServer(app); // HTTP 서버 생성
 
-// CORS 설정
-// app.use(
-//   cors({
-//     origin: "<http://localhost:3000>",
-//     methods: ["GET", "POST", "PUT", "DELETE"],
-//     credentials: true,
-//   })
-// );
-
 // MongoDB 연결
 mongoose
   .connect(config.mongoURI, {
@@ -41,6 +32,15 @@ mongoose
   })
   .then(() => console.log("MongoDB connected.."))
   .catch((err) => console.log(err));
+
+// CORS 설정
+app.use(
+  cors({
+    origin: "http://localhost:3000", // React 앱이 실행 중인 포트
+    methods: ["GET", "POST", "PUT", "DELETE"], // 허용할 HTTP 메서드
+    credentials: true, // 인증 정보와 쿠키 포함 허용
+  })
+);
 
 // 미들웨어
 app.use(bodyParser.json());
@@ -61,8 +61,9 @@ app.use("/follow", followRoutes);
 initSocket(server);
 
 // 서버 시작
-server.listen(3000, () => {
-  console.log(`Server is running on port 3000`);
+server.listen(5001, () => {
+  // 서버랑 클라이언트 포트 번호 구분
+  console.log(`Server is running on port 5001`);
 });
 
 module.exports = app;
