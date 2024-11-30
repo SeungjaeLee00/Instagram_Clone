@@ -4,7 +4,7 @@ const bcrypt = require("bcryptjs"); // bcryptjs 사용
 const { User } = require("../../models/User");
 
 // 비밀번호 변경 라우트
-router.post("/reset-password", async (req, res) => {
+router.post("/", async (req, res) => {
   const { email, newPassword } = req.body;
 
   try {

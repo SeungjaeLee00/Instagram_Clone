@@ -7,7 +7,7 @@ const {
 const crypto = require("crypto"); // 인증코드 생성에 사용할 모듈
 
 // 비밀번호 재설정 요청 라우트
-router.post("/request-reset-password", async (req, res) => {
+router.post("/", async (req, res) => {
   const { email } = req.body;
 
   try {

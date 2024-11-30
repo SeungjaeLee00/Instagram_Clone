@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from "react";
 import {useNavigate} from "react-router-dom";
+import axios from "axios";
 import "./SignupPage.css";  
 
 // 이미지 로드
@@ -11,7 +12,7 @@ const Signup = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [name, setName] = useState("");
-    const [userId, setUserId] = useState("");
+    const [user_id, setUserId] = useState("");
 
     const [emailValid, setEmailValid] = useState(false);
     const [passwordValid, setPasswordValid] = useState(false);
@@ -82,7 +83,23 @@ const Signup = () => {
 
     // 가입 버튼 클릭
     const onclickConfirmButton = () => {
-        alert("가입 버튼")
+        // API 호출
+        axios
+        .post("http://localhost:5001/auth/sign-up",
+          { email, password, name, user_id}, // 로그인 데이터 전달
+          { withCredentials: true }) // 쿠키 전달
+        .then((response) => {
+          if(response.data.success) {
+            alert("인증 이메일이 발송되었습니다. ");
+          } else {
+            alert(response.data.message);
+          }
+          navigate("/auth/sign-up/verify-email", {state: {email}});
+        })
+        .catch((error) => {
+          alert("가입 실패");
+          console.error("가입 실패:", error);
+        });
     };
 
     // 로고 클릭시 login 화면으로 이동
@@ -166,7 +183,7 @@ const Signup = () => {
 
             {/* 사용자 이름 */}
             <input className = "signup-input" placeholder={"사용자 이름"}
-              value = {userId}
+              value = {user_id}
               onChange = {handleUserId}
               type = "text"
               maxLength={30}
@@ -174,7 +191,7 @@ const Signup = () => {
             {/* 에러 메세지 */}
             <div className="errorMessageWrap">
               {
-                !userIdValid && userId.length > 0 &&(
+                !userIdValid && user_id.length > 0 &&(
                   <div> 사용자 이름에는 문자, 숫자, 밑줄 및 마침표만 사용할 수 있습니다. </div>
                 )
               }

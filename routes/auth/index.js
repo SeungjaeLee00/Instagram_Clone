@@ -13,7 +13,7 @@ router.use("/sign-up", signUpRoutes);
 router.use("/login", loginRoutes);
 router.use("/logout", logoutRoutes);
 router.use("/reset-password", resetPasswordRoute);
-router.use("/reset-password-request", resetPasswordRequestRoute);
-router.use("/verify-code", verifyCodeRoute);
+router.use("/request-reset-password", resetPasswordRequestRoute);
+router.use("/verify-reset-code", verifyCodeRoute);
 
 module.exports = router;

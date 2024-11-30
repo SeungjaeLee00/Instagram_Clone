@@ -1,99 +1,99 @@
-import  React, {useState, useEffect} from "react";
-import {useNavigate} from "react-router-dom";
+import React, {useState, useEffect} from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+import axios from "axios";
 import lock from "../../assets/lock.png";
 import "./ResetPassword.css";
 
-const ResetPassword = () => {
-    const [email, setEmail] = useState("");
-    const [emailValid, setEmailValid] = useState(false);
+const ResetPW = () => {
+    const [newPassword, setnewPassword] = useState(""); // 새로운 비밀번호
+    const [confirmPassword, setconfirmPassword] = useState(""); // 새로운 비밀번호 확인
+    const [isPasswordValid, setIsPasswordValid] = useState(false); // 비밀번호 유효성
+    const [isMatch, setIsMatch] = useState(false); // 비밀번호와 비밀번호 확인 일치하는지 확인
+
+    const location = useLocation();
+    const email = location.state?.email || "";
+
+    // 버튼 활성화 여부 - 비밀번호와 비밀번호 확인이 일치하지 않으면 활성화되지 않는다.
     const [NotAllow, setNotAllow] = useState(false);
-    
+
     const navigate = useNavigate();
 
-    // email 값 입력 판단
-    const handleEmail = (e) => {  
-        const value = e.target.value.trim();
-        setEmail(value);
+    const handlePasswordChange = (e) => {
+        const value = e.target.value;
+        setnewPassword(value);
 
-        const regex =
-        /^(([^<>()\[\].,;:\s@"]+(\.[^<>()\[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i;
+        // 비밀번호 길이가 6자 이상인지 확인
+        setIsPasswordValid(value.length >= 6);
+    };
 
-        // email 값이 유효한 값인지 확인
-        if(regex.test(value)){
-            setEmailValid(true);
+    const handleConfirmPasswordChange = (e) => {
+        const value = e.target.value;
+        setconfirmPassword(value);
+    };
+
+    const onclickConfirmButton= () => {
+        if(isMatch){
+            axios.post("http://localhost:5001/auth/reset-password",
+                { email, newPassword },
+                { withCredentials: true } // 쿠키 전달
+            ).then((response) => {
+                if(response.data.success) {
+                    alert("비밀번호 변경이 완료되었습니다.");
+                    navigate("/auth/login");
+                }
+            })
+            .catch((error) => {
+                alert(error.response?.data?.message || "요청 실패");
+            });
         } else {
-            setEmailValid(false);
-        }
-    };
+            alert("비밀번호가 일치하지 않습니다.");
+        };
+    }
 
-    // 가입 버튼 클릭
-    const onclickConfirmButton = () => {
-        alert("인증번호 전송 버튼");
-        navigate("/auth/verify-reset-code");
-        console.log("인증번호 전송");
-    };
-
-    // 로그인으로 돌아가기 버튼 클릭
-    const onclickReturnToLogin = () => {
-        navigate("/auth/login");
-    };
-
-    // 인증번호 전송 버튼 활성화
     useEffect(() => {
-        if(emailValid){
-          setNotAllow(false);
-          return;
-        }
-        setNotAllow(true);
-    }, [emailValid]);
+        if(isPasswordValid && (newPassword === confirmPassword)){
+            setIsMatch(true);
+            setNotAllow(false); // 버튼 활성화
+        } else{
+            setIsMatch(false);
+            setNotAllow(true);  // 버튼 비활성화
+        };
+    }, [newPassword, confirmPassword, isPasswordValid]);
 
-    return(
-        <div className="resetPW-page">
+    return (
+        <div className="reset-password-page">
+            <div className="reset-password-content">
+                <img className="lock"
+                    src = {lock}
+                    alt = "lock">
+                </img>
 
-            <div className="resetPW-content">
-                <img className = "lock"
-                    alt = "lock"
-                    src = {lock}/>
+                <div className="reset-password-text">
+                    새로 저장할 비밀번호를 입력하세요.
+                </div>
 
-                    <div className="password-title">
-                        로그인에 문제가 있나요?
-                    </div>
+                <div className="reset-password-inputWrap">
+                    <input className="reset-password-input"
+                        placeholder="새 비밀번호"
+                        onChange={handlePasswordChange}
+                        type="password"
+                    />  
 
-                    <div className="password-text">
-                        이메일 주소를 입력하시면 비밀번호를 재설정할 수 있는 코드를 보내드립니다.
-                    </div>
+                    <input className="reset-password-input"
+                        placeholder="새 비밀번호 확인"
+                        onChange={handleConfirmPasswordChange}
+                        type="password"
+                    />  
 
-                    <div className="resetPW-inputWrap">
-                        <input className="resetPW-input" placeholder="이메일"
-                            value={email}
-                            onChange={handleEmail}
-                            type="text"
-                        >
-                        </input>
-
-                        <button className = "resetPW-submitButton" 
-                            onClick = {onclickConfirmButton} 
-                            disabled={NotAllow} 
-                        > 인증코드 발송
-                        </button>
-
-                        <div className="resetPW-problem">
-                            <a href = "https://help.instagram.com/374546259294234">비밀번호를 재설정할 수 없나요?</a>
-                        </div>
-                    </div>                  
-
-                    <div className="divider" text-weight="bold">또는</div>
-
-                    <div className="resetPWToSignup">
-                        <a href = "/auth/sign-up">새 계정 만들기</a>
-                    </div>                                      
-            </div>     
-            <div className="return-to-login">
-                <button className="return-to-login-button"
-                    onClick ={onclickReturnToLogin}> 로그인으로 돌아가기 </button> 
-            </div>  
+                    <button className="reset-password-button"
+                        disabled={NotAllow}
+                        onClick={onclickConfirmButton}>
+                        확인 
+                    </button>                 
+                </div>
+            </div>
         </div>
     )
 }
 
-export default ResetPassword;
+export default ResetPW;

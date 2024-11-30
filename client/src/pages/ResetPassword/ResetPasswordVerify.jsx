@@ -1,28 +1,53 @@
 import React, {useState, useEffect} from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
+import axios from "axios";
 import lock from "../../assets/lock.png";
-import "./Certification.css";
+import "./ResetPasswordVerify.css"
 
-const Certification = () => {
-    const [certCodeValid, setcertCodeValid] = useState(false);
+const ResetPWVerify = () => {
+    const [verificationCode, setverificationCode] = useState("");
+    const [verificationCodeValid, setverificationCodeValid] = useState(false);
     
+    const location = useLocation();
+    const email = location.state?.email || "";
+
     // 버튼 활성화 여부
     const [NotAllow, setNotAllow] = useState(false);
 
     const navigate = useNavigate();
 
-    const handleCertCode = (e) => {     
+    const handleVerifyCode = (e) => {     
+        const value = e.target.value.trim();
+        setverificationCode(value);
+
         // useState는 비동기적으로 작동하기 때문에 e.target.value를 직접 사용해야 함.
-        if(e.target.value.trim().length === 6){
-            setcertCodeValid(true);
+        if(value.length === 6){
+            setverificationCodeValid(true);
         } else {
-            setcertCodeValid(false);
+            setverificationCodeValid(false);
         }
-    }
+    };
 
     const onclickConfirmButton = () => {
-        alert("확인");
-    }
+        // API 호출
+        axios
+        .post("http://localhost:5001/auth/verify-reset-code",
+          { email, verificationCode }, // 로그인 데이터 전달
+          { withCredentials: true }) // 쿠키 전달
+        .then((response) => {
+          if(response.data.success) {
+            alert("인증이 완료되었습니다. 비밀번호를 재설정해주세요.");
+            navigate("/auth/reset-password", {state: {email}});
+          } else {
+            alert(response.data.message);
+          }
+        })
+        .catch((error) => {
+          alert(error.message);
+          console.log("Request Data:", { email, verificationCode });
+          console.error("가입 실패:", email);
+        });
+    };
 
     // 로그인으로 돌아가기 버튼 클릭
     const onclickReturnToLogin = () => {
@@ -30,12 +55,12 @@ const Certification = () => {
     };
 
     useEffect(() => {
-        if(certCodeValid){
+        if(verificationCodeValid){
             setNotAllow(false);
             return;
         }
         setNotAllow(true);
-    }, [certCodeValid]);
+    }, [verificationCodeValid]);
 
     return (
         <div className="cert-page">
@@ -52,7 +77,7 @@ const Certification = () => {
                 <div className="cert-inputWrap">
                     <input className="cert-input"
                         placeholder="인증코드"
-                        onChange={handleCertCode}
+                        onChange={handleVerifyCode}
                         maxLength={6} />  
 
                     <button className="cert-button"
@@ -70,4 +95,4 @@ const Certification = () => {
     )
 }
 
-export default Certification;
+export default ResetPWVerify;

@@ -3,7 +3,7 @@ const router = express.Router();
 const { User } = require("../../models/User");
 
 // 인증코드 검증 라우트
-router.post("/verify-reset-code", async (req, res) => {
+router.post("/", async (req, res) => {
   const { email, verificationCode } = req.body;
 
   try {

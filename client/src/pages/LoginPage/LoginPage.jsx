@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from "react";
 import {useNavigate} from "react-router-dom";
+import axios from "axios";
 import "./LoginPage.css";
 
 // 이미지 로드
@@ -8,26 +9,26 @@ import googleplaylogo from "../../assets/google-play.png";
 import microsoftlogo from "../../assets/microsoft.png";
 
 const Login = () => {
-    const [emailOrUserId, setEmailOrUserId] = useState("");
+    const [emailOrUsername, setemailOrUsername] = useState("");
     const [password, setPassword] = useState("");
 
-    const [emailOrUserIdValid, setEmailOrUserIdValid] = useState(false);
+    const [emailOrUsernameValid, setemailOrUsernameValid] = useState(false);
     const [passwordValid, setPasswordValid] = useState(false);
 
     // 버튼 활성화 여부
     const [NotAllow, setNotAllow] = useState(false);
 
-    const Navigate = useNavigate();
+    const navigate = useNavigate();
 
     // email 값 입력 판단
     const handleEmailOrUserId = (e) => {    
         const value = e.target.value.trim(); // 공백 제거
-        setEmailOrUserId(value);
+        setemailOrUsername(value);
 
-        const isEmail = /^(([^<>()\[\].,;:\s@"]+(\.[^<>()\[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i;
+        const isEmail = /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i;
         const isUserId = value.length >= 5 && value.length < 30;
         
-        setEmailOrUserIdValid(isEmail || isUserId);
+        setemailOrUsernameValid(isEmail || isUserId);
     };
 
     // 비밀번호 입력 판단
@@ -41,22 +42,35 @@ const Login = () => {
 
     // 로그인 버튼 클릭
     const onclickConfirmButton = () => {
-        alert("로그인 버튼")
+      // API 호출
+      axios
+        .post("http://localhost:5001/auth/login",
+           { emailOrUsername, password}, // 로그인 데이터 전달
+           { withCredentials: true }) // 쿠키 전달
+        .then((response) => {
+          alert("로그인");
+          navigate("/auth/home");
+        })
+        .catch((error) => {
+          alert("로그인 실패");
+          console.error("로그인 실패:", error);
+        });
+
     };
 
     // 로고 클릭시 login 화면으로 이동
     const handleLogoClick = () => {
-        Navigate("/auth/login");
+        navigate("/auth/login");
     };
 
     // 로그인 버튼 활성화
     useEffect(() => {
-      if(emailOrUserIdValid && passwordValid){
+      if(emailOrUsernameValid && passwordValid){
         setNotAllow(false);
         return;
       }
       setNotAllow(true);
-    }, [emailOrUserIdValid, passwordValid]);
+    }, [emailOrUsernameValid, passwordValid]);
 
     return (
     <div className = "login-page">
@@ -72,7 +86,7 @@ const Login = () => {
 
         <div className = "login-inputWrap">
           <input className = "login-input" placeholder={"사용자 이름 또는 이메일"}
-              value = {emailOrUserId}
+              value = {emailOrUsername}
               onChange={handleEmailOrUserId}
               type = "text"
           />
@@ -91,7 +105,7 @@ const Login = () => {
 
           <div className="divider">또는</div>
 
-          <a href="/auth/reset-password" className="forgot-password">
+          <a href="/auth/request-reset-password" className="forgot-password">
             비밀번호를 잊으셨나요?
           </a>
         </div>
