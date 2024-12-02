@@ -23,15 +23,6 @@ const followRoutes = require("./routes/follow/index");
 const app = express();
 const server = http.createServer(app); // HTTP 서버 생성
 
-// CORS 설정
-app.use(
-  cors({
-    origin: "http://localhost:3000", // React 앱이 실행 중인 포트
-    methods: ["GET", "POST", "PUT", "DELETE"], // 허용할 HTTP 메서드
-    credentials: true, // 인증 정보와 쿠키 포함 허용
-  })
-);
-
 // MongoDB 연결
 mongoose
   .connect(config.mongoURI, {
@@ -41,6 +32,15 @@ mongoose
   })
   .then(() => console.log("MongoDB connected.."))
   .catch((err) => console.log(err));
+
+// CORS 설정
+app.use(
+  cors({
+    origin: "http://localhost:3000", // React 앱이 실행 중인 포트
+    methods: ["GET", "POST", "PUT", "DELETE"], // 허용할 HTTP 메서드
+    credentials: true, // 인증 정보와 쿠키 포함 허용
+  })
+);
 
 // 미들웨어
 app.use(bodyParser.json());

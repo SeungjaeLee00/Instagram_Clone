@@ -1,0 +1,8 @@
+@media (max-width: 768px) {
+  .main-page {
+    flex-direction: column;
+  }
+  .feed-container {
+    padding: 10px;
+  }
+}
