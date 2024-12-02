@@ -8,7 +8,7 @@ import instalogo from "../assets/instagram_logo.png";
 import googleplaylogo from "../assets/google-play.png";
 import microsoftlogo from "../assets/microsoft.png";
 
-const Login = () => {
+const Login = ({ setIsAuthenticated }) => {
   const [emailOrUsername, setemailOrUsername] = useState("");
   const [password, setPassword] = useState("");
 
@@ -41,6 +41,25 @@ const Login = () => {
     setPasswordValid(value.length >= 6);
   };
 
+  // // 로그인 버튼 클릭
+  // const onclickConfirmButton = () => {
+  //   // API 호출
+  //   axios
+  //     .post(
+  //       "http://localhost:5001/auth/login",
+  //       { emailOrUsername, password }, // 로그인 데이터 전달
+  //       { withCredentials: true }
+  //     ) // 쿠키 전달
+  //     .then((response) => {
+  //       alert("로그인");
+  //       navigate("/auth/home");
+  //     })
+  //     .catch((error) => {
+  //       alert("로그인 실패");
+  //       console.error("로그인 실패:", error);
+  //     });
+  // };
+
   // 로그인 버튼 클릭
   const onclickConfirmButton = () => {
     // API 호출
@@ -51,15 +70,17 @@ const Login = () => {
         { withCredentials: true }
       ) // 쿠키 전달
       .then((response) => {
-        alert("로그인");
-        navigate("/auth/home");
+        const { token } = response.data; // 서버에서 JWT 토큰 받기
+        localStorage.setItem("token", token); // 로컬 스토리지에 토큰 저장
+        setIsAuthenticated(true); // 인증 상태를 true로 설정
+        alert("로그인 성공");
+        navigate("/"); // 메인 페이지로 이동
       })
       .catch((error) => {
         alert("로그인 실패");
         console.error("로그인 실패:", error);
       });
   };
-
   // 로고 클릭시 login 화면으로 이동
   const handleLogoClick = () => {
     navigate("/auth/login");
