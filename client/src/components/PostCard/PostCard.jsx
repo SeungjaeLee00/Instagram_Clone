@@ -66,7 +66,7 @@ const PostCard = ({ post, onDelete, onUpdate }) => {
   // 삭제 버튼 클릭 시 게시물 삭제(임시)
   const handleDelete = () => {
     if (window.confirm("게시물을 삭제하시겠습니까?")) {
-      onDelete(post.id); // 부모 컴포넌트에서 게시물 삭제 처리
+      // onDelete(post.id); // 부모 컴포넌트에서 게시물 삭제 처리
     }
   };
 
