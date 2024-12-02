@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import "./Sidebar.css";
-import instagramLogo1 from "../../assets/long_Instagram.png"; // 큰 로고
-import instagramLogo2 from "../../assets/short_Instagram.png"; // 작은 로고
+import "../styles/components/Sidebar.css";
+import instagramLogo1 from "../assets/long_Instagram.png"; // 큰 로고
+import instagramLogo2 from "../assets/short_Instagram.png"; // 작은 로고
 
 const Sidebar = () => {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);

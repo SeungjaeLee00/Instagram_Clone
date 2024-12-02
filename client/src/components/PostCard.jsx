@@ -1,18 +1,19 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import "./PostCard.css";
+import "../styles/components/PostCard.css";
 
-import { timeAgo } from "../../utils/timeAgo";
-import default_profile from "../../assets/default_profile.png";
+import { timeAgo } from "../utils/timeAgo";
+import default_profile from "../assets/default_profile.png";
 
-const PostCard = ({ post, onDelete, onUpdate }) => {
+const PostCard = ({ post, onUpdate }) => {
   const navigate = useNavigate();
 
   const [liked, setLiked] = useState(false);
   const [likesCount, setLikesCount] = useState(post.likesCount || 0);
   const [showOptions, setShowOptions] = useState(false); // 수정/삭제 옵션 상태
   const [commentText, setCommentText] = useState(""); // 댓글 내용
+  // eslint-disable-next-line
   const [comments, setComments] = useState(post.comments || []); // 댓글 목록
 
   useEffect(() => {

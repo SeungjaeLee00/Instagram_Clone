@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import "./MainPage.css";
-import PostCard from "../../components/PostCard/PostCard";
+import "../styles/pages/MainPage.css";
+import PostCard from "../components/PostCard";
 import axios from "axios";
 
 const MainPage = () => {
