@@ -7,6 +7,7 @@ const logoutRoutes = require("./logout");
 const resetPasswordRoute = require("./resetPassword");
 const resetPasswordRequestRoute = require("./resetPasswordRequest");
 const verifyCodeRoute = require("./verifyCode");
+const verifyTokenRoute = require("./verify-token");
 
 // 인증 관련 라우트 설정
 router.use("/sign-up", signUpRoutes);
@@ -15,5 +16,6 @@ router.use("/logout", logoutRoutes);
 router.use("/reset-password", resetPasswordRoute);
 router.use("/request-reset-password", resetPasswordRequestRoute);
 router.use("/verify-reset-code", verifyCodeRoute);
+router.use("/auth", verifyTokenRoute);
 
 module.exports = router;

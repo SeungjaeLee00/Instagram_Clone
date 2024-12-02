@@ -13,25 +13,30 @@ import axios from "axios";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [loading, setLoading] = useState(true);
 
-  // 앱 로드 시, 토큰을 확인하여 로그인 여부를 판단
+  // 앱 로드 시, 세션 쿠키를 확인하여 로그인 여부를 판단
   useEffect(() => {
-    const token = localStorage.getItem("token"); // 로컬 스토리지에서 JWT 토큰을 가져옵니다.
-    if (token) {
-      axios
-        .post(
-          "http://localhost:5001/auth/verify-token", // 토큰 검증 API 호출
-          {},
-          { headers: { Authorization: `Bearer ${token}` } }
-        )
-        .then(() => {
-          setIsAuthenticated(true); // 토큰이 유효하면 로그인 상태를 업데이트
-        })
-        .catch(() => {
-          setIsAuthenticated(false); // 토큰이 유효하지 않으면 로그인 상태 초기화
-        });
-    }
+    axios
+      .get("http://localhost:5001/auth/auth/verify-token", {
+        withCredentials: true,
+      }) // verify-token API 호출
+      .then((response) => {
+        if (response.data.isAuth) {
+          setIsAuthenticated(true); // 로그인 상태 업데이트
+        } else {
+          setIsAuthenticated(false); // 로그인 상태 초기화
+        }
+      })
+      .catch(() => {
+        setIsAuthenticated(false); // 에러가 나면 로그아웃 상태로 처리
+      })
+      .finally(() => setLoading(false)); // 로딩 완료
   }, []);
+
+  if (loading) {
+    return <div>로딩 중...</div>; // 로딩 상태 표시
+  }
 
   return (
     <Router>
@@ -65,8 +70,6 @@ function App() {
               </ProtectedRoute>
             }
           />
-
-          {/* 기타 보호되지 않은 경로들 */}
           {/* <Route path="/search" element={<SearchPage />} />
           <Route path="/messages" element={<MessagesPage />} />
           <Route path="/notifications" element={<NotificationsPage />} />

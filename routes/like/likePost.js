@@ -7,20 +7,14 @@ const cookieParser = require("cookie-parser");
 router.use(cookieParser());
 
 const { Post } = require("../../models/Post");
-const { emitPostLike } = require("../../server"); // 알림 emit 함수 가져오기
+const { emitPostLike } = require("../../server");
 
 // 게시물 좋아요 API
 router.post("/:postId/like", auth, async (req, res) => {
-  const { postId } = req.params; // URL 파라미터에서 postId 가져오기
-
-  // 개발 환경일 경우 하드코딩된 사용자 ID 사용
-  const userId =
-    process.env.NODE_ENV === "development"
-      ? "67440c5d55bc0dfc2f5b629d"
-      : req.user.id; // 인증된 사용자 ID 가져오기
+  const { postId } = req.params;
+  const userId = req.user.id;
 
   try {
-    // 게시물 조회
     const post = await Post.findById(postId);
 
     if (!post) {
@@ -33,21 +27,28 @@ router.post("/:postId/like", auth, async (req, res) => {
     if (existingLikeIndex !== -1) {
       // 좋아요를 이미 누른 경우, 좋아요 삭제
       post.likes.splice(existingLikeIndex, 1); // likes 배열에서 사용자 ID 제거
-      await post.save(); // 변경사항 저장
-      return res.status(200).json({ message: "좋아요가 취소되었습니다." });
+      await post.save();
+      return res.status(200).json({
+        message: "좋아요가 취소되었습니다.",
+        likesCount: post.likes.length, // 좋아요 개수 반환
+        likes: post.likes, // 최신 좋아요 배열 반환
+      });
     } else {
       // 좋아요 추가
       post.likes.push(userId); // likes 배열에 사용자 ID 추가
-      await post.save(); // 변경사항 저장
+      await post.save();
 
-      // 좋아요 알림 emit
       emitPostLike({
         postId: postId,
         likerId: userId,
         message: "게시물을 좋아합니다",
       });
 
-      return res.status(201).json({ message: "좋아요가 추가되었습니다." });
+      return res.status(201).json({
+        message: "좋아요가 추가되었습니다.",
+        likesCount: post.likes.length,
+        likes: post.likes, // 최신 좋아요 배열 반환
+      });
     }
   } catch (error) {
     console.error(error);

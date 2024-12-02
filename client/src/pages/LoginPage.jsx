@@ -41,25 +41,6 @@ const Login = ({ setIsAuthenticated }) => {
     setPasswordValid(value.length >= 6);
   };
 
-  // // 로그인 버튼 클릭
-  // const onclickConfirmButton = () => {
-  //   // API 호출
-  //   axios
-  //     .post(
-  //       "http://localhost:5001/auth/login",
-  //       { emailOrUsername, password }, // 로그인 데이터 전달
-  //       { withCredentials: true }
-  //     ) // 쿠키 전달
-  //     .then((response) => {
-  //       alert("로그인");
-  //       navigate("/auth/home");
-  //     })
-  //     .catch((error) => {
-  //       alert("로그인 실패");
-  //       console.error("로그인 실패:", error);
-  //     });
-  // };
-
   // 로그인 버튼 클릭
   const onclickConfirmButton = () => {
     // API 호출
@@ -67,20 +48,32 @@ const Login = ({ setIsAuthenticated }) => {
       .post(
         "http://localhost:5001/auth/login",
         { emailOrUsername, password }, // 로그인 데이터 전달
-        { withCredentials: true }
-      ) // 쿠키 전달
+        { withCredentials: true } // 쿠키 전달
+      )
       .then((response) => {
-        const { token } = response.data; // 서버에서 JWT 토큰 받기
-        localStorage.setItem("token", token); // 로컬 스토리지에 토큰 저장
-        setIsAuthenticated(true); // 인증 상태를 true로 설정
-        alert("로그인 성공");
-        navigate("/"); // 메인 페이지로 이동
+        console.log("로그인 성공 응답:", response.data); // 응답 데이터 확인
+        const { loginSuccess, userId } = response.data; // 응답에서 로그인 성공과 userId 확인
+        if (loginSuccess) {
+          setIsAuthenticated(true); // 인증 상태 설정
+          alert("로그인 성공");
+          navigate("/"); // 메인 페이지로 이동
+        } else {
+          alert("로그인 실패: 유효한 토큰이 없습니다.");
+        }
       })
       .catch((error) => {
-        alert("로그인 실패");
+        if (error.response) {
+          // 서버에서 반환하는 오류 메시지
+          alert(
+            `로그인 실패: ${error.response.data.message || "알 수 없는 오류"}`
+          );
+        } else {
+          alert("로그인 실패");
+        }
         console.error("로그인 실패:", error);
       });
   };
+
   // 로고 클릭시 login 화면으로 이동
   const handleLogoClick = () => {
     navigate("/auth/login");
@@ -128,7 +121,6 @@ const Login = ({ setIsAuthenticated }) => {
             onClick={onclickConfirmButton}
             disabled={NotAllow}
           >
-            {" "}
             로그인
           </button>
 

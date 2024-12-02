@@ -3,6 +3,7 @@ const bcrypt = require("bcryptjs");
 const saltRounds = 10;
 const jwt = require("jsonwebtoken");
 const Util = require("util");
+require("dotenv").config();
 
 const userSchema = mongoose.Schema({
   // 닉네임
@@ -120,7 +121,7 @@ userSchema.methods.comparePassword = async function (plainPassword) {
 // 토큰 생성 메서드
 userSchema.methods.generateToken = function () {
   const payload = { _id: this._id.toHexString() };
-  const token = jwt.sign(payload, "secretToken", { expiresIn: "10m" });
+  const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "10m" });
   this.token = token;
   // user를 저장한 후, user와 token을 함께 반환
   return this.save().then(() => ({ token, user: this }));
@@ -130,10 +131,10 @@ userSchema.methods.generateToken = function () {
 userSchema.statics.findByToken = function (token) {
   const user = this;
 
-  return Util.promisify(jwt.verify)(token, "secretToken")
+  return Util.promisify(jwt.verify)(token, process.env.JWT_SECRET)
     .then((decoded) => {
       return user.findOne({
-        _id: decoded,
+        _id: decoded._id,
         token: token,
       });
     })
