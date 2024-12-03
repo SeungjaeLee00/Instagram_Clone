@@ -1,7 +1,7 @@
 # instagram clone
 
-**서버 시작**
+**프로젝트 시작**
 
 ```jsx
-npm run backend
+npm run dev
 ```
