@@ -23,7 +23,7 @@ const commentSchema = new mongoose.Schema({
   likes: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User", // 좋아요를 누른 사용자 ID
+      ref: "User",
     },
   ],
 });

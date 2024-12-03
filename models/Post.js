@@ -36,8 +36,6 @@ const postSchema = new mongoose.Schema({
   ],
 });
 
-// 게시물 모델 생성
 const Post = mongoose.model("Post", postSchema);
 
-// 게시물 모델 내보내기
 module.exports = { Post };

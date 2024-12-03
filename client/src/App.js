@@ -9,7 +9,7 @@ import RequestResetPassword from "./pages/ResetPassword/ResetPasswordRequest";
 import ResetPasswordVerify from "./pages/ResetPassword/ResetPasswordVerify";
 import ResetPassword from "./pages/ResetPassword/ResetPassword";
 import ProtectedRoute from "./components/ProtectedRoute";
-import axios from "axios";
+import { verifyToken } from "./api/authApi";
 
 const SearchPage = () => <div>검색 페이지</div>;
 const MessagesPage = () => <div>메시지 페이지</div>;
@@ -21,12 +21,8 @@ function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  // 앱 로드 시, 세션 쿠키를 확인하여 로그인 여부를 판단
   useEffect(() => {
-    axios
-      .get("http://localhost:5001/auth/auth/verify-token", {
-        withCredentials: true,
-      }) // verify-token API 호출
+    verifyToken()
       .then((response) => {
         if (response.data.isAuth) {
           setIsAuthenticated(true); // 로그인 상태 업데이트

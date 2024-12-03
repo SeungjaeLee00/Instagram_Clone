@@ -1,10 +1,14 @@
 const express = require("express");
 const router = express.Router();
+const { auth } = require("../../routes/auth");
 const { Post } = require("../../models/Post");
 const { Like } = require("../../models/Like");
 
+const cookieParser = require("cookie-parser");
+router.use(cookieParser());
+
 // 게시물 단건 조회
-router.get("/:id", async (req, res) => {
+router.get("/:id", auth, async (req, res) => {
   const { id } = req.params;
 
   try {
@@ -35,6 +39,7 @@ router.get("/:id", async (req, res) => {
       },
     });
   } catch (error) {
+    console.error(error);
     return res.status(500).json({
       message: "게시물 조회 중 오류가 발생했습니다.",
       error: error.message,

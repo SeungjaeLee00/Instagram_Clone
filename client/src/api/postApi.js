@@ -2,7 +2,7 @@ import axios from "axios";
 
 const API_BASE_URL = "http://localhost:5001";
 
-// 게시물 가져오기 API
+// 전체 게시물 가져오기 API
 export const fetchPosts = async () => {
   const response = await axios.get(`${API_BASE_URL}/post/feed`, {
     withCredentials: true,

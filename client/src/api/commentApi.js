@@ -11,3 +11,16 @@ export const addComment = async (postId, newCommentText) => {
   );
   return response.data.comment;
 };
+
+// 특정 게시물 댓글 가져오기 API
+export const getComments = async (postId, token, userId) => {
+  const response = await axios.get(
+    `${API_BASE_URL}/comment/get/${postId}/comments`,
+    {
+      headers: { Authorization: `Bearer ${token}` },
+      data: { userId },
+      withCredentials: true,
+    }
+  );
+  return response.data.comments;
+};
