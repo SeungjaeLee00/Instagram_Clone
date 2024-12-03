@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/components/PostCard.css";
-
+import PostDetailModal from "./PostDetailModal";
 import { timeAgo } from "../utils/timeAgo";
 import default_profile from "../assets/default_profile.png";
 
@@ -12,6 +12,7 @@ const PostCard = ({ post, onUpdate, onDelete, onLike }) => {
   const [showOptions, setShowOptions] = useState(false);
   const [commentText, setCommentText] = useState("");
   const [comments, setComments] = useState(post.comments || []);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     setLiked(post.liked);
@@ -60,15 +61,28 @@ const PostCard = ({ post, onUpdate, onDelete, onLike }) => {
     }
   };
 
-  // // 수정 버튼 클릭 시 수정 페이지로 이동(임시)
-  // const handleEdit = () => {
-  //   navigate(`/edit/${post._id}`); // 수정 페이지로 이동
-  // };
+  // 수정 버튼 클릭 시 수정 페이지로 이동(임시)
+  const handleEdit = () => {
+    navigate(`/edit/${post._id}`);
+  };
+
+  // DM 버튼 클릭 시 게시물 유저의 메세지 페이지로 이동(임시)
+  const handleDm = () => {
+    navigate(`/messages/${post.user_id.user_id}`);
+  };
 
   const handleDelete = () => {
     if (window.confirm("게시물을 삭제하시겠습니까?")) {
       onDelete(post._id);
     }
+  };
+
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
   };
 
   return (
@@ -90,7 +104,7 @@ const PostCard = ({ post, onUpdate, onDelete, onLike }) => {
 
       {showOptions && (
         <div className="options-popup">
-          {/* <button onClick={handleEdit}>수정</button> */}
+          <button onClick={handleEdit}>수정</button>
           <button onClick={handleDelete}>삭제</button>
         </div>
       )}
@@ -105,8 +119,8 @@ const PostCard = ({ post, onUpdate, onDelete, onLike }) => {
         <button onClick={handleLike} className="like-btn">
           {liked ? "♥" : "♡"}
         </button>
-        <button className="comment-btn"></button>
-        <button className="dm-btn"></button>
+        <button className="comment-btn" onClick={openModal}></button>
+        <button onClick={handleDm} className="dm-btn"></button>
       </div>
 
       <div className="likes-count">좋아요 {likesCount}개</div>
@@ -115,7 +129,7 @@ const PostCard = ({ post, onUpdate, onDelete, onLike }) => {
         <strong>{post.user_id?.user_id}</strong> {post.text}
       </div>
 
-      <div className="view-comments">
+      <div className="view-comments" onClick={openModal}>
         댓글 {comments.length || 0}개 모두 보기
       </div>
 
@@ -131,6 +145,14 @@ const PostCard = ({ post, onUpdate, onDelete, onLike }) => {
           게시
         </button>
       </div>
+
+      {/* <PostDetailModal
+        isOpen={isModalOpen}
+        postId={post._id}
+        comments={comments}
+        onClose={closeModal}
+        onCommentSubmit={handleCommentSubmit}
+      /> */}
     </div>
   );
 };

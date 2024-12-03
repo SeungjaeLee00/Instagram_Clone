@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import { requestResetPassword } from "../../api/authApi"; // API 호출 함수
 import lock from "../../assets/lock.png";
 import "../../styles/pages/ResetPasswordRequest.css";
 
@@ -28,26 +28,19 @@ const RequestResetPassword = () => {
   };
 
   // 인증코드 발송 버튼 클릭
-  const onclickConfirmButton = () => {
-    // API 호출
-    axios
-      .post(
-        "http://localhost:5001/auth/request-reset-password",
-        { email }, // 이메일 전달
-        { withCredentials: true }
-      ) // 쿠키 전달
-      .then((response) => {
-        if (response.data.success) {
-          alert("인증 이메일이 발송되었습니다.");
-          navigate("/auth/verify-reset-code", { state: { email } });
-        } else {
-          alert(response.data.message);
-        }
-      })
-      .catch((error) => {
-        alert(error.response?.data?.message || "요청 실패");
-        console.error("전송 실패:", error.message);
-      });
+  const onclickConfirmButton = async () => {
+    try {
+      const data = await requestResetPassword(email); // API 호출
+      if (data.success) {
+        alert("인증 이메일이 발송되었습니다.");
+        navigate("/auth/verify-reset-code", { state: { email } });
+      } else {
+        alert(data.message);
+      }
+    } catch (error) {
+      alert(error);
+      console.error("전송 실패:", error);
+    }
   };
 
   // 로그인으로 돌아가기 버튼 클릭

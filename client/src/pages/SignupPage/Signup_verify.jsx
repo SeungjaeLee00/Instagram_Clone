@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import axios from "axios";
+import { verifySignupEmail } from "../../api/authApi"; // API 호출 함수
 import instalogo from "../../assets/instagram_logo.png";
 import "../../styles/pages/Signup_verify.css";
 
@@ -20,7 +20,7 @@ const Signup_verify = () => {
     const value = e.target.value.trim();
     setverificationCode(value);
 
-    // useState는 비동기적으로 작동하기 때문에 e.target.value를 직접 사용해야 함.
+    // 인증 코드 길이 검증
     if (value.length === 6) {
       setverificationCodeValid(true);
     } else {
@@ -28,26 +28,19 @@ const Signup_verify = () => {
     }
   };
 
-  const onclickConfirmButton = () => {
-    // API 호출
-    axios
-      .post(
-        "http://localhost:5001/auth/sign-up/verify-email",
-        { email, verificationCode }, // 로그인 데이터 전달
-        { withCredentials: true }
-      ) // 쿠키 전달
-      .then((response) => {
-        if (response.data.success) {
-          alert("인증이 완료되었습니다. 로그인 창에서 로그인해주세요. ");
-          navigate("/auth/login");
-        } else {
-          alert(response.data.message);
-        }
-      })
-      .catch((error) => {
-        alert(error.message);
-        console.error("가입 실패:", email);
-      });
+  const onclickConfirmButton = async () => {
+    try {
+      const data = await verifySignupEmail(email, verificationCode); // API 호출
+      if (data.success) {
+        alert("인증이 완료되었습니다. 로그인 창에서 로그인해주세요.");
+        navigate("/auth/login");
+      } else {
+        alert(data.message);
+      }
+    } catch (error) {
+      alert(error);
+      console.error("가입 실패:", email);
+    }
   };
 
   // 로그인으로 돌아가기 버튼 클릭

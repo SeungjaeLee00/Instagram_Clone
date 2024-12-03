@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import axios from "axios";
+import { resetPassword } from "../../api/authApi"; // API 호출 함수
 import lock from "../../assets/lock.png";
 import "../../styles/pages/ResetPassword.css";
 
@@ -31,23 +31,17 @@ const ResetPW = () => {
     setconfirmPassword(value);
   };
 
-  const onclickConfirmButton = () => {
+  const onclickConfirmButton = async () => {
     if (isMatch) {
-      axios
-        .post(
-          "http://localhost:5001/auth/reset-password",
-          { email, newPassword },
-          { withCredentials: true } // 쿠키 전달
-        )
-        .then((response) => {
-          if (response.data.success) {
-            alert("비밀번호 변경이 완료되었습니다.");
-            navigate("/auth/login");
-          }
-        })
-        .catch((error) => {
-          alert(error.response?.data?.message || "요청 실패");
-        });
+      try {
+        const data = await resetPassword(email, newPassword); // API 호출
+        if (data.success) {
+          alert("비밀번호 변경이 완료되었습니다.");
+          navigate("/auth/login");
+        }
+      } catch (error) {
+        alert(error);
+      }
     } else {
       alert("비밀번호가 일치하지 않습니다.");
     }

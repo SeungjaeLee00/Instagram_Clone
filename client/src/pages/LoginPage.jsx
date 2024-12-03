@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import "../styles/pages/LoginPage.css";
+import { loginUser } from "../api/authApi"; // API 호출 함수 가져오기
 
 // 이미지 로드
 import instalogo from "../assets/instagram_logo.png";
@@ -20,9 +20,9 @@ const Login = ({ setIsAuthenticated }) => {
 
   const navigate = useNavigate();
 
-  // email 값 입력 판단
+  // 사용자 이름 또는 이메일 유효성 검사
   const handleEmailOrUserId = (e) => {
-    const value = e.target.value.trim(); // 공백 제거
+    const value = e.target.value.trim();
     setemailOrUsername(value);
 
     const isEmail =
@@ -32,46 +32,32 @@ const Login = ({ setIsAuthenticated }) => {
     setemailOrUsernameValid(isEmail || isUserId);
   };
 
-  // 비밀번호 입력 판단
-  const handlePassword = async (e) => {
+  // 비밀번호 유효성 검사
+  const handlePassword = (e) => {
     const value = e.target.value;
     setPassword(value);
 
-    // 비밀번호가 6자 이상인지 확인
     setPasswordValid(value.length >= 6);
   };
 
   // 로그인 버튼 클릭
-  const onclickConfirmButton = () => {
-    // API 호출
-    axios
-      .post(
-        "http://localhost:5001/auth/login",
-        { emailOrUsername, password }, // 로그인 데이터 전달
-        { withCredentials: true } // 쿠키 전달
-      )
-      .then((response) => {
-        console.log("로그인 성공 응답:", response.data); // 응답 데이터 확인
-        const { loginSuccess, userId } = response.data; // 응답에서 로그인 성공과 userId 확인
-        if (loginSuccess) {
-          setIsAuthenticated(true); // 인증 상태 설정
-          alert("로그인 성공");
-          navigate("/"); // 메인 페이지로 이동
-        } else {
-          alert("로그인 실패: 유효한 토큰이 없습니다.");
-        }
-      })
-      .catch((error) => {
-        if (error.response) {
-          // 서버에서 반환하는 오류 메시지
-          alert(
-            `로그인 실패: ${error.response.data.message || "알 수 없는 오류"}`
-          );
-        } else {
-          alert("로그인 실패");
-        }
-        console.error("로그인 실패:", error);
-      });
+  const onclickConfirmButton = async () => {
+    try {
+      const { loginSuccess, userId } = await loginUser(
+        emailOrUsername,
+        password
+      );
+      if (loginSuccess) {
+        setIsAuthenticated(true); // 인증 상태 설정
+        alert("로그인 성공");
+        navigate("/"); // 메인 페이지로 이동
+      } else {
+        alert("로그인 실패: 유효한 토큰이 없습니다.");
+      }
+    } catch (error) {
+      alert(`로그인 실패: ${error.message}`);
+      console.error("로그인 실패:", error);
+    }
   };
 
   // 로고 클릭시 login 화면으로 이동
@@ -79,7 +65,7 @@ const Login = ({ setIsAuthenticated }) => {
     navigate("/auth/login");
   };
 
-  // 로그인 버튼 활성화
+  // 로그인 버튼 활성화 여부
   useEffect(() => {
     if (emailOrUsernameValid && passwordValid) {
       setNotAllow(false);

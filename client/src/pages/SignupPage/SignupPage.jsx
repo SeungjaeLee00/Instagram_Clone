@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import { signupUser } from "../../api/authApi"; // API 함수 가져오기
 import "../../styles/pages/SignupPage.css";
 
 // 이미지 로드
@@ -33,7 +33,6 @@ const Signup = () => {
     const regex =
       /^(([^<>()\[\].,;:\s@"]+(\.[^<>()\[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i;
 
-    // email 값이 유효한 값인지 확인
     if (regex.test(value)) {
       setEmailValid(true);
     } else {
@@ -42,11 +41,10 @@ const Signup = () => {
   };
 
   // 비밀번호 입력 판단
-  const handlePassword = async (e) => {
+  const handlePassword = (e) => {
     const value = e.target.value;
     setPassword(value);
 
-    // 비밀번호가 6자 이상인지 확인
     if (value.length >= 6) {
       setPasswordValid(true);
     } else {
@@ -55,7 +53,7 @@ const Signup = () => {
   };
 
   // 성명 입력 판단
-  const handleName = async (e) => {
+  const handleName = (e) => {
     const value = e.target.value;
     setName(value);
 
@@ -67,7 +65,7 @@ const Signup = () => {
   };
 
   // 사용자 이름 입력 판단
-  const handleUserId = async (e) => {
+  const handleUserId = (e) => {
     const value = e.target.value.trim();
     setUserId(value);
 
@@ -82,26 +80,19 @@ const Signup = () => {
   };
 
   // 가입 버튼 클릭
-  const onclickConfirmButton = () => {
-    // API 호출
-    axios
-      .post(
-        "http://localhost:5001/auth/sign-up",
-        { email, password, name, user_id }, // 로그인 데이터 전달
-        { withCredentials: true }
-      ) // 쿠키 전달
-      .then((response) => {
-        if (response.data.success) {
-          alert("인증 이메일이 발송되었습니다. ");
-        } else {
-          alert(response.data.message);
-        }
+  const onclickConfirmButton = async () => {
+    try {
+      const data = await signupUser(email, password, name, user_id); // API 호출
+      if (data.success) {
+        alert("인증 이메일이 발송되었습니다.");
         navigate("/auth/sign-up/verify-email", { state: { email } });
-      })
-      .catch((error) => {
-        alert("가입 실패");
-        console.error("가입 실패:", error);
-      });
+      } else {
+        alert(data.message);
+      }
+    } catch (error) {
+      alert(error);
+      console.error("가입 실패:", error);
+    }
   };
 
   // 로고 클릭시 login 화면으로 이동
@@ -113,7 +104,6 @@ const Signup = () => {
   useEffect(() => {
     if (emailValid && passwordValid && nameValid && userIdValid) {
       setNotAllow(false);
-      return;
     } else {
       setNotAllow(true);
     }
@@ -122,7 +112,6 @@ const Signup = () => {
   return (
     <div className="signup-page">
       <div className="signup-content">
-        {/* 인스타 로고 */}
         <img
           className="signup-instalogo"
           alt="Instagram"
@@ -134,11 +123,9 @@ const Signup = () => {
           친구들의 사진과 동영상을 보려면 가입하세요.
         </div>
 
-        {/* 구분선 */}
         <div className="divider"> &nbsp; </div>
 
         <div className="signup-inputWrap">
-          {/* 이메일 */}
           <input
             className="signup-input"
             placeholder={"이메일 주소"}
@@ -146,14 +133,12 @@ const Signup = () => {
             onChange={handleEmail}
             type="text"
           />
-          {/* 에러 메세지 */}
           <div className="errorMessageWrap">
             {!emailValid && email.length > 0 && (
               <div> Enter a valid email address. </div>
             )}
           </div>
 
-          {/* 비밀번호 */}
           <input
             className="signup-input"
             placeholder={"비밀번호"}
@@ -161,14 +146,12 @@ const Signup = () => {
             onChange={handlePassword}
             type="password"
           />
-          {/* 에러 메세지 */}
           <div className="errorMessageWrap">
             {!passwordValid && password.length > 0 && (
               <div> 6자 이상의 비밀번호를 만드세요. </div>
             )}
           </div>
 
-          {/* 성명 */}
           <input
             className="signup-input"
             placeholder={"성명"}
@@ -176,12 +159,10 @@ const Signup = () => {
             onChange={handleName}
             type="text"
           />
-          {/* 에러 메세지 */}
           <div className="errorMessageWrap">
             {name.length >= 64 && <div> 이름을 64자 미만으로 입력하세요. </div>}
           </div>
 
-          {/* 사용자 이름 */}
           <input
             className="signup-input"
             placeholder={"사용자 이름"}
@@ -190,7 +171,6 @@ const Signup = () => {
             type="text"
             maxLength={30}
           />
-          {/* 에러 메세지 */}
           <div className="errorMessageWrap">
             {!userIdValid && user_id.length > 0 && (
               <div>
@@ -213,7 +193,6 @@ const Signup = () => {
             onClick={onclickConfirmButton}
             disabled={NotAllow}
           >
-            {" "}
             가입
           </button>
         </div>

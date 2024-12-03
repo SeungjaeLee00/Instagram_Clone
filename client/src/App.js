@@ -11,6 +11,12 @@ import ResetPassword from "./pages/ResetPassword/ResetPassword";
 import ProtectedRoute from "./components/ProtectedRoute";
 import axios from "axios";
 
+const SearchPage = () => <div>검색 페이지</div>;
+const MessagesPage = () => <div>메시지 페이지</div>;
+const NotificationsPage = () => <div>알림 페이지</div>;
+const CreatePage = () => <div>만들기 페이지</div>;
+const ProfilePage = () => <div>프로필 페이지</div>;
+
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -70,11 +76,50 @@ function App() {
               </ProtectedRoute>
             }
           />
-          {/* <Route path="/search" element={<SearchPage />} />
-          <Route path="/messages" element={<MessagesPage />} />
-          <Route path="/notifications" element={<NotificationsPage />} />
-          <Route path="/create" element={<CreatePage />} />
-          <Route path="/profile" element={<ProfilePage />} /> */}
+          <Route
+            path="/search"
+            element={
+              <ProtectedRoute isAuthenticated={isAuthenticated}>
+                <SearchPage />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/messages"
+            element={
+              <ProtectedRoute isAuthenticated={isAuthenticated}>
+                <MessagesPage />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/notifications"
+            element={
+              <ProtectedRoute isAuthenticated={isAuthenticated}>
+                <NotificationsPage />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/create"
+            element={
+              <ProtectedRoute isAuthenticated={isAuthenticated}>
+                <CreatePage />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute isAuthenticated={isAuthenticated}>
+                <ProfilePage />
+              </ProtectedRoute>
+            }
+          />
         </Routes>
       </Layout>
     </Router>
