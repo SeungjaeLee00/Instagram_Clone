@@ -14,7 +14,7 @@ import { verifyToken } from "./api/authApi";
 const SearchPage = () => <div>검색 페이지</div>;
 const MessagesPage = () => <div>메시지 페이지</div>;
 const NotificationsPage = () => <div>알림 페이지</div>;
-const CreatePage = () => <div>만들기 페이지</div>;
+// const CreatePage = () => <div>만들기 페이지</div>;
 const ProfilePage = () => <div>프로필 페이지</div>;
 
 function App() {
@@ -95,15 +95,6 @@ function App() {
             element={
               <ProtectedRoute isAuthenticated={isAuthenticated}>
                 <NotificationsPage />
-              </ProtectedRoute>
-            }
-          />
-
-          <Route
-            path="/create"
-            element={
-              <ProtectedRoute isAuthenticated={isAuthenticated}>
-                <CreatePage />
               </ProtectedRoute>
             }
           />

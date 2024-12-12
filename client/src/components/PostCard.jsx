@@ -2,15 +2,12 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import PostDetailModal from "./Modals/PostDetailModal";
 import { timeAgo } from "../utils/timeAgo";
-import { addCommentLike } from "../api/commentApi";
-import useAuth from "../hooks/useAuth";
 
 import default_profile from "../assets/default_profile.png";
 import "../styles/components/PostCard.css";
 
 const PostCard = ({ post, onUpdate, onDelete, onLike }) => {
   const navigate = useNavigate();
-  const { isAuthenticated } = useAuth();
   const [liked, setLiked] = useState(post.liked);
   const [likesCount, setLikesCount] = useState(post.likesCount);
   const [showOptions, setShowOptions] = useState(false);
@@ -34,52 +31,23 @@ const PostCard = ({ post, onUpdate, onDelete, onLike }) => {
   const handleCommentSubmit = async () => {
     if (!commentText.trim()) return;
     try {
-      // 부모 컴포넌트에서 댓글 추가 요청
       const response = await onUpdate(post._id, commentText);
       const newComment = response.comment;
 
-      // 댓글 상태 업데이트
       setComments((prevComments) => [...prevComments, newComment]); // 새 댓글 추가
-      setCommentText(""); // 입력 필드 초기화
+      setCommentText("");
     } catch (error) {
       console.error("댓글 추가 중 오류가 발생했습니다:", error);
       alert("댓글 추가에 실패했습니다.");
     }
   };
 
-  // 댓글 좋아요
-  const handleCommentLike = async (commentId) => {
-    try {
-      const response = await addCommentLike(commentId); // 서버 요청
-
-      // 댓글 좋아요 상태 동기화
-      setComments((prevComments) =>
-        prevComments.map((comment) =>
-          comment._id === commentId
-            ? {
-                ...comment,
-                liked: response.isliked, // 서버 응답에 따른 liked 상태
-                likesCount: response.likesCount, // 서버 응답에 따른 좋아요 수
-              }
-            : comment
-        )
-      );
-      console.log("서버 응답 후 최종 상태:", response);
-    } catch (error) {
-      console.error("댓글 좋아요 처리 중 오류:", error);
-    }
-  };
-
   // 게시물 좋아요
   const handleLike = async () => {
     try {
-      const newLiked = !liked; // 좋아요 상태 반전
-      setLiked(newLiked); // UI에서 좋아요 상태 바로 반영
-
-      // 서버에 좋아요 요청
+      const newLiked = !liked;
+      setLiked(newLiked);
       await onLike(post._id, newLiked);
-
-      // 좋아요 상태가 변경되었으므로 좋아요 수를 업데이트
       setLikesCount((prev) => (newLiked ? prev + 1 : prev - 1));
     } catch (error) {
       console.error("좋아요 처리 중 오류가 발생했습니다", error);
@@ -186,7 +154,6 @@ const PostCard = ({ post, onUpdate, onDelete, onLike }) => {
         isOpen={isModalOpen}
         onClose={closeModal}
         onLike={handleLike}
-        onCommentLike={handleCommentLike}
         onDelete={onDelete}
         onUpdate={onUpdate}
       />

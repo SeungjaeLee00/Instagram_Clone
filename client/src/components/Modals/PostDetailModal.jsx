@@ -2,7 +2,11 @@ import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { timeAgo } from "../../utils/timeAgo";
 import useAuth from "../../hooks/useAuth";
-import { deleteComment } from "../../api/commentApi";
+import {
+  deleteComment,
+  addCommentLike,
+  getComments,
+} from "../../api/commentApi";
 
 import "../../styles/components/PostDetailModal.css";
 import default_profile from "../../assets/default_profile.png";
@@ -12,56 +16,85 @@ const PostDetailModal = ({
   isOpen,
   onClose,
   onLike,
-  onCommentLike,
   onUpdate,
   onDelete,
 }) => {
   const navigate = useNavigate();
-  const { user, isAuthenticated } = useAuth();
+  const { user } = useAuth();
   const [showOptions, setShowOptions] = useState(false);
   const [liked, setLiked] = useState(false); // 게시물 좋아요 상태
-  const [likesCount, setLikesCount] = useState(0); // 댓글 좋아요 개수
+  const [postLikesCount, setPostLikesCount] = useState(0); // 게시물 좋아요 개수
   const [comments, setComments] = useState(post.comments || []);
   const [commentText, setCommentText] = useState("");
   const commentInputRef = useRef(null);
   const [visibleComments, setVisibleComments] = useState(6);
   const [isExpanded, setIsExpanded] = useState(false);
 
-  // 부모에서 전달된 post 데이터가 변경되면 로컬 상태 동기화
   useEffect(() => {
     if (post && post.comments) {
       setLiked(post.liked);
-      setLikesCount(post.likesCount);
+      setPostLikesCount(post.likesCount);
 
       const updatedComments = post.comments.map((comment) => ({
         ...comment,
         user: {
           user_id: comment.user?.user_id,
         },
+        likesCount: comment.likes.length,
       }));
       setComments(updatedComments);
     }
-  }, [post, user]); // user가 변경될 때마다 동기화하도록 설정
+  }, [post, user]);
 
   // 게시물 좋아요
   const handleLike = async () => {
-    const newLiked = !liked; // 좋아요 상태 반전
+    const newLiked = !liked;
     setLiked(newLiked); // UI에 즉각 반영
-    setLikesCount((prev) => (newLiked ? prev + 1 : prev - 1)); // 좋아요 수 즉시 반영
+    setPostLikesCount((prev) => (newLiked ? prev + 1 : prev - 1));
     try {
       await onLike(post._id, newLiked); // 부모 컴포넌트에 좋아요 요청
     } catch (error) {
       console.error("좋아요 처리 중 오류:", error);
       // 좋아요 복원
       setLiked(!newLiked);
-      setLikesCount((prev) => (newLiked ? prev - 1 : prev + 1));
+      setPostLikesCount((prev) => (newLiked ? prev - 1 : prev + 1));
     }
   };
 
   // 댓글 좋아요
-  const handleCommentLike = (commentId, currentLiked) => {
-    onCommentLike(commentId, currentLiked);
-    console.log("좋아요 버튼 클릭하기", "liked:", currentLiked);
+  const handleCommentLike = async (commentId) => {
+    setComments((prevComments) =>
+      prevComments.map((comment) =>
+        comment._id === commentId
+          ? {
+              ...comment,
+              liked: !comment.liked,
+              likesCount: comment.liked
+                ? comment.likesCount - 1
+                : comment.likesCount + 1,
+            }
+          : comment
+      )
+    );
+
+    try {
+      const response = await addCommentLike(commentId); // 서버 요청
+
+      // 서버 응답 후 좋아요 상태와 갯수 업데이트
+      setComments((prevComments) =>
+        prevComments.map((comment) =>
+          comment._id === commentId
+            ? {
+                ...comment,
+                liked: response.isliked, // 서버 응답에 따른 liked 상태
+                likesCount: response.likesCount, // 서버 응답에 따른 좋아요 수
+              }
+            : comment
+        )
+      );
+    } catch (error) {
+      console.error("댓글 좋아요 처리 중 오류:", error);
+    }
   };
 
   const handleCommentChange = (e) => setCommentText(e.target.value);
@@ -72,7 +105,6 @@ const PostDetailModal = ({
     try {
       const newComment = await onUpdate(post._id, commentText);
 
-      // newComment 구조를 안전하게 처리
       if (!newComment || !newComment.comment) {
         throw new Error("댓글 추가 응답에 comment 정보가 없습니다.");
       }
@@ -92,9 +124,9 @@ const PostDetailModal = ({
 
       // 새 댓글을 기존 댓글 리스트의 맨 앞에 추가
       setComments((prevComments) => [formattedComment, ...prevComments]);
+
       setCommentText("");
 
-      // 입력 필드 포커스 유지
       if (commentInputRef.current) {
         commentInputRef.current.focus();
       }
@@ -105,7 +137,6 @@ const PostDetailModal = ({
 
   // 댓글 삭제
   const handleCommentDelete = async (commentId) => {
-    // 본인 댓글만 삭제 가능
     const commentToDelete = comments.find(
       (comment) => comment._id === commentId
     );
@@ -117,7 +148,6 @@ const PostDetailModal = ({
     }
 
     try {
-      // 삭제 API 호출
       await deleteComment(commentId, user._id);
 
       // 댓글 삭제 후, 로컬 상태에서 해당 댓글 제거
