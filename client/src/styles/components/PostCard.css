@@ -108,24 +108,6 @@
   border-top: none;
 }
 
-.like-btn {
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 22px;
-  color: #262626;
-}
-
-/* 댓글 버튼 */
-.comment-btn {
-  background: url("../../assets/comment.png") no-repeat center center;
-  background-size: contain;
-  width: 22px;
-  height: 22px;
-  border: none;
-  cursor: pointer;
-}
-
 /* DM 버튼 */
 .dm-btn {
   background: url("../../assets/dm.png") no-repeat center center;
@@ -136,13 +118,8 @@
   cursor: pointer;
 }
 
-.comment-btn:hover,
 .dm-btn:hover {
   color: #3897f0;
-}
-
-.like-btn:hover {
-  color: #ff3e4e;
 }
 
 /* 좋아요 수 */

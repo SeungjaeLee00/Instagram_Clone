@@ -14,7 +14,7 @@ router.get("/:postId/comments", async (req, res) => {
 
     // 게시물에 해당하는 댓글들을 조회
     const comments = await Comment.find({ post: postId })
-      .populate("user", "username") // 댓글 작성자의 username을 포함시켜서 조회
+      .populate("user", "user_id username profile_image") // 댓글 작성자의 username을 포함시켜서 조회
       .sort({ createdAt: -1 }); // 최신 댓글부터 정렬
 
     return res.status(200).json({

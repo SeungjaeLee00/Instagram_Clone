@@ -23,7 +23,6 @@ router.post("/:postId", auth, async (req, res) => {
 
     // 댓글 생성
     const newComment = new Comment({
-      post: postId,
       user: userId,
       post: postId,
       text: text,
@@ -37,17 +36,24 @@ router.post("/:postId", auth, async (req, res) => {
       $push: { comments: newComment._id },
     });
 
+    // 저장된 댓글에 사용자 정보를 포함하도록 populate
+    const populatedComment = await Comment.findById(newComment._id).populate({
+      path: "user",
+      select: "_id user_id", // 사용자 ID와 이름만 선택
+    });
+
     // emitComment 호출
     emitComment({
       postId: postId,
       commentId: newComment._id,
       commentText: newComment.text,
       commenterId: userId,
+      commenterName: populatedComment.user.user_id, // emit 데이터에 이름 추가
     });
 
     return res.status(201).json({
       message: "댓글이 성공적으로 추가되었습니다.",
-      comment: newComment,
+      comment: populatedComment,
     });
   } catch (error) {
     return res.status(500).json({
