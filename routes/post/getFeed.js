@@ -16,12 +16,13 @@ router.get("/", auth, async (req, res) => {
     const following = await Follow.find({ follow_id: user_id }).select(
       "following"
     );
+    // console.log("팔로우 목록:", following);
 
     // 팔로우한 사용자가 있을 때, 그들의 게시물 조회
     const followingIds = following.map((follow) => follow.following);
 
     // 팔로우한 사용자의 게시물 조회 (게시물이 없을 수도 있음)
-    const posts = await Post.find({ follow_id: { $in: followingIds } })
+    const posts = await Post.find({ user_id: { $in: followingIds } })
       .sort({ createdAt: -1 }) // 최신순 정렬
       .limit(3) // 최대 3개 게시물
       .populate("user_id", "user_id profile_image") // 'user_id' 필드의 'username' 가져오기

@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import "../styles/pages/MainPage.css";
-import PostCard from "../components/Posts/PostCard";
+import PostCard from "../components/PostCard";
 import { fetchPosts, deletePost, addLike } from "../api/postApi";
 import { addComment } from "../api/commentApi";
 import useAuth from "../hooks/useAuth";
 
 const MainPage = () => {
-  const { isAuthenticated, user } = useAuth();
+  const { isAuthenticated, user, token } = useAuth();
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -60,9 +60,6 @@ const MainPage = () => {
   const handleAddComment = async (postId, newCommentText) => {
     try {
       const response = await addComment(postId, newCommentText);
-
-      // console.log("addComment 함수 응답:", response);
-
       const { comment } = response;
       setPosts((prevPosts) =>
         prevPosts.map((post) =>
@@ -85,12 +82,6 @@ const MainPage = () => {
 
   const handleDeletePost = async (postId) => {
     try {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        alert("로그인 후 게시물을 삭제할 수 있습니다.");
-        return;
-      }
-
       const userId = user?.userId;
       if (!userId) {
         alert("사용자 정보를 찾을 수 없습니다.");

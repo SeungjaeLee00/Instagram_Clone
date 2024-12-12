@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import PostDetailModal from "../Modals/PostDetailModal";
-import { timeAgo } from "../../utils/timeAgo";
-import { addCommentLike } from "../../api/commentApi";
+import PostDetailModal from "./Modals/PostDetailModal";
+import { timeAgo } from "../utils/timeAgo";
+import { addCommentLike } from "../api/commentApi";
+import useAuth from "../hooks/useAuth";
 
-import default_profile from "../../assets/default_profile.png";
-import "../../styles/components/PostCard.css";
+import default_profile from "../assets/default_profile.png";
+import "../styles/components/PostCard.css";
 
 const PostCard = ({ post, onUpdate, onDelete, onLike }) => {
   const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
   const [liked, setLiked] = useState(post.liked);
   const [likesCount, setLikesCount] = useState(post.likesCount);
   const [showOptions, setShowOptions] = useState(false);
@@ -31,12 +33,6 @@ const PostCard = ({ post, onUpdate, onDelete, onLike }) => {
   // 댓글 추가
   const handleCommentSubmit = async () => {
     if (!commentText.trim()) return;
-
-    const token = localStorage.getItem("token");
-    if (!token) {
-      alert("로그인 후 댓글을 작성할 수 있습니다.");
-      return;
-    }
     try {
       // 부모 컴포넌트에서 댓글 추가 요청
       const response = await onUpdate(post._id, commentText);
@@ -52,7 +48,7 @@ const PostCard = ({ post, onUpdate, onDelete, onLike }) => {
   };
 
   // 댓글 좋아요
-  const handleCommentLike = async (commentId, currentLiked) => {
+  const handleCommentLike = async (commentId) => {
     try {
       const response = await addCommentLike(commentId); // 서버 요청
 
@@ -87,7 +83,7 @@ const PostCard = ({ post, onUpdate, onDelete, onLike }) => {
       setLikesCount((prev) => (newLiked ? prev + 1 : prev - 1));
     } catch (error) {
       console.error("좋아요 처리 중 오류가 발생했습니다", error);
-      setLiked(liked); // 오류 발생 시 원래 상태로 되돌리기
+      setLiked(liked);
     }
   };
 

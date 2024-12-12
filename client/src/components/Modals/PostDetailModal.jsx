@@ -17,12 +17,10 @@ const PostDetailModal = ({
   onDelete,
 }) => {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, isAuthenticated } = useAuth();
   const [showOptions, setShowOptions] = useState(false);
-  // 게시물 좋아요 상태
-  const [liked, setLiked] = useState(false);
-  // 댓글 좋아요 개수
-  const [likesCount, setLikesCount] = useState(0);
+  const [liked, setLiked] = useState(false); // 게시물 좋아요 상태
+  const [likesCount, setLikesCount] = useState(0); // 댓글 좋아요 개수
   const [comments, setComments] = useState(post.comments || []);
   const [commentText, setCommentText] = useState("");
   const commentInputRef = useRef(null);
@@ -71,17 +69,8 @@ const PostDetailModal = ({
   // 댓글 추가
   const handleCommentSubmit = async () => {
     if (!commentText.trim()) return;
-
-    const token = localStorage.getItem("token");
-    if (!token) {
-      alert("로그인 후 댓글을 작성할 수 있습니다.");
-      return;
-    }
-
     try {
       const newComment = await onUpdate(post._id, commentText);
-
-      // console.log("서버 응답:", newComment);
 
       // newComment 구조를 안전하게 처리
       if (!newComment || !newComment.comment) {

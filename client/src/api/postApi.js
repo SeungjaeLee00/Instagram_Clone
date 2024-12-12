@@ -3,8 +3,9 @@ import axios from "axios";
 const API_BASE_URL = "http://localhost:5001";
 
 // 전체 게시물 가져오기 API
-export const fetchPosts = async () => {
+export const fetchPosts = async (token) => {
   const response = await axios.get(`${API_BASE_URL}/post/feed`, {
+    headers: { Authorization: `Bearer ${token}` },
     withCredentials: true,
   });
   return response.data.posts;
@@ -21,11 +22,13 @@ export const deletePost = async (postId, token, userId) => {
 };
 
 // 좋아요 추가 API
-export const addLike = async (postId) => {
+export const addLike = async (postId, token) => {
   const response = await axios.post(
     `${API_BASE_URL}/likes/posts/${postId}/like`,
-    {},
-    { withCredentials: true }
+    {
+      headers: { Authorization: `Bearer ${token}` },
+      withCredentials: true,
+    }
   );
   return response.data;
 };

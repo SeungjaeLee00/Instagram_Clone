@@ -17,7 +17,7 @@ const useAuth = () => {
           setIsAuthenticated(false);
           setUser(null);
         }
-      } catch {
+      } catch (error) {
         setIsAuthenticated(false);
         setUser(null);
       }
