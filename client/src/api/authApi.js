@@ -3,9 +3,8 @@ import axios from "axios";
 const API_BASE_URL = "http://localhost:5001";
 
 // 토큰 유효 검사 API
-export const verifyToken = async (token) => {
+export const verifyToken = async () => {
   const response = await axios.get(`${API_BASE_URL}/auth/auth/verify-token`, {
-    headers: { Authorization: `Bearer ${token}` },
     withCredentials: true,
   });
   return response.data;

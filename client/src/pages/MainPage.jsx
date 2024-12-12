@@ -54,6 +54,13 @@ const MainPage = () => {
       );
     } catch (error) {
       console.error("좋아요 처리 중 오류가 발생했습니다", error);
+      if (error.response) {
+        console.error("서버 응답 오류:", error.response.data);
+      } else if (error.request) {
+        console.error("요청 오류:", error.request);
+      } else {
+        console.error("설정 오류:", error.message);
+      }
     }
   };
 

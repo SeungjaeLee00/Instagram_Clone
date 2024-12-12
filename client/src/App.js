@@ -10,6 +10,7 @@ import RequestResetPassword from "./pages/ResetPassword/ResetPasswordRequest";
 import ResetPasswordVerify from "./pages/ResetPassword/ResetPasswordVerify";
 import ResetPassword from "./pages/ResetPassword/ResetPassword";
 import ProtectedRoute from "./components/Routes/ProtectedRoute";
+import CreatePage from "./pages/CreatePage";
 import { verifyToken } from "./api/authApi";
 
 import ChatroomList from "./pages/MessagesPage/ChatroomPage";
@@ -18,7 +19,6 @@ const SearchPage = () => <div>검색 페이지</div>;
 const MessagesPage = () => <div>메시지 페이지</div>;
 // const MessagesPage = ChatRoom;
 const NotificationsPage = () => <div>알림 페이지</div>;
-const CreatePage = () => <div>만들기 페이지</div>;
 const ProfilePage = () => <div>프로필 페이지</div>;
 
 function App() {

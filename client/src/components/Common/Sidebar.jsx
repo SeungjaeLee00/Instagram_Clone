@@ -62,7 +62,7 @@ const Sidebar = () => {
                 isSmallScreen || isSidebarCollapsed
                   ? instagramLogo2
                   : instagramLogo1
-              } // 축소된 상태에서는 short 로고 사용
+              }
               alt="Instagram Logo"
               className={
                 isSmallScreen || isSidebarCollapsed
@@ -76,7 +76,6 @@ const Sidebar = () => {
           <li key={item.id} className="sidebar-item">
             <Link to={item.path} className="sidebar-link">
               <span className="icon">{item.icon}</span>
-              {/* 화면이 축소되었을 때만 레이블 숨기기 */}
               {!isSmallScreen && !isSidebarCollapsed && (
                 <span className="label">{item.label}</span>
               )}
