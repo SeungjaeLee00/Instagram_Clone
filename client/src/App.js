@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { BrowserRouter as Router, Routes, Route, Switch } from "react-router-dom";
-import Layout from "./components/Layout";
+
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Layout from "./components/Common/Layout";
 import MainPage from "./pages/MainPage";
 import Login from "./pages/LoginPage";
 import Signup from "./pages/SignupPage/SignupPage";
@@ -8,13 +9,13 @@ import SignupVerify from "./pages/SignupPage/Signup_verify";
 import RequestResetPassword from "./pages/ResetPassword/ResetPasswordRequest";
 import ResetPasswordVerify from "./pages/ResetPassword/ResetPasswordVerify";
 import ResetPassword from "./pages/ResetPassword/ResetPassword";
-import ProtectedRoute from "./components/ProtectedRoute";
+import ProtectedRoute from "./components/Routes/ProtectedRoute";
 import { verifyToken } from "./api/authApi";
 
 import ChatroomList from "./pages/MessagesPage/ChatroomPage";
 
 const SearchPage = () => <div>검색 페이지</div>;
-// const MessagesPage = () => <div>메시지 페이지</div>;
+const MessagesPage = () => <div>메시지 페이지</div>;
 // const MessagesPage = ChatRoom;
 const NotificationsPage = () => <div>알림 페이지</div>;
 const CreatePage = () => <div>만들기 페이지</div>;

@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import "../styles/components/PostCard.css";
-import PostDetailModal from "./PostDetailModal";
-import { timeAgo } from "../utils/timeAgo";
-import default_profile from "../assets/default_profile.png";
+import PostDetailModal from "../Modals/PostDetailModal";
+import { timeAgo } from "../../utils/timeAgo";
+import { addCommentLike } from "../../api/commentApi";
+
+import default_profile from "../../assets/default_profile.png";
+import "../../styles/components/PostCard.css";
 
 const PostCard = ({ post, onUpdate, onDelete, onLike }) => {
   const navigate = useNavigate();
@@ -36,8 +38,11 @@ const PostCard = ({ post, onUpdate, onDelete, onLike }) => {
       return;
     }
     try {
-      // 부모 컴포넌트에 댓글 추가 요청
-      const newComment = await onUpdate(post._id, commentText); // 서버에 댓글 추가 요청
+      // 부모 컴포넌트에서 댓글 추가 요청
+      const response = await onUpdate(post._id, commentText);
+      const newComment = response.comment;
+
+      // 댓글 상태 업데이트
       setComments((prevComments) => [...prevComments, newComment]); // 새 댓글 추가
       setCommentText(""); // 입력 필드 초기화
     } catch (error) {
@@ -46,7 +51,30 @@ const PostCard = ({ post, onUpdate, onDelete, onLike }) => {
     }
   };
 
-  // 좋아요 버튼
+  // 댓글 좋아요
+  const handleCommentLike = async (commentId, currentLiked) => {
+    try {
+      const response = await addCommentLike(commentId); // 서버 요청
+
+      // 댓글 좋아요 상태 동기화
+      setComments((prevComments) =>
+        prevComments.map((comment) =>
+          comment._id === commentId
+            ? {
+                ...comment,
+                liked: response.isliked, // 서버 응답에 따른 liked 상태
+                likesCount: response.likesCount, // 서버 응답에 따른 좋아요 수
+              }
+            : comment
+        )
+      );
+      console.log("서버 응답 후 최종 상태:", response);
+    } catch (error) {
+      console.error("댓글 좋아요 처리 중 오류:", error);
+    }
+  };
+
+  // 게시물 좋아요
   const handleLike = async () => {
     try {
       const newLiked = !liked; // 좋아요 상태 반전
@@ -121,9 +149,10 @@ const PostCard = ({ post, onUpdate, onDelete, onLike }) => {
       </div>
 
       <div className="post-actions">
-        <button onClick={handleLike} className="like-btn">
-          {liked ? "♥" : "♡"}
-        </button>
+        <button
+          className={`like-btn ${liked ? "liked" : "unliked"}`}
+          onClick={handleLike}
+        ></button>
         <button className="comment-btn" onClick={openModal}></button>
         <button onClick={handleDm} className="dm-btn"></button>
       </div>
@@ -152,16 +181,18 @@ const PostCard = ({ post, onUpdate, onDelete, onLike }) => {
       </div>
 
       <PostDetailModal
-        isOpen={isModalOpen}
         post={{
           ...post,
           liked,
           likesCount,
           comments,
         }}
-        onLike={handleLike}
+        isOpen={isModalOpen}
         onClose={closeModal}
-        onCommentSubmit={handleCommentSubmit}
+        onLike={handleLike}
+        onCommentLike={handleCommentLike}
+        onDelete={onDelete}
+        onUpdate={onUpdate}
       />
     </div>
   );

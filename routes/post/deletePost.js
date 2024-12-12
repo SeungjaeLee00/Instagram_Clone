@@ -3,6 +3,7 @@ const router = express.Router();
 router.use(express.json());
 
 const { Post } = require("../../models/Post");
+const { Comment } = require("../../models/Comment");
 const { auth } = require("../auth");
 const cookieParser = require("cookie-parser");
 router.use(cookieParser());
@@ -38,7 +39,11 @@ router.delete("/:id", auth, async (req, res) => {
       await s3.send(new DeleteObjectCommand(deleteParams)); // S3에서 이미지 삭제
     }
 
-    await Post.findByIdAndDelete(id); // DB에서 게시물 삭제
+    // 댓글 삭제
+    await Comment.deleteMany({ post: id });
+
+    // 게시물 삭제
+    await Post.findByIdAndDelete(id);
 
     return res.status(200).json({ message: "게시물이 삭제되었습니다." });
   } catch (err) {

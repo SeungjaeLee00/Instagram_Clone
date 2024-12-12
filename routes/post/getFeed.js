@@ -24,10 +24,10 @@ router.get("/", auth, async (req, res) => {
     const posts = await Post.find({ follow_id: { $in: followingIds } })
       .sort({ createdAt: -1 }) // 최신순 정렬
       .limit(3) // 최대 3개 게시물
-      .populate("user_id", "user_id") // 'user_id' 필드의 'username' 가져오기
+      .populate("user_id", "user_id profile_image") // 'user_id' 필드의 'username' 가져오기
       .populate({
         path: "comments",
-        populate: { path: "user", select: "username" }, // 댓글 작성자 정보 포함
+        populate: { path: "user", select: "user_id username profile_image" }, // 댓글 작성자 정보 포함
       });
 
     // 팔로우한 사용자의 게시물이 없으면 내 게시물을 조회
@@ -36,10 +36,10 @@ router.get("/", auth, async (req, res) => {
       const myPosts = await Post.find({ user_id: user_id }) // 'user' -> 'user_id'로 수정
         .sort({ createdAt: -1 })
         .limit(3)
-        .populate("user_id", "user_id")
+        .populate("user_id", "user_id profile_image")
         .populate({
           path: "comments",
-          populate: { path: "user", select: "username" },
+          populate: { path: "user", select: "user_id username profile_image" },
         });
 
       console.log("My Posts:", myPosts); // 디버그: 내 게시물 확인
@@ -51,6 +51,7 @@ router.get("/", auth, async (req, res) => {
         comments: post.comments.map((comment) => ({
           ...comment.toObject(),
           likesCount: comment.likes.length, // 댓글 좋아요 수
+          liked: comment.likes.includes(user_id), // 댓글 좋아요 여부
         })),
       }));
 
@@ -66,7 +67,7 @@ router.get("/", auth, async (req, res) => {
       likesCount: post.likes.length, // 게시물 좋아요 수
       comments: post.comments.map((comment) => ({
         ...comment.toObject(),
-        likesCount: comment.likes.length, // 댓글 좋아요 수
+        liked: comment.likes.includes(user_id), // 댓글 좋아요 여부
       })),
     }));
 

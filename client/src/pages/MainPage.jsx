@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "../styles/pages/MainPage.css";
-import PostCard from "../components/PostCard";
+import PostCard from "../components/Posts/PostCard";
 import { fetchPosts, deletePost, addLike } from "../api/postApi";
 import { addComment } from "../api/commentApi";
 import useAuth from "../hooks/useAuth";
@@ -59,14 +59,25 @@ const MainPage = () => {
 
   const handleAddComment = async (postId, newCommentText) => {
     try {
-      const newComment = await addComment(postId, newCommentText);
+      const response = await addComment(postId, newCommentText);
+
+      // console.log("addComment 함수 응답:", response);
+
+      const { comment } = response;
       setPosts((prevPosts) =>
         prevPosts.map((post) =>
           post._id === postId
-            ? { ...post, comments: [newComment, ...post.comments] }
+            ? {
+                ...post,
+                comments: [
+                  { ...comment, likesCount: 0, liked: false },
+                  ...post.comments,
+                ],
+              }
             : post
         )
       );
+      return { comment };
     } catch (error) {
       console.error("댓글 추가 중 오류가 발생했습니다:", error);
     }

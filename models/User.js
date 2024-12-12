@@ -40,7 +40,7 @@ const userSchema = mongoose.Schema({
     type: String,
     maxlength: 100,
   },
-  image: String,
+  profile_image: String,
   token: {
     type: String,
   },
@@ -121,7 +121,7 @@ userSchema.methods.comparePassword = async function (plainPassword) {
 // 토큰 생성 메서드
 userSchema.methods.generateToken = function () {
   const payload = { _id: this._id.toHexString() };
-  const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "10m" });
+  const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "1h" });
   this.token = token;
   // user를 저장한 후, user와 token을 함께 반환
   return this.save().then(() => ({ token, user: this }));
