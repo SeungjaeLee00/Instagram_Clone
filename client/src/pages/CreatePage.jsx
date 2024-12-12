@@ -1,11 +1,14 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import UploadPost from "../components/Modals/UploadPost";
 
 const CreatePage = () => {
-  const [isModalOpen, setIsModalOpen] = useState(true); // 페이지 로드시 모달 열리도록 설정
+  const navigate = useNavigate();
+  const [isModalOpen, setIsModalOpen] = useState(true); // 페이지 로드하면 모달열림
 
   const closeModal = () => {
-    setIsModalOpen(false); // 모달 닫기
+    setIsModalOpen(false);
+    navigate("/");
   };
 
   return (
