@@ -3,8 +3,9 @@ import axios from "axios";
 const API_BASE_URL = "http://localhost:5001";
 
 // 토큰 유효 검사 API
-export const verifyToken = async () => {
+export const verifyToken = async (token) => {
   const response = await axios.get(`${API_BASE_URL}/auth/auth/verify-token`, {
+    headers: { Authorization: `Bearer ${token}` },
     withCredentials: true,
   });
   return response.data;
@@ -81,12 +82,12 @@ export const verifyResetCode = async (email, verificationCode) => {
 };
 
 // 로그인 API
-export const loginUser = async (emailOrUsername, password) => {
+export const loginUser = async (emailOrUsername, password, token) => {
   try {
     const response = await axios.post(
       "http://localhost:5001/auth/login",
       { emailOrUsername, password },
-      { withCredentials: true }
+      { headers: { Authorization: `Bearer ${token}` }, withCredentials: true }
     );
     return response.data;
   } catch (error) {
