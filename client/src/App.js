@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Switch } from "react-router-dom";
 import Layout from "./components/Layout";
 import MainPage from "./pages/MainPage";
 import Login from "./pages/LoginPage";
@@ -11,8 +11,11 @@ import ResetPassword from "./pages/ResetPassword/ResetPassword";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { verifyToken } from "./api/authApi";
 
+import ChatroomList from "./pages/MessagesPage/ChatroomPage";
+
 const SearchPage = () => <div>검색 페이지</div>;
-const MessagesPage = () => <div>메시지 페이지</div>;
+// const MessagesPage = () => <div>메시지 페이지</div>;
+// const MessagesPage = ChatRoom;
 const NotificationsPage = () => <div>알림 페이지</div>;
 const CreatePage = () => <div>만들기 페이지</div>;
 const ProfilePage = () => <div>프로필 페이지</div>;
@@ -81,11 +84,20 @@ function App() {
             }
           />
 
-          <Route
+          {/* <Route
             path="/messages"
             element={
               <ProtectedRoute isAuthenticated={isAuthenticated}>
                 <MessagesPage />
+              </ProtectedRoute>
+            }
+          /> */}
+
+          <Route
+            path="/dm/chatroom"
+            element={
+              <ProtectedRoute isAuthenticated={isAuthenticated}>
+                <ChatroomList />
               </ProtectedRoute>
             }
           />

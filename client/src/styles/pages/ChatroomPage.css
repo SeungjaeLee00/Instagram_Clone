@@ -1,0 +1,31 @@
+.chatroom-container {
+    margin-left: 250px; /* 사이드바 너비만큼 공간 확보 */
+    padding: 20px; /* 내부 여백 추가 */
+    text-align: right; /* 텍스트를 오른쪽으로 정렬 */
+  }
+  
+  .chatroom-container h1 {
+    text-align: right; /* 제목도 오른쪽 정렬 */
+  }
+  
+  .chatroom-container p {
+    text-align: right; /* 내용도 오른쪽 정렬 */
+  }
+  
+  .chatroom-list {
+    list-style-type: none; /* 기본 목록 스타일 제거 */
+    padding: 0;
+    margin: 0;
+  }
+  
+  .chatroom-item {
+    text-align: right; /* 텍스트 우측 정렬 */
+    padding: 10px; /* 적당한 여백 */
+    cursor: pointer; /* 마우스 포인터 변경 */
+    border-bottom: 1px solid #ddd; /* 리스트 구분선 */
+  }
+  
+  .chatroom-item:hover {
+    background-color: #f0f0f0; /* 호버 시 배경색 */
+  }
+  
