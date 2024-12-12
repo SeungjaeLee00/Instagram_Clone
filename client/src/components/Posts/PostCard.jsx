@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import "../styles/components/PostCard.css";
-import PostDetailModal from "./PostDetailModal";
-import { timeAgo } from "../utils/timeAgo";
-import { addCommentLike } from "../api/commentApi";
-import default_profile from "../assets/default_profile.png";
+import PostDetailModal from "../Modals/PostDetailModal";
+import { timeAgo } from "../../utils/timeAgo";
+import { addCommentLike } from "../../api/commentApi";
+
+import default_profile from "../../assets/default_profile.png";
+import "../../styles/components/PostCard.css";
 
 const PostCard = ({ post, onUpdate, onDelete, onLike }) => {
   const navigate = useNavigate();

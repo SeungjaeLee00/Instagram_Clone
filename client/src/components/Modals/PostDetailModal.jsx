@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { timeAgo } from "../utils/timeAgo";
-import useAuth from "../hooks/useAuth";
-import { deleteComment } from "../api/commentApi";
+import { timeAgo } from "../../utils/timeAgo";
+import useAuth from "../../hooks/useAuth";
+import { deleteComment } from "../../api/commentApi";
 
-import "../styles/components/PostDetailModal.css";
-import default_profile from "../assets/default_profile.png";
+import "../../styles/components/PostDetailModal.css";
+import default_profile from "../../assets/default_profile.png";
 
 const PostDetailModal = ({
   post,

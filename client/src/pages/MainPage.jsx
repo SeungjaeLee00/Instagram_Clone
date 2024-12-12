@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "../styles/pages/MainPage.css";
-import PostCard from "../components/PostCard";
+import PostCard from "../components/Posts/PostCard";
 import { fetchPosts, deletePost, addLike } from "../api/postApi";
 import { addComment } from "../api/commentApi";
 import useAuth from "../hooks/useAuth";
