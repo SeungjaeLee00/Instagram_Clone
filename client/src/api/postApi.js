@@ -14,8 +14,8 @@ export const fetchPosts = async () => {
 export const deletePost = async (postId, token, userId) => {
   const response = await axios.delete(`${API_BASE_URL}/post/delete/${postId}`, {
     headers: { Authorization: `Bearer ${token}` },
-    data: { userId },
     withCredentials: true,
+    data: { userId },
   });
   return response.data;
 };

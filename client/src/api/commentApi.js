@@ -11,7 +11,7 @@ export const addComment = async (postId, newCommentText) => {
       { withCredentials: true }
     );
     // console.log("addComment - 서버 응답:", response.data);
-    return response.data; // 반환된 데이터 확인
+    return response.data;
   } catch (error) {
     throw error;
   }
@@ -41,3 +41,14 @@ export const addCommentLike = async (commentId, isLiked) => {
 };
 
 // 댓글 삭제 API
+export const deleteComment = async (commentId, token, userId) => {
+  const response = await axios.delete(
+    `${API_BASE_URL}/comment/delete/${commentId}`,
+    {
+      headers: { Authorization: `Bearer ${token}` },
+      withCredentials: true,
+      data: { userId },
+    }
+  );
+  return response.data;
+};

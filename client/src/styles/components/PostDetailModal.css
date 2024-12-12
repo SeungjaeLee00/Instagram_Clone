@@ -200,7 +200,7 @@
   background: no-repeat center center;
   background-size: contain;
   margin-left: auto;
-  margin-right: 10px;
+
   width: 15px;
   height: 15px;
   border: none;
@@ -215,6 +215,21 @@
 
 .comment-like-btn.unliked {
   background-image: url("../../assets/emptyHeart.png");
+}
+
+.comment-delete-btn {
+  background: none;
+  border: none;
+  color: #999;
+  font-size: 12px;
+  font-weight: normal;
+  cursor: pointer;
+  text-align: left;
+  margin-right: 5px;
+}
+
+.comment-delete-btn:hover {
+  color: #666;
 }
 
 .more-comments,
@@ -284,6 +299,7 @@
 .first-comment-text {
   margin-left: 10px;
   color: #999;
+  font-size: 14px;
 }
 
 .comment-btn {

@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import default_profile from "../assets/default_profile.png";
 import { timeAgo } from "../utils/timeAgo";
 import useAuth from "../hooks/useAuth";
+import { deleteComment } from "../api/commentApi";
 
 import "../styles/components/PostDetailModal.css";
+import default_profile from "../assets/default_profile.png";
 
 const PostDetailModal = ({
   post,
@@ -17,17 +18,12 @@ const PostDetailModal = ({
 }) => {
   const navigate = useNavigate();
   const { user } = useAuth();
-
   const [showOptions, setShowOptions] = useState(false);
-
   // 게시물 좋아요 상태
   const [liked, setLiked] = useState(false);
-
   // 댓글 좋아요 개수
   const [likesCount, setLikesCount] = useState(0);
-
   const [comments, setComments] = useState(post.comments || []);
-
   const [commentText, setCommentText] = useState("");
   const commentInputRef = useRef(null);
   const [visibleComments, setVisibleComments] = useState(6);
@@ -36,7 +32,6 @@ const PostDetailModal = ({
   // 부모에서 전달된 post 데이터가 변경되면 로컬 상태 동기화
   useEffect(() => {
     if (post && post.comments) {
-      // 게시물 좋아요 상태와 좋아요 수 동기화
       setLiked(post.liked);
       setLikesCount(post.likesCount);
 
@@ -46,9 +41,6 @@ const PostDetailModal = ({
           user_id: comment.user?.user_id,
         },
       }));
-
-      // console.log("동기화된 댓글 상태:", updatedComments);
-
       setComments(updatedComments);
     }
   }, [post, user]); // user가 변경될 때마다 동기화하도록 설정
@@ -70,59 +62,15 @@ const PostDetailModal = ({
 
   // 댓글 좋아요
   const handleCommentLike = (commentId, currentLiked) => {
-    onCommentLike(commentId, currentLiked); // 부모 컴포넌트의 handleCommentLike 호출
+    onCommentLike(commentId, currentLiked);
     console.log("좋아요 버튼 클릭하기", "liked:", currentLiked);
   };
 
   const handleCommentChange = (e) => setCommentText(e.target.value);
 
   // 댓글 추가
-  // const handleCommentSubmit = async () => {
-  //   if (!commentText.trim()) return; // 빈 댓글 방지
-
-  //   const token = localStorage.getItem("token");
-  //   if (!token) {
-  //     alert("로그인 후 댓글을 작성할 수 있습니다.");
-  //     return;
-  //   }
-
-  //   try {
-  //     // 댓글 추가 API 호출
-  //     const newComment = await onUpdate(post._id, commentText);
-
-  //     if (!newComment) {
-  //       throw new Error("댓글 추가 응답이 올바르지 않습니다.");
-  //     }
-
-  //     // 서버 응답 데이터를 기반으로 댓글 구조 생성
-  //     const formattedComment = {
-  //       ...newComment,
-  //       user: {
-  //         _id: newComment.user._id,
-  //         user_id: newComment.user.user_id, // 서버에서 반환된 작성자 이름
-  //         profile_image: newComment.user.profile_image || default_profile, // 프로필 이미지
-  //       },
-  //       likesCount: 0, // 초기 좋아요 수
-  //       liked: false, // 초기 좋아요 상태
-  //     };
-
-  //     // 새 댓글을 기존 댓글 리스트의 맨 앞에 추가
-  //     setComments((prevComments) => [formattedComment, ...prevComments]);
-
-  //     // 입력 필드 초기화
-  //     setCommentText("");
-
-  //     // 입력 필드 포커스 유지
-  //     if (commentInputRef.current) {
-  //       commentInputRef.current.focus();
-  //     }
-  //   } catch (error) {
-  //     console.error("댓글 추가 중 오류가 발생했습니다:", error);
-  //     alert("댓글 추가에 실패했습니다.");
-  //   }
-  // };
   const handleCommentSubmit = async () => {
-    if (!commentText.trim()) return; // 빈 댓글 방지
+    if (!commentText.trim()) return;
 
     const token = localStorage.getItem("token");
     if (!token) {
@@ -133,8 +81,7 @@ const PostDetailModal = ({
     try {
       const newComment = await onUpdate(post._id, commentText);
 
-      // 서버 응답 전체를 확인
-      console.log("서버 응답:", newComment);
+      // console.log("서버 응답:", newComment);
 
       // newComment 구조를 안전하게 처리
       if (!newComment || !newComment.comment) {
@@ -142,15 +89,6 @@ const PostDetailModal = ({
       }
 
       const commentData = newComment.comment;
-
-      // commentData의 _id와 user 존재 여부 확인
-      if (!commentData._id || !commentData.user) {
-        throw new Error(
-          "댓글 추가 응답에 comment._id 또는 user 정보가 없습니다."
-        );
-      }
-
-      // 댓글 정보 포맷팅
       const formattedComment = {
         ...commentData,
         user: {
@@ -173,6 +111,33 @@ const PostDetailModal = ({
       }
     } catch (error) {
       console.error("댓글 추가 중 오류가 발생했습니다:", error);
+    }
+  };
+
+  // 댓글 삭제
+  const handleCommentDelete = async (commentId) => {
+    // 본인 댓글만 삭제 가능
+    const commentToDelete = comments.find(
+      (comment) => comment._id === commentId
+    );
+    if (!commentToDelete) return;
+
+    if (commentToDelete.user._id !== user._id) {
+      alert("본인의 댓글만 삭제할 수 있습니다.");
+      return;
+    }
+
+    try {
+      // 삭제 API 호출
+      await deleteComment(commentId, user._id);
+
+      // 댓글 삭제 후, 로컬 상태에서 해당 댓글 제거
+      setComments((prevComments) =>
+        prevComments.filter((comment) => comment._id !== commentId)
+      );
+    } catch (error) {
+      console.error("댓글 삭제 중 오류 발생:", error);
+      alert("댓글 삭제에 실패했습니다.");
     }
   };
 
@@ -289,6 +254,15 @@ const PostDetailModal = ({
                           comment.liked ? "liked" : "unliked"
                         }`}
                       ></button>
+                      {/* 댓글 삭제 버튼 */}
+                      {comment.user._id === user._id && (
+                        <button
+                          onClick={() => handleCommentDelete(comment._id)}
+                          className="comment-delete-btn"
+                        >
+                          삭제
+                        </button>
+                      )}
                     </div>
                   ))}
                 </div>
