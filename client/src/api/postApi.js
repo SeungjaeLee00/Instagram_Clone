@@ -41,10 +41,19 @@ export const addLike = async (postId, token) => {
 };
 
 // 게시물 업로드 API
-export const uploadPost = async (image, text) => {
+export const uploadPost = async (images, text) => {
   const formData = new FormData();
-  formData.append("image", image);
-  formData.append("text", text);
+
+  // 여러 이미지가 있을 경우 배열로 append
+  if (Array.isArray(images)) {
+    images.forEach((image) => {
+      formData.append("images", image);
+    });
+  } else {
+    formData.append("images", images); // 한 개의 이미지일 경우
+  }
+
+  formData.append("text", text); // 텍스트 추가
 
   try {
     const response = await axios.post(`${API_BASE_URL}/post/upload`, formData, {

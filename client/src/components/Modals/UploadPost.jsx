@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { uploadPost } from "../../api/postApi"; // api.js에서 업로드 함수 임포트
+import { uploadPost } from "../../api/postApi";
 import "../../styles/components/UploadPost.css";
 
 const UploadPost = ({ isOpen, onClose }) => {
@@ -25,10 +25,10 @@ const UploadPost = ({ isOpen, onClose }) => {
     setIsUploading(true);
 
     try {
-      const data = await uploadPost(image, text); // api.js의 uploadPost 함수 호출
+      const data = await uploadPost(image, text);
       alert(data.message);
       console.log("업로드된 게시물:", data.post);
-      onClose(); // 업로드 후 모달 닫기
+      onClose();
     } catch (error) {
       alert("게시물 업로드에 실패했습니다.");
     } finally {
@@ -39,31 +39,31 @@ const UploadPost = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="modal">
-      <div className="modal-content">
-        <button className="close-btn" onClick={onClose}>
+    <div className="uploadPost-modal">
+      <div className="uploadPost-modal-content">
+        <button className="uploadPost-close-btn" onClick={onClose}>
           X
         </button>
         <h2>게시물 업로드</h2>
         <form onSubmit={handleSubmit}>
-          <div className="image-upload">
+          <div className="uploadPost-image-upload">
             <input type="file" accept="image/*" onChange={handleImageChange} />
             {image && (
               <img
                 src={URL.createObjectURL(image)}
                 alt="preview"
-                className="image-preview"
+                className="uploadPost-image-preview"
               />
             )}
           </div>
-          <div className="text-input">
+          <div className="uploadPost-text-input">
             <textarea
               value={text}
               onChange={(e) => setText(e.target.value)}
               placeholder="텍스트를 입력하세요 (선택)"
             />
           </div>
-          <button type="submit" disabled={isUploading}>
+          <button type="uploadPost-submit" disabled={isUploading}>
             {isUploading ? "업로드 중..." : "업로드"}
           </button>
         </form>

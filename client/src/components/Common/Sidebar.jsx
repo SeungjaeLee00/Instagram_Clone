@@ -3,12 +3,10 @@ import { Link, useLocation } from "react-router-dom";
 import "../../styles/components/Sidebar.css";
 import instagramLogo1 from "../../assets/long_Instagram.png"; // 큰 로고
 import instagramLogo2 from "../../assets/short_Instagram.png"; // 작은 로고
-import UploadPost from "../Modals/UploadPost";
 
 const Sidebar = () => {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [isSmallScreen, setIsSmallScreen] = useState(false); // 화면 크기 상태
-  const [isModalOpen, setIsModalOpen] = useState(false); // 모달 상태
   const location = useLocation();
 
   const menuItems = [
@@ -50,11 +48,6 @@ const Sidebar = () => {
     }
   }, [location]);
 
-  // 모달 열기/닫기 함수
-  const toggleModal = () => {
-    setIsModalOpen(!isModalOpen);
-  };
-
   return (
     <div
       className={`sidebar ${
@@ -69,7 +62,7 @@ const Sidebar = () => {
                 isSmallScreen || isSidebarCollapsed
                   ? instagramLogo2
                   : instagramLogo1
-              } // 축소된 상태에서는 short 로고 사용
+              }
               alt="Instagram Logo"
               className={
                 isSmallScreen || isSidebarCollapsed
@@ -81,20 +74,8 @@ const Sidebar = () => {
         </li>
         {menuItems.map((item) => (
           <li key={item.id} className="sidebar-item">
-            <Link
-              to={item.path}
-              className="sidebar-link"
-              onClick={
-                item.id === 5
-                  ? (e) => {
-                      e.preventDefault();
-                      toggleModal();
-                    }
-                  : null
-              } // "만들기" 클릭 시 모달 열기
-            >
+            <Link to={item.path} className="sidebar-link">
               <span className="icon">{item.icon}</span>
-              {/* 화면이 축소되었을 때만 레이블 숨기기 */}
               {!isSmallScreen && !isSidebarCollapsed && (
                 <span className="label">{item.label}</span>
               )}
@@ -102,8 +83,6 @@ const Sidebar = () => {
           </li>
         ))}
       </ul>
-      {/* "만들기" 버튼을 클릭했을 때 모달이 열리도록 처리 */}
-      {isModalOpen && <UploadPost closeModal={toggleModal} />}
     </div>
   );
 };
