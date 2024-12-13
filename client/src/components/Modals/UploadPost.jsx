@@ -39,6 +39,7 @@ const UploadPost = ({ isOpen, onClose }) => {
       const data = await uploadPost(images, text); // 여러 이미지를 업로드
       alert(data.message);
       console.log("업로드된 게시물:", data.post);
+      // console.log("")
       onClose();
     } catch (error) {
       alert("게시물 업로드에 실패했습니다.");

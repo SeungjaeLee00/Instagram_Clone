@@ -34,7 +34,6 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  padding-right: 10px;
   max-width: 60%; /* 최대 60% */
   height: 100%; /* 높이 고정 */
 }

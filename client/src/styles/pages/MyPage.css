@@ -1,0 +1,112 @@
+.my-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  color: #333;
+}
+
+.profile-header {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.profile-image img {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #ddd;
+}
+.profile-info {
+  margin-left: 100px;
+  margin-top: 60px;
+}
+
+.profile-info h2 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.profile-info button {
+  margin-top: 10px;
+  padding: 8px 16px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.profile-info button:hover {
+  background-color: #0056b3;
+}
+
+.profile-info .stats {
+  display: flex;
+  gap: 15px;
+  margin-top: 10px;
+  font-size: 14px;
+  color: #666;
+}
+
+.posts-section {
+  border-top: 1px solid #dbdbdb;
+  margin-top: 140px;
+}
+
+.posts-section h2 {
+  font-size: 20px;
+  color: #666;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.posts-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* 큰 화면에서는 3개씩 */
+  gap: 16px; /* 각 이미지 간의 간격 */
+}
+
+.post-item {
+  position: relative;
+  padding-top: 100%; /* 정사각형 비율 */
+  overflow: hidden; /* 이미지가 넘치지 않도록 숨기기 */
+}
+
+.post-item img {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  cursor: pointer;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+@media (max-width: 1024px) {
+  .posts-grid {
+    grid-template-columns: repeat(2, 1fr); /* 화면이 중간 크기일 때는 2개씩 */
+  }
+}
+
+@media (max-width: 768px) {
+  .profile-header {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .profile-info .stats {
+    justify-content: center;
+  }
+  .posts-grid {
+    grid-template-columns: 1fr; /* 모바일 화면에서는 1개씩 */
+  }
+}
