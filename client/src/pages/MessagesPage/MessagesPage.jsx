@@ -6,16 +6,15 @@ import "../../styles/pages/MessagesPage.css";
 const MessagesPage = () => {
   const { chatroomId } = useParams(); // URL에서 채팅방 ID 가져오기
   const location = useLocation();
-  const { userId } = location.state || {}; // state로 전달받은 user_id
+  const { user_object_id } = location.state || {}; // state로 전달받은 user_id
   const [socket, setSocket] = useState(null); // 소켓 상태
   const [messageList, setMessages] = useState([]); // 메시지 목록
   const [messageInput, setMessageInput] = useState(""); // 입력된 메시지
 
-  useEffect(() => {   
-    console.log("userObjectId", userId)
+  useEffect(() => {     
     // 소켓 연결 초기화
     const newSocket = io(`http://localhost:5001`, {
-      query: { user_object_id: userId },
+      query: { user_object_id : user_object_id},
     });
     setSocket(newSocket);
 
@@ -44,14 +43,13 @@ const MessagesPage = () => {
     return () => {
       newSocket.disconnect();
     };
-  }, [chatroomId, userId]);
+  }, [chatroomId, user_object_id]);
 
   const sendMessage = (event) => {
     event.preventDefault()
-    socket.emit("sendMessage", messageInput);
+    // socket.emit("sendMessage", messageInput);
     if (messageInput.trim() && socket) {
       socket.emit("sendMessage", messageInput);
-      console.log(messageInput)
       setMessageInput("");
     }
   };

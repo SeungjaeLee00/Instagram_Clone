@@ -116,7 +116,13 @@ function App({socket}) {
             }
           />
 
-          <Route path="dm/chatroom/:chatroomId" element={<MessagesPage />} />
+          <Route path="dm/chatroom/:chatroomId" 
+            element={
+              <ProtectedRoute isAuthenticated={isAuthenticated}>
+                <MessagesPage />
+              </ProtectedRoute>
+            } 
+            />
 
           <Route
             path="/notifications"
