@@ -4,8 +4,17 @@ const {messageInit} = require("./routes/dm/message");
 let io;
 
 function initSocket(server) {
-  io = socketIo(server);
+  io = socketIo(server, {
+    cors: {
+      cors: {
+        origin: "*", // 임시로 모든 도메인 허용
+        methods: ["GET", "POST"],
+      },
+    }
+  });
 
+  // io = socketIo(server);
+  
   io.on("connection", (socket) => {
     console.log("A user connected");
 
