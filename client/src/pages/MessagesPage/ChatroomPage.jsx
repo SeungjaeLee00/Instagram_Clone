@@ -23,12 +23,12 @@ const Chatroom = () => {
     };
 
     fetchChatrooms();
-  }, []);
+  }, [chatroomsId, chatrooms, userId]);
 
   // 채팅방 클릭 시 이동
   const handleChatroomClick = (chatroomId) => {  
     navigate(`/dm/chatroom/${chatroomId}`, 
-      { state: userId }
+      { state: {user_object_id: userId} }
     ); // 채팅방 ID로 이동
   };
 

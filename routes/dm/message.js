@@ -27,9 +27,6 @@ const messageInit = (io, socket, p_chatroomId) => {
         
         // user_id => ex)suyeong2
         const userId = user.user_id;
-        console.log("user: ", user);
-        console.log("userId : ", userId); //log
-        socket.emit("userObjectId", objectId);
 
         // 채팅방 멤버 확인
         checkIfUserInChatroom(chatroomId, objectId)
