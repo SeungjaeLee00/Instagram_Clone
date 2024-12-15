@@ -12,26 +12,29 @@ const path = require("path");
 const { User } = require("../../models/User");
 
 const messageInit = (io, socket, p_chatroomId) => {
-    const userId = socket.handshake.query.user_id;
+    const objectId = socket.handshake.query.user_object_id; // user object id
     const chatroomId = p_chatroomId;  // 실제 채팅방 ID로 수정
 
-    console.log("User ID: ", userId); // 사용자 ID 확인
+    console.log("User ID: ", objectId); // 사용자 ID 확인
     
-    User.findOne({user_id: userId})
+    User.findOne({_id: objectId})
     .then ((user) => {
         if(!user) {
             socket.emit("error", {message: "유저를 찾을 수 없습니다."})
             socket.disconnect();
             return;
         }
-
-        const objectId = user._id.toString();
-
+        
+        // user_id => ex)suyeong2
+        const userId = user.user_id;
+        console.log("user: ", user);
+        console.log("userId : ", userId); //log
         socket.emit("userObjectId", objectId);
 
         // 채팅방 멤버 확인
         checkIfUserInChatroom(chatroomId, objectId)
         .then(isMember => {
+            console.log(objectId);
             if (!isMember) {
                 console.log(`User ${userId} is not a member of chatroom ${chatroomId}`);
                 socket.emit("error", { message: "You are not a member of this chatroom." });
@@ -103,7 +106,7 @@ const getMessages = (chatroomId) => {
 // 채팅방 멤버인지 확인하는 함수
 const checkIfUserInChatroom = (chatroomId, objectId) => {
     return new Promise((resolve, reject) => {
-        Chatroom.findOne({ _id: chatroomId, members: objectId })
+        Chatroom.find({ _id: chatroomId, members: { $in: [objectId] } })
             .then(chatroom => {
                 if (chatroom) {
                     resolve(true);  // 사용자가 멤버일 경우
@@ -117,89 +120,89 @@ const checkIfUserInChatroom = (chatroomId, objectId) => {
     });
 }
 
-// auth 부분 제외 -> 나중에 추가해야 함
-router.get("/", (req, res) => {
-    return res.sendFile(path.join(__dirname, "index.html"));
-})
+// // auth 부분 제외 -> 나중에 추가해야 함
+// router.get("/", (req, res) => {
+//     return res.sendFile(path.join(__dirname, "index.html"));
+// })
 
 
-// postman
-// 채팅방 내용 불러오기
-router.get("/:chatroomId", auth, (req, res) => {
-    const chatroomId = req.params.chatroomId;
+// // postman
+// // 채팅방 내용 불러오기
+// router.get("/:chatroomId", auth, (req, res) => {
+//     const chatroomId = req.params.chatroomId;
 
-    Chatroom.findOne({
-        _id: chatroomId, members: req.user._id
-    })
-    .then((result) => {
-        if(!result){
-            return res.json({
-                message: "해당 채팅방의 멤버가 아닙니다."
-            });
-        };
-        // 채팅방의 chatroomId로 Message에서 메세지 가져오기
-        Message.find({
-            chatroom: result._id
-        })
-        .sort({date:1}) // 과거순으로
-        .then((result) => {
-            const messages = result.map((message) => `${message.user_id}: ${message.content}`);
+//     Chatroom.findOne({
+//         _id: chatroomId, members: req.user._id
+//     })
+//     .then((result) => {
+//         if(!result){
+//             return res.json({
+//                 message: "해당 채팅방의 멤버가 아닙니다."
+//             });
+//         };
+//         // 채팅방의 chatroomId로 Message에서 메세지 가져오기
+//         Message.find({
+//             chatroom: result._id
+//         })
+//         .sort({date:1}) // 과거순으로
+//         .then((result) => {
+//             const messages = result.map((message) => `${message.user_id}: ${message.content}`);
             
-            console.log(messages);
+//             console.log(messages);
 
-            return res.json({
-                message: "채팅 내용 불러오기 성공",
-                chats : messages
-            }); 
-        });
-    })
-    .catch((error) => {
-        return res.status(500).json({
-            message: "채팅 내역을 찾을 수 없습니다.",
-            error: error
-        });
-    });
-});
+//             return res.json({
+//                 message: "채팅 내용 불러오기 성공",
+//                 chats : messages
+//             }); 
+//         });
+//     })
+//     .catch((error) => {
+//         return res.status(500).json({
+//             message: "채팅 내역을 찾을 수 없습니다.",
+//             error: error
+//         });
+//     });
+// });
 
-// 메세지 삭제
-// 해당하는 messageId db에서 삭제
-router.delete("/:messageId", auth, async(req, res) => {
-    const {messageId} = req.params;
-    const userId = req.user._id;
-    console.log(userId);
+// // 메세지 삭제
+// // 해당하는 messageId db에서 삭제
+// router.delete("/:messageId", auth, async(req, res) => {
+//     const {messageId} = req.params;
+//     const userId = req.user._id;
+//     console.log(userId);
 
-    try{
-        // 메세지 정보
-        const message = await Message.findById(messageId);
+//     try{
+//         // 메세지 정보
+//         const message = await Message.findById(messageId);
 
-        if(!message) {
-            return res.status(404)
-                .json({
-                    error: "메세지를 찾을 수 없습니다"
-                });
-        }
+//         if(!message) {
+//             return res.status(404)
+//                 .json({
+//                     error: "메세지를 찾을 수 없습니다"
+//                 });
+//         }
 
-        // 사용자 검증
-        const chatroom = await Chatroom.findOne({_id:message.chatroom, members: userId});
-        if(!chatroom){
-            return res.status(403)
-                .json({
-                    error: "해당 채팅방에 권한이 없습니다."
-                });
-        }
+//         // 사용자 검증
+//         const chatroom = await Chatroom.findOne({_id:message.chatroom, members: userId});
+//         if(!chatroom){
+//             return res.status(403)
+//                 .json({
+//                     error: "해당 채팅방에 권한이 없습니다."
+//                 });
+//         }
 
-        await Message.findByIdAndDelete(messageId);
+//         await Message.findByIdAndDelete(messageId);
 
-        return res.status(200)
-            .json({
-                message: "메세지가 삭제되었습니다."
-            })
-    } catch (error) {
-        return res.status(500)
-        .json({
-            error: error
-        });
-    }
-})
+//         return res.status(200)
+//             .json({
+//                 message: "메세지가 삭제되었습니다."
+//             })
+//     } catch (error) {
+//         return res.status(500)
+//         .json({
+//             error: error
+//         });
+//     }
+// })
 
 module.exports = {messageInit, router};

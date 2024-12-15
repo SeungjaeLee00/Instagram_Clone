@@ -14,11 +14,14 @@ router.get("/", auth, (req, res) => {
   Chatroom.find({ members: req.user._id })
     .then((chatrooms) => {
       const titles = chatrooms.map((chatroom) => chatroom.title);
+      const chatroomIds = chatrooms.map((chatroom) => chatroom._id);
 
       if (chatrooms) {
         res.json({
           message: "참여 중인 채팅방 목록",
           chatrooms: titles,
+          chatrooms_id: chatroomIds,
+          user_id: req.user._id
         });
       } else {
         res.json({

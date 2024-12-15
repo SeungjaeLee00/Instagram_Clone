@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -17,13 +17,13 @@
     <script>
         const userId = prompt("Enter your user ID:");
 
-        const socket = io('http://localhost:3000', {
+        const socket = io('http://localhost:5001', {
             query: { user_id: userId }
         });
 
         // 채팅룸 아이디
         // 확인용으로 넣음 - 구현할 때는 클릭한 채딩방 Id로 들어가도록
-        const chatroomId = "6727d56d77c4625ccc945cec";  
+        const chatroomId = "67389c81a35011e9ab5e168f";  
         socket.emit("joinChatroom", chatroomId);
 
         let objectId = "";  // ObjectId를 저장할 변수
@@ -73,4 +73,4 @@
         }
     </script>
 </body>
-</html>
+</html> -->

@@ -14,14 +14,15 @@ import CreatePage from "./pages/CreatePage";
 import { verifyToken } from "./api/authApi";
 
 import ChatroomList from "./pages/MessagesPage/ChatroomPage";
+import MessagesPage from "./pages/MessagesPage/MessagesPage";
 
 const SearchPage = () => <div>검색 페이지</div>;
-const MessagesPage = () => <div>메시지 페이지</div>;
+// const MessagesPage = () => <div>메시지 페이지</div>;
 // const MessagesPage = ChatRoom;
 const NotificationsPage = () => <div>알림 페이지</div>;
 const ProfilePage = () => <div>프로필 페이지</div>;
 
-function App() {
+function App({socket}) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
 
@@ -102,6 +103,8 @@ function App() {
               </ProtectedRoute>
             }
           />
+
+          <Route path="dm/chatroom/:chatroomId" element={<MessagesPage />} />
 
           <Route
             path="/notifications"
