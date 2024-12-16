@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+
 import { timeAgo } from "../../utils/timeAgo";
 import useAuth from "../../hooks/useAuth";
 import { deleteComment, addCommentLike } from "../../api/commentApi";
@@ -35,6 +36,7 @@ const PostDetailModal = ({
         ...comment,
         user: {
           user_id: comment.user?.user_id,
+          _id: comment.user?._id,
         },
         likesCount: comment.likes.length,
       }));
@@ -99,19 +101,19 @@ const PostDetailModal = ({
   const handleCommentSubmit = async () => {
     if (!commentText.trim()) return;
     try {
-      const newComment = await onUpdate(post._id, commentText);
+      const response = await onUpdate(post._id, commentText);
 
-      if (!newComment || !newComment.comment) {
+      const newComment = response?.comment;
+      if (!newComment) {
         throw new Error("댓글 추가 응답에 comment 정보가 없습니다.");
       }
 
-      const commentData = newComment.comment;
       const formattedComment = {
-        ...commentData,
+        ...newComment,
         user: {
-          _id: commentData.user._id,
-          user_id: commentData.user.user_id,
-          profile_image: commentData.user.profile_image || default_profile,
+          _id: newComment.user._id,
+          user_id: newComment.user.user_id,
+          profile_image: newComment.user.profile_image || default_profile,
         },
         likes: [],
         likesCount: 0,
@@ -138,13 +140,13 @@ const PostDetailModal = ({
     );
     if (!commentToDelete) return;
 
-    if (commentToDelete.user._id !== user._id) {
+    if (commentToDelete.user._id !== post.user_id._id) {
       alert("본인의 댓글만 삭제할 수 있습니다.");
       return;
     }
 
     try {
-      await deleteComment(commentId, user._id);
+      await deleteComment(commentId, post.user_id._id);
 
       // 댓글 삭제 후, 로컬 상태에서 해당 댓글 제거
       setComments((prevComments) =>
@@ -171,7 +173,12 @@ const PostDetailModal = ({
   // 게시물 삭제
   const handleDelete = () => {
     if (window.confirm("게시물을 삭제하시겠습니까?")) {
-      onDelete(post._id);
+      const userId = post.user_id?._id;
+      if (!userId) {
+        alert("사용자 정보가 없습니다.");
+        return;
+      }
+      onDelete(post._id, userId);
     }
   };
 
@@ -189,6 +196,8 @@ const PostDetailModal = ({
 
   if (!isOpen || !post) return null;
 
+  // console.log("post.user_id._id", post.user_id._id);
+
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
@@ -203,14 +212,14 @@ const PostDetailModal = ({
             <div className="postDetail-header">
               <div className="postDetail-userInfo">
                 <img
-                  src={post.user_id?.profile_image || default_profile}
+                  src={post.user_id.profile_image || default_profile}
                   alt="profile"
                   className="profileDetail-image"
                 />
 
                 <div className="userDetail">
                   <div className="userDetail-info">
-                    <span className="username">{post.user_id?.user_id}</span>
+                    <span className="username">{post.user_id.user_id}</span>
                     <span className="post-time">
                       · {timeAgo(post.createdAt)}
                     </span>
@@ -240,7 +249,7 @@ const PostDetailModal = ({
                     <div key={index} className="commentDetail-item">
                       {/* 프로필 이미지 */}
                       <img
-                        src={comment.user?.profile_image || default_profile}
+                        src={comment.user.profile_image || default_profile}
                         alt="profile"
                         className="profileDetail-image"
                       />
@@ -270,7 +279,7 @@ const PostDetailModal = ({
                         }`}
                       ></button>
                       {/* 댓글 삭제 버튼 */}
-                      {comment.user._id === user._id && (
+                      {comment.user._id === post.user_id._id && (
                         <button
                           onClick={() => handleCommentDelete(comment._id)}
                           className="comment-delete-btn"

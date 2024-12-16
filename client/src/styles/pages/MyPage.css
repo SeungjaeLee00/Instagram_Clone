@@ -34,8 +34,7 @@
 .profile-info button {
   margin-top: 10px;
   padding: 8px 16px;
-  background-color: #007bff;
-  color: #fff;
+  background-color: #dbdbdb;
   border: none;
   border-radius: 4px;
   cursor: pointer;
@@ -43,7 +42,7 @@
 }
 
 .profile-info button:hover {
-  background-color: #0056b3;
+  background-color: #918d8d;
 }
 
 .profile-info .stats {

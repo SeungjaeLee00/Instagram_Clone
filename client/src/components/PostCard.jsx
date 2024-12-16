@@ -33,6 +33,7 @@ const PostCard = ({ post, onUpdate, onDelete, onLike }) => {
     try {
       const response = await onUpdate(post._id, commentText);
       const newComment = response.comment;
+      console.log("postCard에서 댓글 달기:", newComment);
 
       setComments((prevComments) => [...prevComments, newComment]); // 새 댓글 추가
       setCommentText("");
@@ -68,12 +69,18 @@ const PostCard = ({ post, onUpdate, onDelete, onLike }) => {
   // 게시물 삭제
   const handleDelete = () => {
     if (window.confirm("게시물을 삭제하시겠습니까?")) {
-      onDelete(post._id);
+      const userId = post.user_id?._id;
+      if (!userId) {
+        alert("사용자 정보가 없습니다.");
+        return;
+      }
+      onDelete(post._id, userId);
     }
   };
 
   const openModal = () => {
     setSelectedPost(post); // 클릭한 게시물 데이터를 상태에 저장
+    console.log("postCard에서 모달로 보내는 post:", post);
     setIsModalOpen(true);
   };
 

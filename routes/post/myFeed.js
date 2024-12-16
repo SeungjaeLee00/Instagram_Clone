@@ -9,18 +9,16 @@ router.use(cookieParser());
 // 내 게시물 전체 보기
 router.get("/myFeed", auth, async (req, res) => {
   const user_id = req.user._id;
-
   try {
     const myPosts = await Post.find({ user_id: user_id }) // 'user' -> 'user_id'로 수정
       .sort({ createdAt: -1 })
-
       .populate("user_id", "user_id profile_image")
       .populate({
         path: "comments",
         populate: { path: "user", select: "user_id username profile_image" },
       });
 
-    console.log("My Posts:", myPosts); // 디버그: 내 게시물 확인
+    // console.log("My Posts:", myPosts); // 디버그: 내 게시물 확인
     const myPostsWithDetails = myPosts.map((post) => ({
       ...post.toObject(),
       likesCount: post.likes.length, // 게시물 좋아요 수

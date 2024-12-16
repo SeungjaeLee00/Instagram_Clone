@@ -1,8 +1,10 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { uploadPost } from "../../api/postApi";
 import "../../styles/components/UploadPost.css";
 
 const UploadPost = ({ isOpen, onClose }) => {
+  const navigate = useNavigate();
   const [images, setImages] = useState([]); // 이미지 배열
   const [text, setText] = useState("");
   const [isUploading, setIsUploading] = useState(false);
@@ -41,6 +43,7 @@ const UploadPost = ({ isOpen, onClose }) => {
       console.log("업로드된 게시물:", data.post);
       // console.log("")
       onClose();
+      navigate("/profile");
     } catch (error) {
       alert("게시물 업로드에 실패했습니다.");
     } finally {

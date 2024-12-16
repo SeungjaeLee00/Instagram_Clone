@@ -87,15 +87,16 @@ const MainPage = () => {
     }
   };
 
-  const handleDeletePost = async (postId) => {
+  const handleDeletePost = async (postId, userId) => {
     try {
-      const userId = user?.userId;
+      // console.log("삭제 요청 시 userId:", userId);
+
       if (!userId) {
         alert("사용자 정보를 찾을 수 없습니다.");
         return;
       }
 
-      await deletePost(postId, token, userId);
+      await deletePost(postId, userId);
       setPosts((prevPosts) => prevPosts.filter((post) => post._id !== postId));
       alert("게시물이 삭제되었습니다.");
     } catch (error) {
