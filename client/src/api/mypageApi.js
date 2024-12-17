@@ -19,11 +19,10 @@ export const getMyProfile = async (userId, token) => {
 export const editUserProfile = async (
   file,
   newIntroduce,
-  newUserId,
   newName,
+  newId,
   token
 ) => {
-  // FormData 객체를 사용하여 파일과 데이터를 전송
   const formData = new FormData();
 
   // file은 프로필 이미지로 전달
@@ -33,10 +32,10 @@ export const editUserProfile = async (
 
   // 수정할 텍스트 데이터 추가
   formData.append("new_introduce", newIntroduce);
-  formData.append("new_user_id", newUserId);
   formData.append("new_name", newName);
+  formData.append("new_user_id", newId);
 
-  const response = await axios.put(`${API_BASE_URL}/profile/edit`, formData, {
+  const response = await axios.patch(`${API_BASE_URL}/profile/edit`, formData, {
     headers: {
       "Content-Type": "multipart/form-data", // 파일을 포함할 경우 multipart/form-data로 설정
       Authorization: `Bearer ${token}`,
@@ -63,7 +62,7 @@ export const getUserFollowers = async (userId, token) => {
       Authorization: `Bearer ${token}`,
     },
     withCredentials: true,
-    data: { userId },
+    params: { userId },
   });
   return response.data;
 };
@@ -76,7 +75,7 @@ export const getUserFollowing = async (userId, token) => {
       Authorization: `Bearer ${token}`,
     },
     withCredentials: true,
-    data: { userId },
+    params: { userId },
   });
   return response.data;
 };

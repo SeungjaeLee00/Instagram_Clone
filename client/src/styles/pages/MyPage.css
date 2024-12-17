@@ -1,7 +1,6 @@
 .my-page {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 20px;
   font-family: Arial, sans-serif;
   color: #333;
 }
@@ -14,31 +13,77 @@
 }
 
 .profile-image img {
-  width: 120px;
-  height: 120px;
+  width: 200px;
+  height: 200px;
   border-radius: 50%;
   object-fit: cover;
   border: 2px solid #ddd;
 }
 .profile-info {
-  margin-left: 100px;
-  margin-top: 60px;
+  margin-left: 200px;
+  margin-top: 100px;
 }
 
 .profile-info h2 {
   margin: 0;
-  font-size: 24px;
+  font-size: 25px;
   font-weight: bold;
 }
 
 .profile-info button {
-  margin-top: 10px;
   padding: 8px 16px;
   background-color: #dbdbdb;
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 15px;
+  margin-left: 38px;
+  font-weight: bold;
+}
+
+.settings-icon {
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+  margin-left: 15px;
+}
+
+.profile-header .settings-icon-container {
+  position: relative;
+  display: inline-block;
+}
+
+.menu-dropdown {
+  position: absolute;
+  top: 0;
+  left: 50px;
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+  width: 105px;
+}
+
+.menu-dropdown ul {
+  list-style: none;
+  margin: 0;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.menu-dropdown li {
+  cursor: pointer;
+  padding: 8px 12px;
+  border-bottom: 1px solid #ddd;
+}
+
+.menu-dropdown li:last-child {
+  border-bottom: none;
 }
 
 .profile-info button:hover {
@@ -47,15 +92,30 @@
 
 .profile-info .stats {
   display: flex;
-  gap: 15px;
-  margin-top: 10px;
-  font-size: 14px;
+  gap: 45px;
+  margin-top: 30px;
+  font-size: 20px;
   color: #666;
+}
+
+.profile-info .stats .bold {
+  font-weight: bold; /* 특정 숫자만 볼드체 */
+}
+
+.profile-info .userName {
+  font-weight: bold;
+  font-size: 20px;
+  margin-top: 30px;
+}
+
+.profile-info .introduce {
+  margin-top: 15px;
+  font-size: 20px;
 }
 
 .posts-section {
   border-top: 1px solid #dbdbdb;
-  margin-top: 140px;
+  margin-top: 100px;
 }
 
 .posts-section h2 {
@@ -107,5 +167,60 @@
   }
   .posts-grid {
     grid-template-columns: 1fr; /* 모바일 화면에서는 1개씩 */
+  }
+}
+
+/* 기본 스타일 - 모바일 우선 접근 */
+@media (max-width: 768px) {
+  /* 프로필 헤더 */
+  .profile-header {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  /* 프로필 이미지 크기 조정 */
+  .profile-image img {
+    width: 150px;
+    height: 150px;
+  }
+
+  /* 프로필 정보 및 버튼 위치 조정 */
+  .profile-info {
+    margin-left: 0;
+    margin-top: 100px;
+  }
+
+  .profile-info button {
+    margin-left: 0;
+    margin-top: 10px;
+  }
+
+  /* 통계 부분을 중앙 정렬 */
+  .profile-info .stats {
+    justify-content: center;
+    gap: 20px;
+    font-size: 16px;
+  }
+
+  /* 게시물 그리드 1열로 변경 */
+  .posts-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* 게시물 이미지 크기 조정 */
+  .post-item {
+    padding-top: 100%;
+  }
+
+  /* 메뉴 드롭다운 크기 조정 */
+  .menu-dropdown {
+    width: 120px;
+  }
+
+  /* 사용자 이름, 소개 텍스트 크기 조정 */
+  .profile-info .userName,
+  .profile-info .introduce {
+    font-size: 18px;
   }
 }

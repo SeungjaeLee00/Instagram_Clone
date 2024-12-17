@@ -44,12 +44,7 @@ router.post("/", (req, res) => {
       // 로그인 성공 시 토큰 생성
       return user.generateToken();
     })
-    // .then((user) => {
-    //   return res.cookie("x_auth", user.token).status(200).json({
-    //     loginSuccess: true,
-    //     userId: user._id,
-    //   });
-    // })
+
     .then(({ token, user }) => {
       // token과 user를 함께 받아서 처리
       return res.cookie("x_auth", token, { httpOnly: true }).status(200).json({

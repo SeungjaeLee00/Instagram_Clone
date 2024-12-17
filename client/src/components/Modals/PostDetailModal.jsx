@@ -104,6 +104,7 @@ const PostDetailModal = ({
       const response = await onUpdate(post._id, commentText);
 
       const newComment = response?.comment;
+      // console.log("모달에서 newComment: ", newComment);
       if (!newComment) {
         throw new Error("댓글 추가 응답에 comment 정보가 없습니다.");
       }
@@ -119,6 +120,8 @@ const PostDetailModal = ({
         likesCount: 0,
         liked: false,
       };
+
+      console.log("formattedComment", formattedComment);
 
       // 새 댓글을 기존 댓글 리스트의 맨 앞에 추가
       setComments((prevComments) => [formattedComment, ...prevComments]);

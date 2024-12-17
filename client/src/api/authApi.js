@@ -97,3 +97,37 @@ export const loginUser = async (emailOrUsername, password, token) => {
     }
   }
 };
+
+// 로그아웃 API
+export const logoutUser = async (token) => {
+  try {
+    const response = await axios.get("http://localhost:5001/auth/logout", {
+      headers: { Authorization: `Bearer ${token}` },
+      withCredentials: true,
+    });
+    return response.data;
+  } catch (error) {
+    if (error.response) {
+      throw new Error(error.response.data.message || "알 수 없는 오류");
+    } else {
+      throw new Error("로그아웃 요청에 실패했습니다.");
+    }
+  }
+};
+
+// 회원 탈퇴 API
+export const withdrawUser = async (token) => {
+  try {
+    const response = await axios.delete("http://localhost:5001/auth/withdraw", {
+      headers: { Authorization: `Bearer ${token}` },
+      withCredentials: true,
+    });
+    return response.data;
+  } catch (error) {
+    if (error.response) {
+      throw new Error(error.response.data.message || "알 수 없는 오류");
+    } else {
+      throw new Error("회원 탈퇴 요청에 실패했습니다.");
+    }
+  }
+};

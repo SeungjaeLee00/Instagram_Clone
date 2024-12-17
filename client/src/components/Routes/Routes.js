@@ -14,7 +14,7 @@ import CreatePage from "../../pages/CreatePage";
 // import MessagesPage from "../../pages/MessagesPage";
 // import NotificationsPage from "../../pages/NotificationsPage";
 import MyPage from "../../pages/MyPage/MyPage";
-// import EditProfile from "../../pages/MyPage/EditProfile";
+import EditProfile from "../../pages/MyPage/EditProfile";
 
 // import Test from "../../pages/MyPage/Test";
 
@@ -82,7 +82,7 @@ const RoutesComponent = ({ isAuthenticated, setIsAuthenticated }) => (
       }
     />
     <Route
-      path="/profile"
+      path="/mypage/profile"
       element={
         <ProtectedRoute isAuthenticated={isAuthenticated}>
           <MyPage />
@@ -90,14 +90,14 @@ const RoutesComponent = ({ isAuthenticated, setIsAuthenticated }) => (
       }
     />
 
-    {/* <Route
+    <Route
       path="/edit-profile"
       element={
         <ProtectedRoute isAuthenticated={isAuthenticated}>
           <EditProfile />
         </ProtectedRoute>
       }
-    /> */}
+    />
   </Routes>
 );
 

@@ -68,6 +68,7 @@ const MainPage = () => {
     try {
       const response = await addComment(postId, newCommentText);
       const { comment } = response;
+
       setPosts((prevPosts) =>
         prevPosts.map((post) =>
           post._id === postId
@@ -81,6 +82,7 @@ const MainPage = () => {
             : post
         )
       );
+      // console.log("main에서 확인하는 comment: ", comment);
       return { comment };
     } catch (error) {
       console.error("댓글 추가 중 오류가 발생했습니다:", error);

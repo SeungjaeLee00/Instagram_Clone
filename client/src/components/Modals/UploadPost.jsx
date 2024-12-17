@@ -43,7 +43,7 @@ const UploadPost = ({ isOpen, onClose }) => {
       console.log("업로드된 게시물:", data.post);
       // console.log("")
       onClose();
-      navigate("/profile");
+      navigate("/mypage/profile");
     } catch (error) {
       alert("게시물 업로드에 실패했습니다.");
     } finally {

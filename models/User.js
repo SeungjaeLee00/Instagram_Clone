@@ -39,8 +39,9 @@ const userSchema = mongoose.Schema({
   introduce: {
     type: String,
     maxlength: 100,
+    default: "",
   },
-  profile_image: String,
+  profile_image: { type: String, default: "" },
   token: {
     type: String,
   },
