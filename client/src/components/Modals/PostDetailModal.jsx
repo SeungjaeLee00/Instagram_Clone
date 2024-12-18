@@ -27,6 +27,7 @@ const PostDetailModal = ({
   const [visibleComments, setVisibleComments] = useState(6);
   const [isExpanded, setIsExpanded] = useState(false);
   const [selectedPost, setSelectedPost] = useState(null);
+  const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
     if (user) {
@@ -218,15 +219,47 @@ const PostDetailModal = ({
     setVisibleComments(6); // 다시 6개 댓글로 축소
   };
 
+  const nextImage = () => {
+    if (currentIndex < post?.images?.length - 1) {
+      setCurrentIndex(currentIndex + 1);
+    }
+  };
+
+  const prevImage = () => {
+    if (currentIndex > 0) {
+      setCurrentIndex(currentIndex - 1);
+    }
+  };
+
   if (!isOpen || !post) return null;
 
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
         <div className="modal-body">
-          <div className="imageDetail-section">
+          <div className="imageDetail-section" style={{ position: "relative" }}>
             {post.images && post.images.length > 0 && (
-              <img src={post.images[0]} alt="post" />
+              <>
+                <img
+                  src={post.images[currentIndex]}
+                  alt="post"
+                  className="image-detail-img"
+                />
+                {post.images.length > 1 && (
+                  <>
+                    {currentIndex > 0 && (
+                      <button onClick={prevImage} className="prev-image-btn">
+                        &lt;
+                      </button>
+                    )}
+                    {currentIndex < post.images.length - 1 && (
+                      <button onClick={nextImage} className="next-image-btn">
+                        &gt;
+                      </button>
+                    )}
+                  </>
+                )}
+              </>
             )}
           </div>
 

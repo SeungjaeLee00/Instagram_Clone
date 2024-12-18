@@ -5,6 +5,7 @@ import { timeAgo } from "../utils/timeAgo";
 import useAuth from "../hooks/useAuth";
 
 import default_profile from "../assets/default_profile.png";
+import manyImg from "../assets/manyImg.png";
 import "../styles/components/PostCard.css";
 
 const PostCard = ({ post, onUpdate, onDelete, onLike }) => {
@@ -25,7 +26,7 @@ const PostCard = ({ post, onUpdate, onDelete, onLike }) => {
       setLikesCount(post.likesCount);
       setComments(post.comments || []);
       // console.log("user", user);
-      // console.log("post", post);
+      console.log("post", post);
     }
   }, [post, user]);
 
@@ -133,9 +134,12 @@ const PostCard = ({ post, onUpdate, onDelete, onLike }) => {
         </div>
       )}
 
-      <div className="post-image">
+      <div className="post-image" style={{ position: "relative" }}>
         {post.images && post.images.length > 0 && (
-          <img src={post.images[0]} alt="post" />
+          <img src={post.images[0]} alt="post" className="post-img" />
+        )}
+        {post.images && post.images.length > 1 && (
+          <img src={manyImg} alt="many images" className="many-img" />
         )}
       </div>
 

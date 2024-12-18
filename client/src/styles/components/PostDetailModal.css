@@ -46,6 +46,28 @@
   max-height: 100%;
 }
 
+.prev-image-btn,
+.next-image-btn {
+  background-color: transparent;
+  border: none;
+  color: black;
+  font-size: 24px;
+  padding: 10px;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  z-index: 10;
+}
+
+.prev-image-btn {
+  left: 10px;
+}
+
+.next-image-btn {
+  right: 10px;
+}
+
 /* 여기서부터 오른쪽 */
 .infoDetail-section {
   flex: 2; /* 오른쪽 섹션 비율 */
