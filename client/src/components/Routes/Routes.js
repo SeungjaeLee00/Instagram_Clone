@@ -15,6 +15,7 @@ import CreatePage from "../../pages/CreatePage";
 // import NotificationsPage from "../../pages/NotificationsPage";
 import MyPage from "../../pages/MyPage/MyPage";
 import EditProfile from "../../pages/MyPage/EditProfile";
+import EditPost from "../../pages/MyPage/EditPost";
 
 // import Test from "../../pages/MyPage/Test";
 
@@ -95,6 +96,15 @@ const RoutesComponent = ({ isAuthenticated, setIsAuthenticated }) => (
       element={
         <ProtectedRoute isAuthenticated={isAuthenticated}>
           <EditProfile />
+        </ProtectedRoute>
+      }
+    />
+
+    <Route
+      path="/edit-post"
+      element={
+        <ProtectedRoute isAuthenticated={isAuthenticated}>
+          <EditPost />
         </ProtectedRoute>
       }
     />

@@ -7,7 +7,7 @@ import useAuth from "../../hooks/useAuth";
 import "../../styles/pages/EditProfile.css";
 
 const EditProfile = () => {
-  const { user, token } = useAuth();
+  const { user } = useAuth();
   const [profile, setProfile] = useState(null);
   const [newIntroduce, setNewIntroduce] = useState("");
   const [newName, setNewName] = useState("");

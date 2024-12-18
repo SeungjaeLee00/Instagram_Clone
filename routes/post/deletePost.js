@@ -15,7 +15,8 @@ const s3 = require("../../config/s3");
 router.delete("/:id", auth, async (req, res) => {
   const { id } = req.params;
   const { userId } = req.body; // 클라이언트에서 받은 userId
-  console.log("요청 받은 userId:", userId); // 로그로 userId 확인
+  console.log("요청 받은 userId:", userId);
+  console.log("인증된 사용자 ID:", req.user._id); // auth 미들웨어에서 전달한 사용자 ID 확인
 
   try {
     const post = await Post.findById(id);
@@ -23,11 +24,12 @@ router.delete("/:id", auth, async (req, res) => {
     if (!post)
       return res.status(404).json({ message: "게시물을 찾을 수 없습니다." });
 
-    console.log("게시물 작성자 userId:", post.user_id.toString()); // 게시물 작성자 ID 확인
+    // console.log("게시물 작성자 userId:", post.user_id.toString()); // 게시물 작성자 ID 확인
 
-    if (post.user_id.toString() !== userId)
+    // userId와 post.user_id를 비교
+    if (post.user_id.toString() !== req.user._id.toString()) {
       return res.status(403).json({ message: "권한이 없습니다." });
-
+    }
     // S3에서 이미지 삭제
     for (let imageUrl of post.images) {
       const key = imageUrl.split(".com/")[1]; // URL에서 키 추출

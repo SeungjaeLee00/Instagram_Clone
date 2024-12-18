@@ -22,7 +22,7 @@ const MyPage = () => {
   const [profileData, setProfileData] = useState(null);
   const [posts, setPosts] = useState([]);
   const [followers, setFollowers] = useState([]);
-  const [followings, setFollowings] = useState([]);
+  const [following, setFollowing] = useState([]);
   const [name, setName] = useState([]);
   const [introduce, setIntroduce] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -40,7 +40,7 @@ const MyPage = () => {
         try {
           const profile = await getMyProfile(user.userId, token);
           const postList = await getMyPosts();
-          console.log("profile", profile);
+          // console.log("profile", profile);
 
           // console.log("포스트 리스트 확인:", postList);
 
@@ -60,14 +60,14 @@ const MyPage = () => {
           setProfileData(profile);
           setPosts(updatedPosts || []);
           setFollowers(followerList.followers || []);
-          setFollowings(followingList.followings || []);
+          setFollowing(followingList.following || []);
           setIntroduce(profile.introduce || "");
           setName(profile.user_name || "");
 
           // console.log("profile.introduce", profile.introduce);
 
           // console.log("setFollowers", followerList.followers);
-          // console.log("setFollowings", followingList.followings);
+          // console.log("setFollowings", followingList.following);
         } catch (error) {
           console.error("데이터 로드 실패:", error);
           setError("데이터를 불러오는 중 오류가 발생했습니다.");
@@ -94,7 +94,7 @@ const MyPage = () => {
       ...post,
       user: post.user_id,
     });
-    console.log("myPage에서 모달로 전달하는 post:", post);
+    // console.log("myPage에서 모달로 전달하는 post:", post);
 
     setIsModalOpen(true);
   };
@@ -267,7 +267,7 @@ const MyPage = () => {
               팔로워 <span className="bold">{followers.length || "0"}</span>
             </span>
             <span>
-              팔로잉 <span className="bold">{followings.length || "0"}</span>
+              팔로잉 <span className="bold">{following.length || "0"}</span>
             </span>
           </div>
           <div className="userName">{name || ""}</div>

@@ -17,7 +17,7 @@ const PostDetailModal = ({
   onDelete,
 }) => {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { isAuthenticated, user } = useAuth();
   const [showOptions, setShowOptions] = useState(false);
   const [liked, setLiked] = useState(false); // 게시물 좋아요 상태
   const [postLikesCount, setPostLikesCount] = useState(0); // 게시물 좋아요 개수
@@ -26,21 +26,29 @@ const PostDetailModal = ({
   const commentInputRef = useRef(null);
   const [visibleComments, setVisibleComments] = useState(6);
   const [isExpanded, setIsExpanded] = useState(false);
+  const [selectedPost, setSelectedPost] = useState(null);
 
   useEffect(() => {
-    if (post && post.comments) {
-      setLiked(post.liked);
-      setPostLikesCount(post.likesCount);
+    if (user) {
+      // console.log("user", user);
+      // console.log("post", post);
 
-      const updatedComments = post.comments.map((comment) => ({
-        ...comment,
-        user: {
-          user_id: comment.user?.user_id,
-          _id: comment.user?._id,
-        },
-        likesCount: comment.likes.length,
-      }));
-      setComments(updatedComments);
+      if (post && post.comments) {
+        setLiked(post.liked);
+        setPostLikesCount(post.likesCount);
+
+        const updatedComments = post.comments.map((comment) => ({
+          ...comment,
+          user: {
+            user_id: comment.user?.user_id,
+            _id: comment.user?._id,
+          },
+          likesCount: comment.likes.length,
+        }));
+        setComments(updatedComments);
+      }
+      // console.log("user.userId", user.userId);
+      // console.log("post.user_id._id", post.user_id._id);
     }
   }, [post, user]);
 
@@ -168,20 +176,33 @@ const PostDetailModal = ({
     }
   };
 
-  // 게시물 수정: 수정 버튼 클릭 시 수정 페이지로 이동(임시)
+  // 게시물 수정
   const handleEdit = () => {
-    navigate(`/edit/${post._id}`);
+    if (isAuthenticated) {
+      const loginUserId = user.userId;
+      const postUserId = post.user_id._id;
+
+      if (loginUserId === postUserId) {
+        setSelectedPost(post);
+        navigate("/edit-post", { state: { post } });
+      } else {
+        alert("이 게시물은 수정할 권한이 없습니다.");
+      }
+    } else {
+      alert("로그인이 필요합니다.");
+      navigate("/auth/login");
+    }
   };
 
   // 게시물 삭제
   const handleDelete = () => {
     if (window.confirm("게시물을 삭제하시겠습니까?")) {
-      const userId = post.user_id?._id;
-      if (!userId) {
+      const postUserId = post.user_id?._id;
+      if (!postUserId) {
         alert("사용자 정보가 없습니다.");
         return;
       }
-      onDelete(post._id, userId);
+      onDelete(post._id, postUserId);
     }
   };
 
@@ -198,8 +219,6 @@ const PostDetailModal = ({
   };
 
   if (!isOpen || !post) return null;
-
-  // console.log("post.user_id._id", post.user_id._id);
 
   return (
     <div className="modal-overlay" onClick={onClose}>
