@@ -47,8 +47,8 @@
 
 /* 게시물 이미지 */
 .post-image img {
-  width: 100%;
-  height: auto;
+  width: 600px;
+  height: 600px;
   display: block;
   object-fit: cover;
 }
