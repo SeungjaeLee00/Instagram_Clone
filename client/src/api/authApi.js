@@ -81,12 +81,12 @@ export const verifyResetCode = async (email, verificationCode) => {
 };
 
 // 로그인 API
-export const loginUser = async (emailOrUsername, password, token) => {
+export const loginUser = async (emailOrUsername, password) => {
   try {
     const response = await axios.post(
       "http://localhost:5001/auth/login",
       { emailOrUsername, password },
-      { headers: { Authorization: `Bearer ${token}` }, withCredentials: true }
+      { withCredentials: true }
     );
     return response.data;
   } catch (error) {

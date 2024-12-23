@@ -231,6 +231,15 @@ const PostDetailModal = ({
     }
   };
 
+  // 클릭 시 사용자 프로필 이동
+  const goToUserProfile = (clickedUserId, clickedUserName) => {
+    if (clickedUserId === user.userId) {
+      navigate(`/mypage/profile`);
+    } else {
+      navigate(`/${clickedUserName}/profile`);
+    }
+  };
+
   if (!isOpen || !post) return null;
 
   return (
@@ -270,11 +279,21 @@ const PostDetailModal = ({
                   src={post.user_id.profile_image || default_profile}
                   alt="profile"
                   className="profileDetail-image"
+                  onClick={() =>
+                    goToUserProfile(post.user_id._id, post.user_id?.user_id)
+                  }
                 />
 
                 <div className="userDetail">
                   <div className="userDetail-info">
-                    <span className="username">{post.user_id.user_id}</span>
+                    <span
+                      className="username"
+                      onClick={() =>
+                        goToUserProfile(post.user_id._id, post.user_id?.user_id)
+                      }
+                    >
+                      {post.user_id.user_id}
+                    </span>
                     <span className="post-time">
                       · {timeAgo(post.createdAt)}
                     </span>

@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { Follow } = require("../../models/Follow");
+const { User } = require("../../models/User");
 const { auth } = require("../../routes/auth");
 
 const cookieParser = require("cookie-parser");
@@ -19,9 +20,16 @@ router.get("/", auth, async (req, res) => {
     }
 
     const followingList = result.map((follow) => follow.following);
+    const followingDetails = await User.find({
+      _id: { $in: followingList },
+    });
 
     return res.status(200).json({
-      following: followingList,
+      following: followingDetails.map((user) => ({
+        user_id: user.user_id,
+        username: user.username,
+        profile_image: user.profile_image || default_profile,
+      })),
     });
   } catch (err) {
     return res.status(500).json({

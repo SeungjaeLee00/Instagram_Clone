@@ -1,0 +1,42 @@
+.follow-list {
+  padding: 30px 50px;
+}
+
+.backClick-btn {
+  background: none;
+  border: none;
+  font-size: 16px;
+  color: #000;
+  cursor: pointer;
+  padding: 0;
+  text-decoration: underline; /* 밑줄 추가 */
+}
+
+.backClick-btn:hover {
+  color: #007bff;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+li {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+
+.profile-image {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+li span {
+  font-size: 18px;
+  font-weight: bold;
+}

@@ -26,7 +26,10 @@ const PostCard = ({ post, onUpdate, onDelete, onLike }) => {
       setLikesCount(post.likesCount);
       setComments(post.comments || []);
       // console.log("user", user);
-      console.log("post", post);
+      // console.log("post", post);
+
+      // console.log("user.userId", user.userId);
+      // console.log("post.user_id._id", post.user_id._id);
     }
   }, [post, user]);
 
@@ -110,6 +113,16 @@ const PostCard = ({ post, onUpdate, onDelete, onLike }) => {
     setSelectedPost(null);
   };
 
+  // 클릭 시 사용자 프로필 이동
+  const goToUserProfile = (clickedUserId, clickedUserName) => {
+    if (clickedUserId === user.userId) {
+      navigate(`/mypage/profile`);
+    } else {
+      // console.log("clickedUserName", clickedUserName);
+      navigate(`/${clickedUserName}/profile`);
+    }
+  };
+
   return (
     <div className="post-card">
       <div className="post-header">
@@ -117,9 +130,19 @@ const PostCard = ({ post, onUpdate, onDelete, onLike }) => {
           src={post.user_id?.profile_image || default_profile}
           alt="profile"
           className="profile-image"
+          onClick={() =>
+            goToUserProfile(post.user_id?._id, post.user_id?.user_id)
+          }
         />
         <div className="user-info">
-          <span className="username">{post.user_id?.user_id}</span>
+          <span
+            className="username"
+            onClick={() =>
+              goToUserProfile(post.user_id?._id, post.user_id?.user_id)
+            }
+          >
+            {post.user_id?.user_id}
+          </span>
           <span className="post-time">· {timeAgo(post.createdAt)}</span>
         </div>
         <div className="post-management">

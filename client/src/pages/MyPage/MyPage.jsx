@@ -14,6 +14,7 @@ import PostDetailModal from "../../components/Modals/PostDetailModal";
 
 import default_profile from "../../assets/default_profile.png";
 import settingIcon from "../../assets/setting.png";
+import manyImg from "../../assets/manyImg.png";
 
 import "../../styles/pages/MyPage.css";
 
@@ -66,8 +67,8 @@ const MyPage = () => {
 
           // console.log("profile.introduce", profile.introduce);
 
-          // console.log("setFollowers", followerList.followers);
-          // console.log("setFollowings", followingList.following);
+          // console.log("setFollowers", followerList);
+          // console.log("setFollowings", followingList);
         } catch (error) {
           console.error("데이터 로드 실패:", error);
           setError("데이터를 불러오는 중 오류가 발생했습니다.");
@@ -210,6 +211,14 @@ const MyPage = () => {
     setMenuOpen(false); // 메뉴 닫기
   };
 
+  const goToFollowersPage = () => {
+    navigate("/follow", { state: { followers } });
+  };
+
+  const goToFollowingsPage = () => {
+    navigate("/following", { state: { following } });
+  };
+
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
 
@@ -264,10 +273,16 @@ const MyPage = () => {
               게시물 <span className="bold">{posts.length || "0"}</span>
             </span>
             <span>
-              팔로워 <span className="bold">{followers.length || "0"}</span>
+              팔로워{" "}
+              <span className="bold" onClick={goToFollowersPage}>
+                {followers.length || "0"}
+              </span>
             </span>
             <span>
-              팔로잉 <span className="bold">{following.length || "0"}</span>
+              팔로잉{" "}
+              <span className="bold" onClick={goToFollowingsPage}>
+                {following.length || "0"}
+              </span>
             </span>
           </div>
           <div className="userName">{name || ""}</div>
@@ -286,6 +301,15 @@ const MyPage = () => {
                   alt={`Post ${post._id}`}
                   onClick={() => openModal(post)}
                 />
+                {post.images.length > 1 && (
+                  <div className="many-images-overlay">
+                    <img
+                      src={manyImg}
+                      alt="Multiple Images"
+                      className="many-images-icon"
+                    />
+                  </div>
+                )}
               </div>
             ))}
           </div>

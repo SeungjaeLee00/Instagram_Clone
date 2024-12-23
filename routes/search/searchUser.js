@@ -8,6 +8,7 @@ router.use(cookieParser());
 
 const { User } = require("../../models/User");
 const { Post } = require("../../models/Post");
+const { Follow } = require("../../models/Follow");
 
 // 닉네임으로 사용자 검색
 router.get("/", auth, async (req, res) => {
@@ -24,16 +25,30 @@ router.get("/", auth, async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: "사용자를 찾을 수 없습니다." });
     }
-
+    // console.log("user._id", user._id); // user._id 값 확인
     // 사용자의 게시물 정보 가져오기
-    const posts = await Post.find({ user: user._id }) // user 필드가 사용자의 ID와 일치하는 게시물 찾기
-      .select("text images createdAt"); // 필요한 필드만
-    // .populate("comments"); // 댓글 정보
+    const posts = await Post.find({ user_id: user._id }).select(
+      "text images createdAt"
+    );
+    // console.log("posts", posts); // 게시물 값 확인
+
+    // 팔로우 목록과 팔로워 목록 가져오기
+    const following = await Follow.find({ follow_id: user._id }).populate(
+      "following",
+      "user_id"
+    ); // 팔로잉 목록
+    const followers = await Follow.find({ following: user._id }).populate(
+      "follow_id",
+      "user_id"
+    ); // 팔로워 목록
 
     // 사용자 정보와 게시물 정보를 함께 반환
     res.status(200).json({
       userName: user.user_id, // 사용자 이름(user_id)
+      userId: user._id, // 사용자 ID 추가
       posts: posts, // 사용자의 게시물 배열
+      following: following.map((f) => f.following), // 팔로잉 목록
+      followers: followers.map((f) => f.follow_id), // 팔로워 목록
     });
   } catch (error) {
     console.error("Error occurred:", error);

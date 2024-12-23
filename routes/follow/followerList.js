@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { Follow } = require("../../models/Follow");
+const { User } = require("../../models/User");
 const { auth } = require("../../routes/auth");
 
 const cookieParser = require("cookie-parser");
@@ -19,9 +20,14 @@ router.get("/", auth, async (req, res) => {
     }
 
     const followerList = result.map((follow) => follow.follow_id);
+    const followerDetails = await User.find({ _id: { $in: followerList } });
 
     return res.status(200).json({
-      followers: followerList,
+      followers: followerDetails.map((user) => ({
+        user_id: user.user_id,
+        username: user.username,
+        profile_image: user.profile_image || default_profile, // 프로필 이미지 없을 경우 default 설정
+      })),
     });
   } catch (err) {
     return res.status(500).json({

@@ -81,51 +81,61 @@ const EditProfile = () => {
     }
   };
 
+  const handleBackClick = () => {
+    navigate(-1);
+  };
+
   return (
-    <div className="edit-profile">
-      <h2>프로필 수정</h2>
-      <form onSubmit={handleEditProfile}>
-        {/* 파일 업로드 */}
-        <input type="file" onChange={(e) => setFile(e.target.files[0])} />
+    <>
+      <button className="edit-backClick-btn" onClick={handleBackClick}>
+        &lt; 뒤로 가기
+      </button>
 
-        {/* 이메일 (수정 불가능) */}
-        <input type="email" value={user.email} readOnly />
+      <div className="edit-profile">
+        <h2>프로필 수정</h2>
+        <form onSubmit={handleEditProfile}>
+          {/* 파일 업로드 */}
+          <input type="file" onChange={(e) => setFile(e.target.files[0])} />
 
-        {/* 개인 소개 */}
-        <input
-          type="text"
-          placeholder="Introduce Yourself"
-          value={newIntroduce}
-          onFocus={clearInputOnFocus(setNewIntroduce)}
-          onBlur={resetInputOnBlur(setNewIntroduce, profile?.introduce || "")}
-          onChange={(e) => setNewIntroduce(e.target.value)}
-        />
+          {/* 이메일 (수정 불가능) */}
+          <input type="email" value={user.email} readOnly />
 
-        {/* 이름 */}
-        <input
-          type="text"
-          placeholder="Name"
-          value={newName}
-          onFocus={clearInputOnFocus(setNewName)}
-          onBlur={resetInputOnBlur(setNewName, profile?.user_name || "")}
-          onChange={(e) => setNewName(e.target.value)}
-        />
+          {/* 개인 소개 */}
+          <input
+            type="text"
+            placeholder="Introduce Yourself"
+            value={newIntroduce}
+            onFocus={clearInputOnFocus(setNewIntroduce)}
+            onBlur={resetInputOnBlur(setNewIntroduce, profile?.introduce || "")}
+            onChange={(e) => setNewIntroduce(e.target.value)}
+          />
 
-        {/* 별명 */}
-        <input
-          type="text"
-          placeholder="Id"
-          value={newId}
-          onFocus={clearInputOnFocus(setNewId)}
-          onBlur={resetInputOnBlur(setNewId, profile?.user_id || "")}
-          onChange={(e) => setNewId(e.target.value)}
-        />
+          {/* 이름 */}
+          <input
+            type="text"
+            placeholder="Name"
+            value={newName}
+            onFocus={clearInputOnFocus(setNewName)}
+            onBlur={resetInputOnBlur(setNewName, profile?.user_name || "")}
+            onChange={(e) => setNewName(e.target.value)}
+          />
 
-        <button type="submit" disabled={loading}>
-          {loading ? "수정 중" : "프로필 수정"}
-        </button>
-      </form>
-    </div>
+          {/* 별명 */}
+          <input
+            type="text"
+            placeholder="Id"
+            value={newId}
+            onFocus={clearInputOnFocus(setNewId)}
+            onBlur={resetInputOnBlur(setNewId, profile?.user_id || "")}
+            onChange={(e) => setNewId(e.target.value)}
+          />
+
+          <button type="submit" disabled={loading}>
+            {loading ? "수정 중" : "프로필 수정"}
+          </button>
+        </form>
+      </div>
+    </>
   );
 };
 

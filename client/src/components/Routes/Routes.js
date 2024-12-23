@@ -10,16 +10,16 @@ import ResetPassword from "../../pages/ResetPassword/ResetPassword";
 import ProtectedRoute from "../../components/Routes/ProtectedRoute";
 
 import CreatePage from "../../pages/CreatePage";
-// import SearchPage from "../../pages/SearchPage";
+import SearchPage from "../../pages/SearchPage";
 // import MessagesPage from "../../pages/MessagesPage";
 // import NotificationsPage from "../../pages/NotificationsPage";
 import MyPage from "../../pages/MyPage/MyPage";
 import EditProfile from "../../pages/MyPage/EditProfile";
 import EditPost from "../../pages/MyPage/EditPost";
+import FollowPage from "../../pages/FollowPage/FollowPage";
+import FollowingPage from "../../pages/FollowPage/FollowingPage";
+import UserPage from "../../pages/UserPage";
 
-// import Test from "../../pages/MyPage/Test";
-
-const SearchPage = () => <div>검색 페이지</div>;
 const MessagesPage = () => <div>메시지 페이지</div>;
 const NotificationsPage = () => <div>알림 페이지</div>;
 
@@ -40,6 +40,13 @@ const RoutesComponent = ({ isAuthenticated, setIsAuthenticated }) => (
     />
     <Route path="/auth/verify-reset-code" element={<ResetPasswordVerify />} />
     <Route path="/auth/reset-password" element={<ResetPassword />} />
+
+    {/* 팔로우.팔로잉 목록 확인 경로 */}
+    <Route path="/follow" element={<FollowPage />} />
+    <Route path="/following" element={<FollowingPage />} />
+
+    {/* 다른 사람들 마이페이지 경로 */}
+    <Route path="/:userName/profile" element={<UserPage />} />
 
     {/* 로그인된 사용자만 접근 가능한 경로들 */}
     <Route

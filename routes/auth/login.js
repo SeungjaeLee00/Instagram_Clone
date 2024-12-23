@@ -50,6 +50,7 @@ router.post("/", (req, res) => {
       return res.cookie("x_auth", token, { httpOnly: true }).status(200).json({
         loginSuccess: true,
         userId: user._id,
+        userName: user.user_id,
       });
     })
     .catch((err) => {
