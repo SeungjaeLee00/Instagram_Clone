@@ -8,7 +8,7 @@
   cursor: pointer;
   color: #333;
   margin-top: 20px;
-  margin-left: 120px;
+  margin-left: 300px;
 }
 
 .edit-backClick-btn:hover {
@@ -20,8 +20,8 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: centter;
   padding: 40px 20px;
+  margin-left: 100px;
   font-family: "Arial", sans-serif;
   height: 100vh;
   box-sizing: border-box;

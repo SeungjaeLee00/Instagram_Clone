@@ -1,6 +1,7 @@
 .search-page {
   display: flex;
   flex-direction: column;
+  margin-left: 100px;
   padding: 20px;
   min-height: 100vh;
   color: #262626;
@@ -47,7 +48,6 @@
   font-size: 16px;
 }
 
-/* 검색 결과 스타일 */
 .search-results {
   margin-bottom: 20px;
   display: flex;
@@ -61,6 +61,8 @@
   font-size: 18px;
   margin: 5px 0;
   text-align: left;
+  padding-top: 10px;
+  padding-left: 5px;
 }
 
 .search-log-header {
