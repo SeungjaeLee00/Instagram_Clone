@@ -10,7 +10,7 @@ const FollowPage = () => {
   const followers = location.state ? location.state.followers : [];
 
   const handleBackClick = () => {
-    navigate("/mypage/profile");
+    navigate(-1);
   };
 
   return (

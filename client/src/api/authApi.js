@@ -99,10 +99,9 @@ export const loginUser = async (emailOrUsername, password) => {
 };
 
 // 로그아웃 API
-export const logoutUser = async (token) => {
+export const logoutUser = async () => {
   try {
     const response = await axios.get("http://localhost:5001/auth/logout", {
-      headers: { Authorization: `Bearer ${token}` },
       withCredentials: true,
     });
     return response.data;
@@ -116,10 +115,9 @@ export const logoutUser = async (token) => {
 };
 
 // 회원 탈퇴 API
-export const withdrawUser = async (token) => {
+export const withdrawUser = async () => {
   try {
     const response = await axios.delete("http://localhost:5001/auth/withdraw", {
-      headers: { Authorization: `Bearer ${token}` },
       withCredentials: true,
     });
     return response.data;

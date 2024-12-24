@@ -20,7 +20,7 @@ export const deletePost = async (postId, userId) => {
 };
 
 // 좋아요 추가 API
-export const addLike = async (postId, token) => {
+export const addLike = async (postId) => {
   try {
     const response = await axios.post(
       `${API_BASE_URL}/likes/posts/${postId}/like`,
@@ -28,7 +28,6 @@ export const addLike = async (postId, token) => {
       {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
         withCredentials: true,
       }

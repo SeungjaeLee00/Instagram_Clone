@@ -1,11 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  getMyProfile,
-  getMyPosts,
-  getUserFollowers,
-  getUserFollowing,
-} from "../../api/mypageApi";
+import { getMyProfile, getMyPosts } from "../../api/mypageApi";
+import { getUserFollowers, getUserFollowing } from "../../api/followApi";
 import { deletePost, addLike } from "../../api/postApi";
 import { logoutUser, withdrawUser } from "../../api/authApi";
 import { addComment } from "../../api/commentApi";
@@ -19,7 +15,7 @@ import manyImg from "../../assets/manyImg.png";
 import "../../styles/pages/MyPage.css";
 
 const MyPage = () => {
-  const { isAuthenticated, user, token } = useAuth();
+  const { isAuthenticated, user } = useAuth();
   const [profileData, setProfileData] = useState(null);
   const [posts, setPosts] = useState([]);
   const [followers, setFollowers] = useState([]);
@@ -39,7 +35,8 @@ const MyPage = () => {
     if (isAuthenticated) {
       const fetchData = async () => {
         try {
-          const profile = await getMyProfile(user.userId, token);
+          const profile = await getMyProfile(user.userId);
+          // console.log("mypage-token", token);
           const postList = await getMyPosts();
           // console.log("profile", profile);
 
@@ -52,10 +49,10 @@ const MyPage = () => {
 
           // console.log("업데이트한 포스트 리스트:", updatedPosts);
 
-          const followerList = await getUserFollowers(user.userId, token);
+          const followerList = await getUserFollowers(user.userId);
           // console.log("followerList", followerList);
 
-          const followingList = await getUserFollowing(user.userId, token);
+          const followingList = await getUserFollowing(user.userId);
           // console.log("followingList", followingList);
 
           setProfileData(profile);
@@ -80,7 +77,7 @@ const MyPage = () => {
     } else {
       setLoading(false);
     }
-  }, [isAuthenticated, user, token]);
+  }, [isAuthenticated, user]);
 
   const goToEditProfile = () => {
     if (isAuthenticated) {
@@ -176,7 +173,7 @@ const MyPage = () => {
   // 로그아웃
   const handleLogout = async () => {
     try {
-      const response = await logoutUser(token);
+      const response = await logoutUser();
       if (response.logoutSuccess) {
         alert("로그아웃 되었습니다.");
         navigate("/auth/login");
@@ -193,7 +190,7 @@ const MyPage = () => {
   const handleDeleteAccount = async () => {
     if (window.confirm("정말로 회원 탈퇴를 진행하시겠습니까?")) {
       try {
-        const response = await withdrawUser(token);
+        const response = await withdrawUser();
         alert("회원 탈퇴가 완료되었습니다.");
         navigate("/auth/login");
       } catch (error) {
