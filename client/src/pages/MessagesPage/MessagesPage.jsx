@@ -24,7 +24,6 @@ const MessagesPage = () => {
     // 이전 메시지 로드
     newSocket.on("previousMessages", (messages) => {
       setMessages(messages);
-      console.log(messages);
     });
 
     // 새 메시지 수신
@@ -46,9 +45,7 @@ const MessagesPage = () => {
   }, [chatroomId, user_object_id]);
 
   const sendMessage = (event) => {
-    event.preventDefault()
-    // socket.emit("sendMessage", messageInput);
-    if (messageInput.trim() && socket) {
+    if (socket) {
       socket.emit("sendMessage", messageInput);
       setMessageInput("");
     }

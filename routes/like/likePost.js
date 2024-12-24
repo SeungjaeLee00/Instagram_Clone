@@ -9,6 +9,8 @@ router.use(cookieParser());
 const { Post } = require("../../models/Post");
 const { emitPostLike } = require("../../server");
 
+const { User } = require("../../models/User"); // user_id불러 오기 위한 정보
+
 // 게시물 좋아요 API
 router.post("/:postId/like", auth, async (req, res) => {
   const { postId } = req.params;
@@ -16,6 +18,8 @@ router.post("/:postId/like", auth, async (req, res) => {
 
   try {
     const post = await Post.findById(postId);
+    const liker = await User.findById(userId).select('user_id');
+    const likerName = liker.user_id; 
 
     if (!post) {
       return res.status(404).json({ message: "게시물을 찾을 수 없습니다." });
@@ -41,6 +45,7 @@ router.post("/:postId/like", auth, async (req, res) => {
       emitPostLike({
         postId: postId,
         likerId: userId,
+        likerName: likerName, // user_id 추가(24.12.20)
         message: "게시물을 좋아합니다",
       });
 

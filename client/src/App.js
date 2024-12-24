@@ -15,11 +15,11 @@ import { verifyToken } from "./api/authApi";
 
 import ChatroomList from "./pages/MessagesPage/ChatroomPage";
 import MessagesPage from "./pages/MessagesPage/MessagesPage";
+import NotificationsPage from "./pages/AlarmPage/Notifications";
 
 const SearchPage = () => <div>검색 페이지</div>;
-// const MessagesPage = () => <div>메시지 페이지</div>;
-// const MessagesPage = ChatRoom;
-const NotificationsPage = () => <div>알림 페이지</div>;
+// const NotificationsPage = () => <div>알림 페이지</div>;
+
 const ProfilePage = () => <div>프로필 페이지</div>;
 
 function App({socket}) {
@@ -85,15 +85,6 @@ function App({socket}) {
               </ProtectedRoute>
             }
           />
-
-          {/* <Route
-            path="/messages"
-            element={
-              <ProtectedRoute isAuthenticated={isAuthenticated}>
-                <MessagesPage />
-              </ProtectedRoute>
-            }
-          /> */}
 
           <Route
             path="/dm/chatroom"
