@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { fetchUserProfile } from "../api/userApi";
 import { followUser, getUserFollowing } from "../api/followApi";
+import { createDM } from "../api/dmApi";
 import useAuth from "../hooks/useAuth";
 import "../styles/pages/UserPage.css";
 import default_post_image from "../assets/default_profile.png";
@@ -10,7 +11,7 @@ import default_post_image from "../assets/default_profile.png";
 const UserPage = () => {
   const { userName } = useParams();
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { isAuthenticated, user } = useAuth();
   const [userData, setUserData] = useState(null);
   const [isFollowing, setIsFollowing] = useState(false);
   const [followingList, setFollowingList] = useState([]);
@@ -26,6 +27,7 @@ const UserPage = () => {
           const data = await fetchUserProfile(userName);
           setUserData(data);
           // console.log("data", data);
+          // console.log("data.userName", data.userName);
           // console.log(user.userId);
 
           // 내 팔로잉 목록
@@ -75,6 +77,17 @@ const UserPage = () => {
     }
   };
 
+  const handleDmClick = async () => {
+    try {
+      const dmTo = userData.userName;
+      if (dmTo && isAuthenticated) {
+        await createDM(dmTo);
+      }
+    } catch (err) {
+      setError("채팅을 만들 수 없습니다.");
+    }
+  };
+
   const goToFollowersPage = () => {
     navigate("/follow", { state: { followers: userData.followers } });
   };
@@ -121,6 +134,8 @@ const UserPage = () => {
         >
           {isFollowing ? "팔로잉" : "팔로우 하기"}
         </button>
+
+        <button onClick={handleDmClick}>Dm</button>
       </div>
 
       <div className="user-posts">
