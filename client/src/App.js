@@ -5,11 +5,6 @@ import Layout from "../src/components/Common/Layout";
 import { verifyToken } from "./api/authApi";
 import RoutesComponent from "../src/components/Routes/Routes";
 
-import { BrowserRouter as Router } from "react-router-dom";
-import Layout from "./components/Layout";
-
-import { verifyToken } from "./api/authApi";
-
 // const SearchPage = () => <div>검색 페이지</div>;
 // // const MessagesPage = () => <div>메시지 페이지</div>;
 // // const MessagesPage = ChatRoom;

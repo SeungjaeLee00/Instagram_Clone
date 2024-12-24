@@ -8,6 +8,7 @@ export const createDM = async (userId) => {
     const response = await axios.post(`${API_BASE_URL}/dm/chatroom/${userId}`, {
       withCredentials: true,
     });
+    console.log("response", response);
     return response.data;
   } catch (error) {
     console.log(error);
