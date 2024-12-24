@@ -14,13 +14,13 @@ export const fetchPosts = async () => {
 export const deletePost = async (postId, userId) => {
   const response = await axios.delete(`${API_BASE_URL}/post/delete/${postId}`, {
     withCredentials: true,
-    data: { userId },
+    data: { userId: userId },
   });
   return response.data;
 };
 
 // 좋아요 추가 API
-export const addLike = async (postId, token) => {
+export const addLike = async (postId) => {
   try {
     const response = await axios.post(
       `${API_BASE_URL}/likes/posts/${postId}/like`,
@@ -28,7 +28,6 @@ export const addLike = async (postId, token) => {
       {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
         withCredentials: true,
       }
@@ -65,6 +64,42 @@ export const uploadPost = async (images, text) => {
     return response.data;
   } catch (error) {
     console.error("게시물 업로드 오류:", error);
+    throw error;
+  }
+};
+
+// 게시물 수정 API
+export const editPost = async (postId, text, imagesToDelete) => {
+  const formData = new FormData();
+
+  // 텍스트가 존재할 경우에만 추가
+  if (text) {
+    formData.append("text", text);
+  }
+
+  // 삭제할 이미지가 있을 경우에만 추가
+  if (imagesToDelete && imagesToDelete.length > 0) {
+    formData.append("imagesToDelete", JSON.stringify(imagesToDelete));
+    console.log("imagesToDelete to send:", JSON.stringify(imagesToDelete));
+    for (let pair of formData.entries()) {
+      console.log(pair[0], pair[1]);
+    }
+  }
+
+  try {
+    const response = await axios.patch(
+      `${API_BASE_URL}/post/edit/${postId}`,
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+        withCredentials: true,
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("게시물 수정 오류:", error);
     throw error;
   }
 };

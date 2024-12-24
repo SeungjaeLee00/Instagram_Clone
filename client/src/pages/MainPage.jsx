@@ -68,6 +68,7 @@ const MainPage = () => {
     try {
       const response = await addComment(postId, newCommentText);
       const { comment } = response;
+
       setPosts((prevPosts) =>
         prevPosts.map((post) =>
           post._id === postId
@@ -81,21 +82,23 @@ const MainPage = () => {
             : post
         )
       );
+      // console.log("main에서 확인하는 comment: ", comment);
       return { comment };
     } catch (error) {
       console.error("댓글 추가 중 오류가 발생했습니다:", error);
     }
   };
 
-  const handleDeletePost = async (postId) => {
+  const handleDeletePost = async (postId, userId) => {
     try {
-      const userId = user?.userId;
+      // console.log("삭제 요청 시 userId:", userId);
+
       if (!userId) {
         alert("사용자 정보를 찾을 수 없습니다.");
         return;
       }
 
-      await deletePost(postId, token, userId);
+      await deletePost(postId, userId);
       setPosts((prevPosts) => prevPosts.filter((post) => post._id !== postId));
       alert("게시물이 삭제되었습니다.");
     } catch (error) {

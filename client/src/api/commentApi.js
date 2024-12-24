@@ -14,14 +14,13 @@ export const addComment = async (postId, newCommentText) => {
 };
 
 // 특정 게시물 댓글 가져오기 API
-export const getComments = async (postId, userId, token) => {
+export const getComments = async (postId, userId) => {
   const response = await axios.get(
     `${API_BASE_URL}/comment/get/${postId}/comments`,
     {
       data: { userId },
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
       },
       withCredentials: true,
     }
@@ -30,7 +29,7 @@ export const getComments = async (postId, userId, token) => {
 };
 
 // 댓글 좋아요 추가 API
-export const addCommentLike = async (commentId, isLiked, token) => {
+export const addCommentLike = async (commentId, isLiked) => {
   try {
     const response = await axios.post(
       `${API_BASE_URL}/likes/comments/${commentId}/like`,
@@ -38,7 +37,6 @@ export const addCommentLike = async (commentId, isLiked, token) => {
       {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
         withCredentials: true,
       }

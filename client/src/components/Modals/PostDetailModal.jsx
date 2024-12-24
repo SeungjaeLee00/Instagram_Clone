@@ -1,12 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+
 import { timeAgo } from "../../utils/timeAgo";
 import useAuth from "../../hooks/useAuth";
-import {
-  deleteComment,
-  addCommentLike,
-  getComments,
-} from "../../api/commentApi";
+import { deleteComment, addCommentLike } from "../../api/commentApi";
 
 import "../../styles/components/PostDetailModal.css";
 import default_profile from "../../assets/default_profile.png";
@@ -20,7 +17,7 @@ const PostDetailModal = ({
   onDelete,
 }) => {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { isAuthenticated, user } = useAuth();
   const [showOptions, setShowOptions] = useState(false);
   const [liked, setLiked] = useState(false); // 게시물 좋아요 상태
   const [postLikesCount, setPostLikesCount] = useState(0); // 게시물 좋아요 개수
@@ -29,20 +26,30 @@ const PostDetailModal = ({
   const commentInputRef = useRef(null);
   const [visibleComments, setVisibleComments] = useState(6);
   const [isExpanded, setIsExpanded] = useState(false);
+  const [selectedPost, setSelectedPost] = useState(null);
+  const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
-    if (post && post.comments) {
-      setLiked(post.liked);
-      setPostLikesCount(post.likesCount);
+    if (user) {
+      // console.log("user", user);
+      // console.log("post", post);
 
-      const updatedComments = post.comments.map((comment) => ({
-        ...comment,
-        user: {
-          user_id: comment.user?.user_id,
-        },
-        likesCount: comment.likes.length,
-      }));
-      setComments(updatedComments);
+      if (post && post.comments) {
+        setLiked(post.liked);
+        setPostLikesCount(post.likesCount);
+
+        const updatedComments = post.comments.map((comment) => ({
+          ...comment,
+          user: {
+            user_id: comment.user?.user_id,
+            _id: comment.user?._id,
+          },
+          likesCount: comment.likes.length,
+        }));
+        setComments(updatedComments);
+      }
+      // console.log("user.userId", user.userId);
+      // console.log("post.user_id._id", post.user_id._id);
     }
   }, [post, user]);
 
@@ -103,24 +110,27 @@ const PostDetailModal = ({
   const handleCommentSubmit = async () => {
     if (!commentText.trim()) return;
     try {
-      const newComment = await onUpdate(post._id, commentText);
+      const response = await onUpdate(post._id, commentText);
 
-      if (!newComment || !newComment.comment) {
+      const newComment = response?.comment;
+      // console.log("모달에서 newComment: ", newComment);
+      if (!newComment) {
         throw new Error("댓글 추가 응답에 comment 정보가 없습니다.");
       }
 
-      const commentData = newComment.comment;
       const formattedComment = {
-        ...commentData,
+        ...newComment,
         user: {
-          _id: commentData.user._id,
-          user_id: commentData.user.user_id,
-          profile_image: commentData.user.profile_image || default_profile,
+          _id: newComment.user._id,
+          user_id: newComment.user.user_id,
+          profile_image: newComment.user.profile_image || default_profile,
         },
         likes: [],
         likesCount: 0,
         liked: false,
       };
+
+      console.log("formattedComment", formattedComment);
 
       // 새 댓글을 기존 댓글 리스트의 맨 앞에 추가
       setComments((prevComments) => [formattedComment, ...prevComments]);
@@ -142,13 +152,13 @@ const PostDetailModal = ({
     );
     if (!commentToDelete) return;
 
-    if (commentToDelete.user._id !== user._id) {
+    if (commentToDelete.user._id !== post.user_id._id) {
       alert("본인의 댓글만 삭제할 수 있습니다.");
       return;
     }
 
     try {
-      await deleteComment(commentId, user._id);
+      await deleteComment(commentId, post.user_id._id);
 
       // 댓글 삭제 후, 로컬 상태에서 해당 댓글 제거
       setComments((prevComments) =>
@@ -167,15 +177,33 @@ const PostDetailModal = ({
     }
   };
 
-  // 게시물 수정: 수정 버튼 클릭 시 수정 페이지로 이동(임시)
+  // 게시물 수정
   const handleEdit = () => {
-    navigate(`/edit/${post._id}`);
+    if (isAuthenticated) {
+      const loginUserId = user.userId;
+      const postUserId = post.user_id._id;
+
+      if (loginUserId === postUserId) {
+        setSelectedPost(post);
+        navigate("/edit-post", { state: { post } });
+      } else {
+        alert("이 게시물은 수정할 권한이 없습니다.");
+      }
+    } else {
+      alert("로그인이 필요합니다.");
+      navigate("/auth/login");
+    }
   };
 
   // 게시물 삭제
   const handleDelete = () => {
     if (window.confirm("게시물을 삭제하시겠습니까?")) {
-      onDelete(post._id);
+      const postUserId = post.user_id?._id;
+      if (!postUserId) {
+        alert("사용자 정보가 없습니다.");
+        return;
+      }
+      onDelete(post._id, postUserId);
     }
   };
 
@@ -191,15 +219,56 @@ const PostDetailModal = ({
     setVisibleComments(6); // 다시 6개 댓글로 축소
   };
 
+  const nextImage = () => {
+    if (currentIndex < post?.images?.length - 1) {
+      setCurrentIndex(currentIndex + 1);
+    }
+  };
+
+  const prevImage = () => {
+    if (currentIndex > 0) {
+      setCurrentIndex(currentIndex - 1);
+    }
+  };
+
+  // 클릭 시 사용자 프로필 이동
+  const goToUserProfile = (clickedUserId, clickedUserName) => {
+    if (clickedUserId === user.userId) {
+      navigate(`/mypage/profile`);
+    } else {
+      navigate(`/${clickedUserName}/profile`);
+    }
+  };
+
   if (!isOpen || !post) return null;
 
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
         <div className="modal-body">
-          <div className="imageDetail-section">
+          <div className="imageDetail-section" style={{ position: "relative" }}>
             {post.images && post.images.length > 0 && (
-              <img src={post.images[0]} alt="post" />
+              <>
+                <img
+                  src={post.images[currentIndex]}
+                  alt="post"
+                  className="image-detail-img"
+                />
+                {post.images.length > 1 && (
+                  <>
+                    {currentIndex > 0 && (
+                      <button onClick={prevImage} className="prev-image-btn">
+                        &lt;
+                      </button>
+                    )}
+                    {currentIndex < post.images.length - 1 && (
+                      <button onClick={nextImage} className="next-image-btn">
+                        &gt;
+                      </button>
+                    )}
+                  </>
+                )}
+              </>
             )}
           </div>
 
@@ -207,14 +276,24 @@ const PostDetailModal = ({
             <div className="postDetail-header">
               <div className="postDetail-userInfo">
                 <img
-                  src={post.user_id?.profile_image || default_profile}
+                  src={post.user_id.profile_image || default_profile}
                   alt="profile"
                   className="profileDetail-image"
+                  onClick={() =>
+                    goToUserProfile(post.user_id._id, post.user_id?.user_id)
+                  }
                 />
 
                 <div className="userDetail">
                   <div className="userDetail-info">
-                    <span className="username">{post.user_id?.user_id}</span>
+                    <span
+                      className="username"
+                      onClick={() =>
+                        goToUserProfile(post.user_id._id, post.user_id?.user_id)
+                      }
+                    >
+                      {post.user_id.user_id}
+                    </span>
                     <span className="post-time">
                       · {timeAgo(post.createdAt)}
                     </span>
@@ -244,7 +323,7 @@ const PostDetailModal = ({
                     <div key={index} className="commentDetail-item">
                       {/* 프로필 이미지 */}
                       <img
-                        src={comment.user?.profile_image || default_profile}
+                        src={comment.user.profile_image || default_profile}
                         alt="profile"
                         className="profileDetail-image"
                       />
@@ -274,7 +353,7 @@ const PostDetailModal = ({
                         }`}
                       ></button>
                       {/* 댓글 삭제 버튼 */}
-                      {comment.user._id === user._id && (
+                      {comment.user._id === post.user_id._id && (
                         <button
                           onClick={() => handleCommentDelete(comment._id)}
                           className="comment-delete-btn"

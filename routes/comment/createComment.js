@@ -28,7 +28,7 @@ router.post("/:postId", auth, async (req, res) => {
       text: text,
       createdAt: Date.now(),
     });
-
+    console.log("서버", newComment);
     await newComment.save(); // 댓글 DB에 저장
 
     // 게시물의 comments 배열에 댓글 ID 추가
@@ -39,7 +39,7 @@ router.post("/:postId", auth, async (req, res) => {
     // 저장된 댓글에 사용자 정보를 포함하도록 populate
     const populatedComment = await Comment.findById(newComment._id).populate({
       path: "user",
-      select: "_id user_id", // 사용자 ID와 이름만 선택
+      select: "_id user_id profile_image",
     });
 
     // emitComment 호출
@@ -47,8 +47,7 @@ router.post("/:postId", auth, async (req, res) => {
       postId: postId,
       commentId: newComment._id,
       commentText: newComment.text,
-      commenterId: userId,
-      commenterName: populatedComment.user.user_id, // emit 데이터에 이름 추가
+      commenterName: populatedComment.user.user_id,
     });
 
     return res.status(201).json({

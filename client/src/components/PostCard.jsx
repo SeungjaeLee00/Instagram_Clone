@@ -2,12 +2,16 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import PostDetailModal from "./Modals/PostDetailModal";
 import { timeAgo } from "../utils/timeAgo";
+import useAuth from "../hooks/useAuth";
 
 import default_profile from "../assets/default_profile.png";
+import manyImg from "../assets/manyImg.png";
 import "../styles/components/PostCard.css";
 
 const PostCard = ({ post, onUpdate, onDelete, onLike }) => {
   const navigate = useNavigate();
+  const { isAuthenticated, user } = useAuth();
+
   const [liked, setLiked] = useState(post.liked);
   const [likesCount, setLikesCount] = useState(post.likesCount);
   const [showOptions, setShowOptions] = useState(false);
@@ -17,10 +21,17 @@ const PostCard = ({ post, onUpdate, onDelete, onLike }) => {
   const [selectedPost, setSelectedPost] = useState(null);
 
   useEffect(() => {
-    setLiked(post.liked);
-    setLikesCount(post.likesCount);
-    setComments(post.comments || []);
-  }, [post]);
+    if (user) {
+      setLiked(post.liked);
+      setLikesCount(post.likesCount);
+      setComments(post.comments || []);
+      // console.log("user", user);
+      // console.log("post", post);
+
+      // console.log("user.userId", user.userId);
+      // console.log("post.user_id._id", post.user_id._id);
+    }
+  }, [post, user]);
 
   // 댓글 입력 필드 변경
   const handleCommentChange = (e) => {
@@ -33,6 +44,7 @@ const PostCard = ({ post, onUpdate, onDelete, onLike }) => {
     try {
       const response = await onUpdate(post._id, commentText);
       const newComment = response.comment;
+      console.log("postCard에서 댓글 달기:", newComment);
 
       setComments((prevComments) => [...prevComments, newComment]); // 새 댓글 추가
       setCommentText("");
@@ -55,9 +67,22 @@ const PostCard = ({ post, onUpdate, onDelete, onLike }) => {
     }
   };
 
-  // 게시물 수정: 수정 버튼 클릭 시 수정 페이지로 이동(임시)
+  // 게시물 수정
   const handleEdit = () => {
-    navigate(`/edit/${post._id}`);
+    if (isAuthenticated) {
+      const loginUserId = user.userId;
+      const postUserId = post.user_id._id;
+
+      if (loginUserId === postUserId) {
+        setSelectedPost(post);
+        navigate("/edit-post", { state: { post } });
+      } else {
+        alert("이 게시물은 수정할 권한이 없습니다.");
+      }
+    } else {
+      alert("로그인이 필요합니다.");
+      navigate("/auth/login");
+    }
   };
 
   // DM 버튼: 클릭 시 게시물 유저의 메세지 페이지로 이동(임시)
@@ -68,18 +93,34 @@ const PostCard = ({ post, onUpdate, onDelete, onLike }) => {
   // 게시물 삭제
   const handleDelete = () => {
     if (window.confirm("게시물을 삭제하시겠습니까?")) {
-      onDelete(post._id);
+      const postUserId = post.user_id?._id;
+      if (!postUserId) {
+        alert("사용자 정보가 없습니다.");
+        return;
+      }
+      onDelete(post._id, postUserId);
     }
   };
 
   const openModal = () => {
     setSelectedPost(post); // 클릭한 게시물 데이터를 상태에 저장
+    // console.log("postCard에서 모달로 보내는 post:", post);
     setIsModalOpen(true);
   };
 
   const closeModal = () => {
     setIsModalOpen(false);
     setSelectedPost(null);
+  };
+
+  // 클릭 시 사용자 프로필 이동
+  const goToUserProfile = (clickedUserId, clickedUserName) => {
+    if (clickedUserId === user.userId) {
+      navigate(`/mypage/profile`);
+    } else {
+      // console.log("clickedUserName", clickedUserName);
+      navigate(`/${clickedUserName}/profile`);
+    }
   };
 
   return (
@@ -89,9 +130,19 @@ const PostCard = ({ post, onUpdate, onDelete, onLike }) => {
           src={post.user_id?.profile_image || default_profile}
           alt="profile"
           className="profile-image"
+          onClick={() =>
+            goToUserProfile(post.user_id?._id, post.user_id?.user_id)
+          }
         />
         <div className="user-info">
-          <span className="username">{post.user_id?.user_id}</span>
+          <span
+            className="username"
+            onClick={() =>
+              goToUserProfile(post.user_id?._id, post.user_id?.user_id)
+            }
+          >
+            {post.user_id?.user_id}
+          </span>
           <span className="post-time">· {timeAgo(post.createdAt)}</span>
         </div>
         <div className="post-management">
@@ -106,9 +157,12 @@ const PostCard = ({ post, onUpdate, onDelete, onLike }) => {
         </div>
       )}
 
-      <div className="post-image">
+      <div className="post-image" style={{ position: "relative" }}>
         {post.images && post.images.length > 0 && (
-          <img src={post.images[0]} alt="post" />
+          <img src={post.images[0]} alt="post" className="post-img" />
+        )}
+        {post.images && post.images.length > 1 && (
+          <img src={manyImg} alt="many images" className="many-img" />
         )}
       </div>
 

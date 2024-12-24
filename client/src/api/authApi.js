@@ -81,12 +81,12 @@ export const verifyResetCode = async (email, verificationCode) => {
 };
 
 // 로그인 API
-export const loginUser = async (emailOrUsername, password, token) => {
+export const loginUser = async (emailOrUsername, password) => {
   try {
     const response = await axios.post(
       "http://localhost:5001/auth/login",
       { emailOrUsername, password },
-      { headers: { Authorization: `Bearer ${token}` }, withCredentials: true }
+      { withCredentials: true }
     );
     return response.data;
   } catch (error) {
@@ -98,3 +98,34 @@ export const loginUser = async (emailOrUsername, password, token) => {
   }
 };
 
+// 로그아웃 API
+export const logoutUser = async () => {
+  try {
+    const response = await axios.get("http://localhost:5001/auth/logout", {
+      withCredentials: true,
+    });
+    return response.data;
+  } catch (error) {
+    if (error.response) {
+      throw new Error(error.response.data.message || "알 수 없는 오류");
+    } else {
+      throw new Error("로그아웃 요청에 실패했습니다.");
+    }
+  }
+};
+
+// 회원 탈퇴 API
+export const withdrawUser = async () => {
+  try {
+    const response = await axios.delete("http://localhost:5001/auth/withdraw", {
+      withCredentials: true,
+    });
+    return response.data;
+  } catch (error) {
+    if (error.response) {
+      throw new Error(error.response.data.message || "알 수 없는 오류");
+    } else {
+      throw new Error("회원 탈퇴 요청에 실패했습니다.");
+    }
+  }
+};

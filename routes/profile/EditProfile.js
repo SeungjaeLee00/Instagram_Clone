@@ -47,14 +47,15 @@ router.patch("/", auth, upload.single("file"), (req, res) => {
 
         // S3에 파일 업로드
         const uploadResult = s3.send(new PutObjectCommand(uploadParams));
-        user.image = `https://${uploadParams.Bucket}.s3.${process.env.AWS_REGION}.amazonaws.com/${filename}`;
+        user.profile_image = `https://${uploadParams.Bucket}.s3.${process.env.AWS_REGION}.amazonaws.com/${filename}`;
       }
 
       user
         .save()
-        .then(() => {
+        .then((updatedUser) => {
           return res.json({
             message: "정보가 수정되었습니다.",
+            user: updatedUser,
           });
         })
         .catch((err) => {

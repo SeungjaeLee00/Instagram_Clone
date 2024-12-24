@@ -46,11 +46,26 @@
 }
 
 /* 게시물 이미지 */
-.post-image img {
+.post-image {
+  position: relative;
+  width: 600px;
+  height: 600px;
+  overflow: hidden;
+}
+
+.post-img {
   width: 100%;
-  height: auto;
-  display: block;
+  height: 100%;
   object-fit: cover;
+}
+
+.many-img {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  width: 30px;
+  height: 30px;
+  z-index: 10;
 }
 
 .post-management {

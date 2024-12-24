@@ -44,6 +44,9 @@ let auth = (req, res, next) => {
 
         req.token = token;
         req.user = user;
+
+        // console.log("Authenticated User:", req.user); // 인증된 사용자 정보 확인
+
         next();
       })
       .catch((err) => {

@@ -10,9 +10,10 @@ const useAuth = () => {
     const checkAuthStatus = async () => {
       try {
         const response = await verifyToken(); // 인증 상태 확인
+        // console.log("response", response);
         if (response.isAuth) {
           setIsAuthenticated(true);
-          setUser(response.user); // 로그인된 사용자 정보 저장
+          setUser(response.user);
         } else {
           setIsAuthenticated(false);
           setUser(null);

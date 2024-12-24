@@ -16,7 +16,6 @@ router.get("/", auth, async (req, res) => {
     const following = await Follow.find({ follow_id: user_id }).select(
       "following"
     );
-    // console.log("팔로우 목록:", following);
 
     // 팔로우한 사용자가 있을 때, 그들의 게시물 조회
     const followingIds = following.map((follow) => follow.following);
