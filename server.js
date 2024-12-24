@@ -5,12 +5,10 @@ let io;
 
 function initSocket(server) {
   io = socketIo(server, {
-    cors: {
       cors: {
         origin: "*", // 임시로 모든 도메인 허용
         methods: ["GET", "POST"],
       },
-    }
   });
 
   // io = socketIo(server);
@@ -41,6 +39,7 @@ function emitCommentLike(data) {
     return;
   } else {
     io.emit("like-comment", data);
+    console.log(data.commentId);
     console.log("Emitting like-comment event:", data);
   }
 }

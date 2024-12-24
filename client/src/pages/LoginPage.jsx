@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/pages/LoginPage.css";
 import { loginUser } from "../api/authApi"; // API 호출 함수 가져오기
+import { initializeSocket } from "../utils/socket"; // 소켓 초기화 함수 가져오기
 
 // 이미지 로드
 import instalogo from "../assets/instagram_logo.png";
@@ -69,9 +70,11 @@ const Login = ({ setIsAuthenticated }) => {
   useEffect(() => {
     if (emailOrUsernameValid && passwordValid) {
       setNotAllow(false);
+      // initializeSocket(); // 로그인 후 소켓 초기화
       return;
     }
     setNotAllow(true);
+
   }, [emailOrUsernameValid, passwordValid]);
 
   return (
