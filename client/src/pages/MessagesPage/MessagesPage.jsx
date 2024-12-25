@@ -16,6 +16,7 @@ const MessagesPage = () => {
     const newSocket = io(`http://localhost:5001`, {
       query: { user_object_id : user_object_id},
     });
+    console.log(user_object_id);
     setSocket(newSocket);
 
     // 서버로 채팅방 입장 이벤트 전송
@@ -24,6 +25,7 @@ const MessagesPage = () => {
     // 이전 메시지 로드
     newSocket.on("previousMessages", (messages) => {
       setMessages(messages);
+      console.log(messages);
     });
 
     // 새 메시지 수신
@@ -60,19 +62,31 @@ const MessagesPage = () => {
   return (
     <div className="chat-container">
       <h2>Chat Room</h2>
-      <div className="chat-area">
-        <div id="messages">
+      <div className="chat-content">
+        <div className="chat-area">
           {messageList.map((message) => (
-            <div key={message._id} id={message._id}>
-              {message.user_id}: {message.content}{" "}
-              <button onClick={() => deleteMessage(message._id)}>Delete</button>
+            <div
+              key={message._id}
+              className={`message ${
+                message.object_id === user_object_id ? "self" : "other"
+              }`}
+            >
+              <div className="username">{message.user_id}</div>
+              <div className="content">{message.content}</div>
+              {message.object_id === user_object_id && (
+                <button
+                  className="delete-btn"
+                  onClick={() => deleteMessage(message._id)}
+                >
+                  Delete
+                </button>
+              )}
             </div>
           ))}
         </div>
-        <div>
+        <div className="input-area">
           <input
             type="text"
-            id="messageInput"
             placeholder="Type a message"
             value={messageInput}
             onChange={(e) => setMessageInput(e.target.value)}

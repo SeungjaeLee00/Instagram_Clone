@@ -45,7 +45,7 @@
 
 
 /* 타임스탬프 스타일 */
-.notifications-content timestamp {
+.timestamp {
     font-size: 0.8em;
     color: gray;
     margin-left: 10px;

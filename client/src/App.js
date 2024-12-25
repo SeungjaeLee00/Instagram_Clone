@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
+
 import { BrowserRouter as Router } from "react-router-dom";
 import Layout from "../src/components/Common/Layout";
 import { verifyToken } from "./api/authApi";
 import RoutesComponent from "../src/components/Routes/Routes";
 
-function App({socket}) {
+function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
 
