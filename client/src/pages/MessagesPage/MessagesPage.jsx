@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { io } from "socket.io-client";
 import "../../styles/pages/MessagesPage.css";
@@ -6,17 +6,22 @@ import "../../styles/pages/MessagesPage.css";
 const MessagesPage = () => {
   const { chatroomId } = useParams(); // URL에서 채팅방 ID 가져오기
   const location = useLocation();
-  const { user_object_id } = location.state || {}; // state로 전달받은 user_id
+  const navigate = useNavigate(); // 페이지 이동을 위한 useNavigate 훅
+
+  const { user_object_id, chatroomName } = location.state || {}; // state로 전달받은 user_id, chatroomName(title)
   const [socket, setSocket] = useState(null); // 소켓 상태
   const [messageList, setMessages] = useState([]); // 메시지 목록
   const [messageInput, setMessageInput] = useState(""); // 입력된 메시지
-
+  
+  // 메세지 스크롤
+  const chatAreaRef = useRef(null); // chat-area를 참조할 ref
+  const lastMessageRef = useRef(null); // 마지막 메시지 참조를 위한 ref
+  
   useEffect(() => {     
     // 소켓 연결 초기화
     const newSocket = io(`http://localhost:5001`, {
-      query: { user_object_id : user_object_id},
+      query: { user_object_id : user_object_id, chatroomName: chatroomName},
     });
-    console.log(user_object_id);
     setSocket(newSocket);
 
     // 서버로 채팅방 입장 이벤트 전송
@@ -25,7 +30,6 @@ const MessagesPage = () => {
     // 이전 메시지 로드
     newSocket.on("previousMessages", (messages) => {
       setMessages(messages);
-      console.log(messages);
     });
 
     // 새 메시지 수신
@@ -46,6 +50,13 @@ const MessagesPage = () => {
     };
   }, [chatroomId, user_object_id]);
 
+  useEffect(() => {
+    // 새로운 메시지가 추가되면 마지막 메시지로 스크롤
+    if (lastMessageRef.current) {
+      lastMessageRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [messageList]); // messageList가 변경될 때마다 실행
+
   const sendMessage = (event) => {
     if (socket) {
       socket.emit("sendMessage", messageInput);
@@ -59,39 +70,56 @@ const MessagesPage = () => {
     }
   };
 
+  const isPreviousMessageBySameUser = (index) => {
+    // 현재 메세지를 보낸 사람과 직전에 보낸 메세지가 동일한 사람인 경우
+    if (index == 0) return false; // 첫 메세지는 그냥 리턴
+    return messageList [index].object_id === messageList[index - 1].object_id;
+  }
+
+  const handleUserNameClick = (userId) => {
+    navigate(`/${userId}/profile`); // 이름 클릭하면 해당 사용자의 프로필 페이지로 이동
+  }
+
   return (
-    <div className="chat-container">
-      <h2>Chat Room</h2>
-      <div className="chat-content">
-        <div className="chat-area">
-          {messageList.map((message) => (
-            <div
-              key={message._id}
-              className={`message ${
-                message.object_id === user_object_id ? "self" : "other"
-              }`}
-            >
-              <div className="username">{message.user_id}</div>
-              <div className="content">{message.content}</div>
-              {message.object_id === user_object_id && (
-                <button
-                  className="delete-btn"
-                  onClick={() => deleteMessage(message._id)}
-                >
-                  Delete
-                </button>
-              )}
-            </div>
-          ))}
-        </div>
-        <div className="input-area">
-          <input
-            type="text"
-            placeholder="Type a message"
-            value={messageInput}
-            onChange={(e) => setMessageInput(e.target.value)}
-          />
-          <button onClick={sendMessage}>Send</button>
+    <div className="chat-page">    
+      <div className="chat-container">
+        <h2>{chatroomName}</h2>
+        <div className="chat-content">
+          <div className="chat-area" ref={chatAreaRef}>
+            {messageList.map((message, index) => (
+              <div
+                key={message._id}
+                className={`message ${
+                  message.object_id === user_object_id ? "self" : "other"
+                } ${isPreviousMessageBySameUser(index) ? "same-user" : ""}`} // "same-user" 클래스 추가
+                ref={index === messageList.length - 1 ? lastMessageRef : null}
+              >
+                {!isPreviousMessageBySameUser(index) && (
+                  <div className="username"
+                  onClick={() => handleUserNameClick(message.user_id)} // 이름 클릭 시 프로필 페이지로 이동
+                  >{message.user_id}</div>
+                )}
+                <div className="content">{message.content}</div>
+                {message.object_id === user_object_id && (
+                  <button
+                    className="delete-btn"
+                    onClick={() => deleteMessage(message._id)}
+                  >
+                    Delete
+                  </button>
+                )}
+              </div>
+            ))}
+          </div>
+          <div className="input-area">
+            <input
+              type="text"
+              placeholder="Type a message"
+              value={messageInput}
+              onChange={(e) => setMessageInput(e.target.value)}
+            />
+            <button onClick={sendMessage}>Send</button>
+          </div>
         </div>
       </div>
     </div>

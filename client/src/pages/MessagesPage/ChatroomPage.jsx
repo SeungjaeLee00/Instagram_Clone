@@ -26,9 +26,9 @@ const Chatroom = () => {
   }, [chatroomsId, chatrooms, userId]);
 
   // 채팅방 클릭 시 이동
-  const handleChatroomClick = (chatroomId) => {  
+  const handleChatroomClick = (chatroomId, chatroom) => {  
     navigate(`/dm/chatroom/${chatroomId}`, 
-      { state: {user_object_id: userId} }
+      { state: {user_object_id: userId, chatroomName: chatroom} }
     ); // 채팅방 ID로 이동
   };
 
@@ -41,7 +41,7 @@ const Chatroom = () => {
           <li
             key={chatroomsId[index]} // 각 채팅방 ID를 키로 사용
             className="chatroom-item"
-            onClick={() => handleChatroomClick(chatroomsId[index])} // 클릭 시 해당 채팅방 ID로 이동
+            onClick={() => handleChatroomClick(chatroomsId[index], chatroom)} // 클릭 시 해당 채팅방 ID로 이동
           >
             <strong>{chatroom}</strong>
           </li>

@@ -22,7 +22,7 @@ export const initializeSocket = () => {
 // 소켓 가져오기
 export const getSocket = () => {
     if (!socket) {
-      console.error("Socket not initialized! Call initializeSocket first.");
+      console.error(" !!먼저 소켓을 초기화 해주세요!! ");
     }
     console.log(socket);
     return socket;

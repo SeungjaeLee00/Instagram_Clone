@@ -5,6 +5,8 @@ import Layout from "../src/components/Common/Layout";
 import { verifyToken } from "./api/authApi";
 import RoutesComponent from "../src/components/Routes/Routes";
 
+import { initializeSocket } from "./utils/socket";
+
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -22,6 +24,10 @@ function App() {
         setIsAuthenticated(false);
       })
       .finally(() => setLoading(false));
+    
+      // 소켓 초기화
+    initializeSocket();
+
   }, []);
 
   if (loading) {
