@@ -1,10 +1,10 @@
 import axios from "axios";
 
-const API_BASE_URL = "http://localhost:5001";
+const API_BASE_URL = "http://localhost:5001/auth";
 
 // 토큰 유효 검사 API
 export const verifyToken = async () => {
-  const response = await axios.get(`${API_BASE_URL}/auth/auth/verify-token`, {
+  const response = await axios.get(`${API_BASE_URL}/auth/verify-token`, {
     withCredentials: true,
   });
   return response.data;
@@ -14,7 +14,7 @@ export const verifyToken = async () => {
 export const signupUser = async (email, password, name, user_id) => {
   try {
     const response = await axios.post(
-      `${API_BASE_URL}/auth/sign-up`,
+      `${API_BASE_URL}/sign-up`,
       { email, password, name, user_id },
       { withCredentials: true }
     );
@@ -28,7 +28,7 @@ export const signupUser = async (email, password, name, user_id) => {
 export const verifySignupEmail = async (email, verificationCode) => {
   try {
     const response = await axios.post(
-      `${API_BASE_URL}/auth/sign-up/verify-email`,
+      `${API_BASE_URL}/sign-up/verify-email`,
       { email, verificationCode },
       { withCredentials: true }
     );
@@ -42,7 +42,7 @@ export const verifySignupEmail = async (email, verificationCode) => {
 export const resetPassword = async (email, newPassword) => {
   try {
     const response = await axios.post(
-      `${API_BASE_URL}/auth/reset-password`,
+      `${API_BASE_URL}/reset-password`,
       { email, newPassword },
       { withCredentials: true }
     );
@@ -56,7 +56,7 @@ export const resetPassword = async (email, newPassword) => {
 export const requestResetPassword = async (email) => {
   try {
     const response = await axios.post(
-      `${API_BASE_URL}/auth/request-reset-password`,
+      `${API_BASE_URL}/request-reset-password`,
       { email },
       { withCredentials: true }
     );
@@ -70,7 +70,7 @@ export const requestResetPassword = async (email) => {
 export const verifyResetCode = async (email, verificationCode) => {
   try {
     const response = await axios.post(
-      `${API_BASE_URL}/auth/verify-reset-code`,
+      `${API_BASE_URL}/verify-reset-code`,
       { email, verificationCode },
       { withCredentials: true }
     );
@@ -84,7 +84,7 @@ export const verifyResetCode = async (email, verificationCode) => {
 export const loginUser = async (emailOrUsername, password) => {
   try {
     const response = await axios.post(
-      "http://localhost:5001/auth/login",
+      `${API_BASE_URL}/login`,
       { emailOrUsername, password },
       { withCredentials: true }
     );
@@ -101,7 +101,7 @@ export const loginUser = async (emailOrUsername, password) => {
 // 로그아웃 API
 export const logoutUser = async () => {
   try {
-    const response = await axios.get("http://localhost:5001/auth/logout", {
+    const response = await axios.get(`${API_BASE_URL}/logout`, {
       withCredentials: true,
     });
     return response.data;
@@ -117,7 +117,7 @@ export const logoutUser = async () => {
 // 회원 탈퇴 API
 export const withdrawUser = async () => {
   try {
-    const response = await axios.delete("http://localhost:5001/auth/withdraw", {
+    const response = await axios.delete(`${API_BASE_URL}/withdraw`, {
       withCredentials: true,
     });
     return response.data;

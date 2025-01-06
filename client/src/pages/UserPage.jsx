@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { fetchUserProfile } from "../api/userApi";
 import { followUser, getUserFollowing } from "../api/followApi";
-import { createDM } from "../api/dmApi";
+import { createDM } from "../api/messageApi";
 import useAuth from "../hooks/useAuth";
 import "../styles/pages/UserPage.css";
 import default_post_image from "../assets/default_profile.png";
@@ -14,6 +14,7 @@ const UserPage = () => {
   const { isAuthenticated, user } = useAuth();
   const [userData, setUserData] = useState(null);
   const [isFollowing, setIsFollowing] = useState(false);
+  // eslint-disable-next-line
   const [followingList, setFollowingList] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
@@ -33,7 +34,7 @@ const UserPage = () => {
           // 내 팔로잉 목록
           const followingData = await getUserFollowing(user.userId);
           setFollowingList(followingData.following || []);
-          console.log("followingList", followingList);
+          // console.log("followingList", followingList);
 
           // 팔로잉 목록에 현재 보고 있는 유저가 포함되어 있는지 확인
           const isUserFollowing =
@@ -79,9 +80,20 @@ const UserPage = () => {
 
   const handleDmClick = async () => {
     try {
-      const dmTo = userData.userName;
+      const dmTo = userData.userName; // 대상 사용자 이름
       if (dmTo && isAuthenticated) {
-        await createDM(dmTo);
+        const response = await createDM(dmTo);
+        console.log("dmClick", response);
+
+        const { chatroomId, chatroomName, user_object_id } = response;
+
+        if (chatroomId && chatroomName && user_object_id) {
+          navigate(`/dm/chatroom/${chatroomId}`, {
+            state: { user_object_id, chatroomName },
+          });
+        } else {
+          console.error("DM 생성 응답에 필요한 데이터가 부족합니다.");
+        }
       }
     } catch (err) {
       setError("채팅을 만들 수 없습니다.");

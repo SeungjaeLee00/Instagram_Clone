@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { requestResetPassword } from "../../api/authApi"; // API 호출 함수
 import lock from "../../assets/lock.png";
-import "../../styles/pages/ResetPasswordRequest.css";
+import "../../styles/pages/ResetPasswordPage/ResetPasswordRequest.css";
 
 const RequestResetPassword = () => {
   const [email, setEmail] = useState("");
@@ -17,7 +17,7 @@ const RequestResetPassword = () => {
     setEmail(value);
 
     const regex =
-      /^(([^<>()\[\].,;:\s@"]+(\.[^<>()\[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i;
+      /^(([^<>()\].,;:\s@"]+(\.[^<>()\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i;
 
     // email 값이 유효한 값인지 확인
     if (regex.test(value)) {

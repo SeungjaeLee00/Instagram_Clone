@@ -4,7 +4,7 @@ import { getMyProfile, editUserProfile } from "../../api/mypageApi";
 import { verifyToken } from "../../api/authApi";
 
 import useAuth from "../../hooks/useAuth";
-import "../../styles/pages/EditProfile.css";
+import "../../styles/pages/MyPage/EditProfile.css";
 
 const EditProfile = () => {
   const { user } = useAuth();

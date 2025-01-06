@@ -4,6 +4,8 @@ const router = express.Router();
 const { User } = require("../../models/User");
 const { Post } = require("../../models/Post");
 const { Comment } = require("../../models/Comment");
+const { Follow } = require("../../models/Follow");
+
 const { auth } = require("../auth");
 
 const cookieParser = require("cookie-parser");
@@ -15,6 +17,10 @@ router.delete("/", auth, async (req, res) => {
     const userId = req.user._id;
     await Post.deleteMany({ user: userId });
     await Comment.deleteMany({ user: userId });
+    await Follow.deleteMany({
+      $or: [{ follower: userId }, { following: userId }],
+    });
+
     const user = await User.findByIdAndDelete(userId);
 
     if (!user) {

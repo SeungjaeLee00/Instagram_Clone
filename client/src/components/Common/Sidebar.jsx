@@ -12,7 +12,7 @@ const Sidebar = () => {
   const menuItems = [
     { id: 1, path: "/", label: "홈", icon: "🏠" },
     { id: 2, path: "/search", label: "검색", icon: "🔍" },
-    { id: 3, path: "/messages", label: "메시지", icon: "✉️" },
+    { id: 3, path: "/dm/chatroom", label: "메시지", icon: "✉️" },
     { id: 4, path: "/notifications", label: "알림", icon: "❤️" },
     { id: 5, path: "/create", label: "만들기", icon: "➕" },
     { id: 6, path: "/mypage/profile", label: "프로필", icon: "👤" },

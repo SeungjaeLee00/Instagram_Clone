@@ -74,8 +74,14 @@ const Login = ({ setIsAuthenticated }) => {
       return;
     }
     setNotAllow(true);
-
   }, [emailOrUsernameValid, passwordValid]);
+
+  // 엔터키로 로그인 처리
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter" && !NotAllow) {
+      onclickConfirmButton();
+    }
+  };
 
   return (
     <div className="login-page">
@@ -95,6 +101,7 @@ const Login = ({ setIsAuthenticated }) => {
             value={emailOrUsername}
             onChange={handleEmailOrUserId}
             type="text"
+            onKeyDown={handleKeyDown}
           />
 
           <input
@@ -103,12 +110,14 @@ const Login = ({ setIsAuthenticated }) => {
             value={password}
             onChange={handlePassword}
             type="password"
+            onKeyDown={handleKeyDown}
           />
 
           <button
             className="login-submitButton"
             onClick={onclickConfirmButton}
             disabled={NotAllow}
+            // onKeyDown={handleKeyDown}
           >
             로그인
           </button>

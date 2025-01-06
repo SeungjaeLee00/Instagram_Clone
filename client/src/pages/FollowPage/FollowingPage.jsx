@@ -2,7 +2,7 @@ import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import default_profile from "../../assets/default_profile.png";
-import "../../styles/pages/Follow.css";
+import "../../styles/pages/FollowPage/Follow.css";
 
 const FollowingPage = () => {
   const location = useLocation();

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { verifySignupEmail } from "../../api/authApi"; // API 호출 함수
 import instalogo from "../../assets/instagram_logo.png";
-import "../../styles/pages/Signup_verify.css";
+import "../../styles/pages/SignupPage/Signup_verify.css";
 
 const Signup_verify = () => {
   const [verificationCode, setverificationCode] = useState("");

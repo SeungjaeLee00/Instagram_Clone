@@ -1,18 +1,18 @@
 const socketIo = require("socket.io");
-const {messageInit} = require("./routes/dm/message");
+const { messageInit } = require("./routes/dm/message");
 
 let io;
 
 function initSocket(server) {
   io = socketIo(server, {
-      cors: {
-        origin: "*", // 임시로 모든 도메인 허용
-        methods: ["GET", "POST"],
-      },
+    cors: {
+      origin: "*", // 임시로 모든 도메인 허용
+      methods: ["GET", "POST"],
+    },
   });
 
   // io = socketIo(server);
-  
+
   io.on("connection", (socket) => {
     console.log("A user connected");
 
@@ -54,14 +54,13 @@ function emitPostLike(data) {
   }
 }
 
-function chat(socket){
-    socket.on("joinChatroom", (chatroomId) => {
-        socket.join(chatroomId);
-        console.log(`User joined chatroom: ${chatroomId}`);
+function chat(socket) {
+  socket.on("joinChatroom", (chatroomId) => {
+    socket.join(chatroomId);
+    console.log(`User joined chatroom: ${chatroomId}`);
 
-        messageInit(io, socket, chatroomId);
-    });
+    messageInit(io, socket, chatroomId);
+  });
 }
 
-module.exports = { initSocket, emitComment, emitCommentLike, emitPostLike};
-
+module.exports = { initSocket, emitComment, emitCommentLike, emitPostLike };
