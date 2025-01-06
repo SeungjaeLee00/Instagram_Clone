@@ -181,7 +181,7 @@ const PostDetailModal = ({
   const handleEdit = () => {
     if (isAuthenticated) {
       const loginUserId = user.userId;
-      const postUserId = post.user_id._id;
+      const postUserId = post.user_id?._id;
 
       if (loginUserId === postUserId) {
         setSelectedPost(post);
@@ -200,7 +200,7 @@ const PostDetailModal = ({
     if (window.confirm("게시물을 삭제하시겠습니까?")) {
       const postUserId = post.user_id?._id;
       if (!postUserId) {
-        alert("사용자 정보가 없습니다.");
+        alert("이 게시물은 삭제할 권한이 없습니다.");
         return;
       }
       onDelete(post._id, postUserId);
@@ -241,6 +241,7 @@ const PostDetailModal = ({
   };
 
   if (!isOpen || !post) return null;
+  // console.log("포스트디데팅post", post)
 
   return (
     <div className="modal-overlay" onClick={onClose}>
@@ -276,7 +277,7 @@ const PostDetailModal = ({
             <div className="postDetail-header">
               <div className="postDetail-userInfo">
                 <img
-                  src={post.user_id.profile_image || default_profile}
+                  src={post.user_id?.profile_image || default_profile}
                   alt="profile"
                   className="profileDetail-image"
                   onClick={() =>
@@ -289,10 +290,13 @@ const PostDetailModal = ({
                     <span
                       className="username"
                       onClick={() =>
-                        goToUserProfile(post.user_id._id, post.user_id?.user_id)
+                        goToUserProfile(
+                          post.user_id?._id,
+                          post.user_id?.user_id
+                        )
                       }
                     >
-                      {post.user_id.user_id}
+                      {post.user_id?.user_id}
                     </span>
                     <span className="post-time">
                       · {timeAgo(post.createdAt)}

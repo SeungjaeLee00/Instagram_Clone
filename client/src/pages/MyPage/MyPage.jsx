@@ -98,7 +98,7 @@ const MyPage = () => {
       ...post,
       user: post.user_id,
     });
-    // console.log("myPage에서 모달로 전달하는 post:", post);
+    console.log("myPage에서 모달로 전달하는 post:", post);
 
     setIsModalOpen(true);
   };

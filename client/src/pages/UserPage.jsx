@@ -1,21 +1,30 @@
 // 다른 사용자 마이페이지
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+
 import { fetchUserProfile } from "../api/userApi";
 import { followUser, getUserFollowing } from "../api/followApi";
 import { createDM } from "../api/messageApi";
+import { addLike } from "../api/postApi";
+import { addComment } from "../api/commentApi";
+
 import useAuth from "../hooks/useAuth";
+import PostDetailModal from "../components/Modals/PostDetailModal";
+
 import "../styles/pages/UserPage.css";
-import default_post_image from "../assets/default_profile.png";
+import default_profile from "../assets/default_profile.png";
 
 const UserPage = () => {
   const { userName } = useParams();
   const navigate = useNavigate();
   const { isAuthenticated, user } = useAuth();
   const [userData, setUserData] = useState(null);
+  const [posts, setPosts] = useState([]);
   const [isFollowing, setIsFollowing] = useState(false);
   // eslint-disable-next-line
   const [followingList, setFollowingList] = useState([]);
+  const [selectedPost, setSelectedPost] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -61,6 +70,51 @@ const UserPage = () => {
     navigate(-1);
   };
 
+  // 게시물 좋아요 처리 함수
+  const handleLike = async (postId, newLiked) => {
+    try {
+      const response = await addLike(postId);
+      setPosts((prevPosts) =>
+        prevPosts.map((post) =>
+          post._id === postId
+            ? {
+                ...post,
+                liked: newLiked,
+                likesCount: response.likesCount,
+              }
+            : post
+        )
+      );
+    } catch (error) {
+      console.error("좋아요 처리 중 오류:", error);
+    }
+  };
+
+  // 댓글 달기
+  const handleAddComment = async (postId, newCommentText) => {
+    try {
+      const response = await addComment(postId, newCommentText);
+      console.log("myPage에서 댓글 달기:", response);
+      const { comment } = response;
+      setPosts((prevPosts) =>
+        prevPosts.map((post) =>
+          post._id === postId
+            ? {
+                ...post,
+                comments: [
+                  { ...comment, likesCount: 0, liked: false },
+                  ...post.comments,
+                ],
+              }
+            : post
+        )
+      );
+      return { comment };
+    } catch (error) {
+      console.error("댓글 추가 중 오류가 발생했습니다:", error);
+    }
+  };
+
   const handleFollowClick = async () => {
     try {
       const followingId = userData.userId;
@@ -101,11 +155,42 @@ const UserPage = () => {
   };
 
   const goToFollowersPage = () => {
-    navigate("/follow", { state: { followers: userData.followers } });
+    navigate("/follow", {
+      state: {
+        followers: userData.followers.filter((follower) => follower !== null),
+      },
+    });
   };
 
   const goToFollowingsPage = () => {
-    navigate("/following", { state: { following: userData.following } });
+    navigate("/following", {
+      state: {
+        following: userData.following.filter((followed) => followed !== null),
+      },
+    });
+  };
+
+  const openModal = (post) => {
+    setSelectedPost({
+      ...post,
+      user: {
+        userId: userData.userId,
+        userName: userData.userName,
+        profile_image: userData.profile_image,
+      },
+      comments: post.comments || [],
+      liked: post.liked || false,
+      likes: post.likes || [],
+      likesCount: post.likesCount || 0,
+    });
+    // console.log("userPage에서 모달로 전달하는 post:", post);
+
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setSelectedPost(null);
   };
 
   if (isLoading) {
@@ -116,55 +201,95 @@ const UserPage = () => {
     return <div className="error-message">{error}</div>;
   }
 
+  console.log("userData", userData);
   return (
-    <div className="user-page">
-      <button className="user-backClick-btn" onClick={handleBackClick}>
+    <div className="userPage">
+      <button className="userPage-backClick-btn" onClick={handleBackClick}>
         &lt; 뒤로 가기
       </button>
-      <h2>{userData.userName}님의 프로필</h2>
 
-      <div className="user-follow-info">
-        <h3 onClick={goToFollowersPage}>팔로워 {userData.followers.length}</h3>
-        {/* <ul>
-          {userData.followers.map((follower) => (
-            <li key={follower._id}>{follower.user_id}</li>
-          ))}
-        </ul> */}
+      <div className="userPage-wrapper">
+        <div className="userPage-top-section">
+          <img
+            className="userPage-userPhoto"
+            src={userData.profile_image || default_profile}
+            alt="profile"
+          />
+          <div className="userPage-info">
+            <div className="userPage-actions">
+              <p className="userPage-userName">{userData.userName}</p>
+              <button
+                className={`userPage-follow-btn ${
+                  isFollowing ? "following" : ""
+                }`}
+                onClick={handleFollowClick}
+              >
+                {isFollowing ? "팔로잉 ✔️" : "팔로우"}
+              </button>
+              <button className="userPage-dmSendBtn" onClick={handleDmClick}>
+                메세지 보내기
+              </button>
+            </div>
 
-        <h3 onClick={goToFollowingsPage}>팔로잉 {userData.following.length}</h3>
-        {/* <ul>
-          {userData.following.map((followed) => (
-            <li key={followed._id}>{followed.user_id}</li>
-          ))}
-        </ul> */}
-      </div>
+            <div className="userPage-follow-info">
+              <p className="userPage-posts">
+                게시물 {userData.posts.length || 0}
+              </p>
+              <p className="userPage-follower" onClick={goToFollowersPage}>
+                팔로워{" "}
+                {
+                  userData.followers.filter((follower) => follower !== null)
+                    .length
+                }
+              </p>
+              <p className="userPage-following" onClick={goToFollowingsPage}>
+                팔로잉{" "}
+                {
+                  userData.following.filter((followed) => followed !== null)
+                    .length
+                }
+              </p>
+            </div>
 
-      <div className="user-actions">
-        <button
-          className={`follow-btn ${isFollowing ? "following" : ""}`}
-          onClick={handleFollowClick}
-        >
-          {isFollowing ? "✔️   👤" : "👤"}
-        </button>
-
-        <button onClick={handleDmClick}>Dm</button>
-      </div>
-
-      <div className="user-posts">
-        {userData.posts.map((post) => (
-          <div className="user-post" key={post._id}>
-            <img
-              src={post.images[0] || default_post_image}
-              alt="post"
-              className="user-post-image"
-            />
-            <p>{post.text || ""}</p>
-            <span className="user-created-at">
-              {new Date(post.createdAt).toLocaleDateString()}
-            </span>
+            <p className="userPage-userNickName">{userData.userNickName}</p>
+            <p className="userPage-userIntroduce">
+              {userData.introduce || " "}
+            </p>
           </div>
-        ))}
+        </div>
+
+        <div className="userPage-posts-section">
+          <h2>게시물</h2>
+          {userData.posts.length > 0 ? (
+            <div>
+              {userData.posts.map((post) => (
+                <div className="userPage-post" key={post._id}>
+                  <img
+                    src={post.images[0]}
+                    alt="post"
+                    onClick={() => openModal(post)}
+                    className="userPage-post-image"
+                  />
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="no-posts-message">
+              <p>게시물이 없습니다 🤓</p>
+            </div>
+          )}
+        </div>
       </div>
+      {isModalOpen && selectedPost && (
+        <PostDetailModal
+          post={selectedPost}
+          isOpen={isModalOpen}
+          onClose={closeModal}
+          onLike={handleLike}
+          onUpdate={handleAddComment}
+          setPosts={setPosts}
+        />
+      )}
     </div>
   );
 };

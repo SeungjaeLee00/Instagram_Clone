@@ -12,6 +12,7 @@ const MessagesPage = () => {
   const [socket, setSocket] = useState(null); // 소켓 상태
   const [messageList, setMessages] = useState([]); // 메시지 목록
   const [messageInput, setMessageInput] = useState(""); // 입력된 메시지
+  const [sendingMessage, setSendingMessage] = useState(false);
 
   // 메세지 스크롤
   const chatAreaRef = useRef(null); // chat-area를 참조할 ref
@@ -64,11 +65,19 @@ const MessagesPage = () => {
     }
   }, [messageList]); // messageList가 변경될 때마다 실행
 
-  const sendMessage = (event) => {
+  const sendMessage = () => {
+    if (sendingMessage || !messageInput.trim()) return;
+
+    setSendingMessage(true);
     if (socket) {
       socket.emit("sendMessage", messageInput);
       setMessageInput("");
     }
+
+    // 전송 후 상태 리셋
+    setTimeout(() => {
+      setSendingMessage(false);
+    }, 500); // 메시지 전송 완료 후 500ms 뒤에 상태 리셋 (필요시 조정)
   };
 
   const deleteMessage = (messageId) => {
@@ -85,6 +94,12 @@ const MessagesPage = () => {
 
   const handleUserNameClick = (userId) => {
     navigate(`/${userId}/profile`); // 이름 클릭하면 해당 사용자의 프로필 페이지로 이동
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      sendMessage();
+    }
   };
 
   return (
@@ -130,6 +145,7 @@ const MessagesPage = () => {
               placeholder="Type a message"
               value={messageInput}
               onChange={(e) => setMessageInput(e.target.value)}
+              onKeyDown={handleKeyDown}
             />
             <button onClick={sendMessage}>Send</button>
           </div>

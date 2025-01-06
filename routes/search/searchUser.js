@@ -46,6 +46,9 @@ router.get("/", auth, async (req, res) => {
     res.status(200).json({
       userName: user.user_id, // 사용자 이름(user_id)
       userId: user._id, // 사용자 ID 추가
+      userNickName: user.name, //실제이름..?
+      introduce: user.introduce,
+      profile_image: user.profile_image,
       posts: posts, // 사용자의 게시물 배열
       following: following.map((f) => f.following), // 팔로잉 목록
       followers: followers.map((f) => f.follow_id), // 팔로워 목록
