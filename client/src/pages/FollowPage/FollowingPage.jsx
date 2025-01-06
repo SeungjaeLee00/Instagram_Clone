@@ -7,7 +7,6 @@ import "../../styles/pages/FollowPage/Follow.css";
 const FollowingPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
-
   const following = location.state ? location.state.following : [];
 
   const handleBackClick = () => {

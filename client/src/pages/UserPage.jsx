@@ -144,7 +144,7 @@ const UserPage = () => {
           className={`follow-btn ${isFollowing ? "following" : ""}`}
           onClick={handleFollowClick}
         >
-          {isFollowing ? "팔로잉" : "팔로우 하기"}
+          {isFollowing ? "✔️   👤" : "👤"}
         </button>
 
         <button onClick={handleDmClick}>Dm</button>

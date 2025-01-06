@@ -74,6 +74,11 @@ const userSchema = mongoose.Schema({
     type: Date,
     default: null,
   },
+
+  isActive: {
+    type: Boolean,
+    default: true, // 기본값은 활성화된 상태
+  },
 });
 
 userSchema.pre("save", function (next) {

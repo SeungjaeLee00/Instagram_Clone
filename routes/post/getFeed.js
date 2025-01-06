@@ -20,13 +20,14 @@ router.get("/", auth, async (req, res) => {
 
     // 팔로우한 사용자가 있을 때, 그들의 게시물 조회
     const followingIds = following.map((follow) => follow.following);
+    console.log("Following List:", following);
 
-    // 팔로우한 사용자 중 탈퇴하지 않은 사용자의 게시물만 조회
     const activeUsers = await User.find({
       _id: { $in: followingIds },
       isActive: true,
     }).select("_id");
 
+    console.log("Active users:", activeUsers);
     const activeUserIds = activeUsers.map((user) => user._id);
 
     // 탈퇴한 사용자의 게시물 제외
@@ -38,6 +39,7 @@ router.get("/", auth, async (req, res) => {
         path: "comments",
         populate: { path: "user", select: "user_id username profile_image" },
       });
+    console.log("Posts from followed users:", posts);
 
     // 팔로우한 사용자의 게시물이 없으면 내 게시물을 조회
     if (posts.length === 0) {
