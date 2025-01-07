@@ -14,7 +14,7 @@ const Chatroom = () => {
     const fetchChatrooms = async () => {
       try {
         const data = await chatroomList();
-        // console.log("chatrooms:", data.chatrooms);
+        console.log("chatrooms:", data);
 
         setChatrooms(data.chatrooms); // API에서 받은 채팅방 목록 저장
         setChatroomsId(data.chatrooms_id); // 채팅방 _id 저장

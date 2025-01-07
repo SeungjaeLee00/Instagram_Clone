@@ -29,12 +29,14 @@ router.get("/", auth, (req, res) => {
           const otherUser = chatroom.members.find(
             (member) => member._id.toString() !== req.user._id.toString()
           );
+          console.log("otherUser", otherUser);
 
           const chatroomName = otherUser ? otherUser.user_id : "Unknown";
 
           return {
             chatroomId: chatroom._id,
             chatroomName: chatroomName,
+            chatProfileImage: otherUser.profile_image,
           };
         })
         .filter((data) => data !== null);
