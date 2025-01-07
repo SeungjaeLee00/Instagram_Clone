@@ -6,7 +6,7 @@ import "../../styles/pages/MessagesPage/ChatroomPage.css";
 const Chatroom = () => {
   const [chatroomsId, setChatroomsId] = useState([]);
   const [chatrooms, setChatrooms] = useState([]);
-  const [userId, setUserId] = useState([]); // 로그인 된 user의 object id
+  const [userId, setUserId] = useState([]);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
