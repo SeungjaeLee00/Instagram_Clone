@@ -5,7 +5,7 @@ import Layout from "../src/components/Common/Layout";
 import { verifyToken } from "./api/authApi";
 import RoutesComponent from "../src/components/Routes/Routes";
 
-import { initializeSocket } from "./utils/socket";
+import { SocketProvider } from "./hooks/SocketContext";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -24,10 +24,6 @@ function App() {
         setIsAuthenticated(false);
       })
       .finally(() => setLoading(false));
-    
-      // 소켓 초기화
-    initializeSocket();
-
   }, []);
 
   if (loading) {
@@ -35,14 +31,17 @@ function App() {
   }
 
   return (
-    <Router>
-      <Layout>
-        <RoutesComponent
+    <SocketProvider>
+        <Router>
+          <Layout>
+          <RoutesComponent
           isAuthenticated={isAuthenticated}
           setIsAuthenticated={setIsAuthenticated}
-        />
-      </Layout>
-    </Router>
+          />
+          </Layout>
+      </Router>
+    </SocketProvider>
+    
   );
 }
 
