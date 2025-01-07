@@ -30,6 +30,7 @@ const UserPage = () => {
 
   useEffect(() => {
     // console.log("user", user);
+    //
     if (user && user.userId) {
       const getUserProfile = async () => {
         try {
