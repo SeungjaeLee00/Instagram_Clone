@@ -6,7 +6,7 @@ import { addComment } from "../api/commentApi";
 import useAuth from "../hooks/useAuth";
 
 const MainPage = () => {
-  const { isAuthenticated, user, token } = useAuth();
+  const { isAuthenticated, user } = useAuth();
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);

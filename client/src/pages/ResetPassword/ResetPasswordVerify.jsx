@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { verifyResetCode } from "../../api/authApi"; // API 호출 함수
 import lock from "../../assets/lock.png";
-import "../../styles/pages/ResetPasswordVerify.css";
+import "../../styles/pages/ResetPasswordPage/ResetPasswordVerify.css";
 
 const ResetPWVerify = () => {
   const [verificationCode, setverificationCode] = useState("");

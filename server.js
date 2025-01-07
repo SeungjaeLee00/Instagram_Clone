@@ -1,5 +1,5 @@
 const socketIo = require("socket.io");
-const {messageInit} = require("./routes/dm/message");
+const { messageInit } = require("./routes/dm/message");
 
 let io;
 
@@ -54,14 +54,13 @@ function emitPostLike(data) {
   }
 }
 
-function chat(socket){
-    socket.on("joinChatroom", (chatroomId) => {
-        socket.join(chatroomId);
-        console.log(`User joined chatroom: ${chatroomId}`);
+function chat(socket) {
+  socket.on("joinChatroom", (chatroomId) => {
+    socket.join(chatroomId);
+    console.log(`User joined chatroom: ${chatroomId}`);
 
-        messageInit(io, socket, chatroomId);
-    });
+    messageInit(io, socket, chatroomId);
+  });
 }
 
-module.exports = { initSocket, emitComment, emitCommentLike, emitPostLike};
-
+module.exports = { initSocket, emitComment, emitCommentLike, emitPostLike };

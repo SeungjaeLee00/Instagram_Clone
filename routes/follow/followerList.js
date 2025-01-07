@@ -26,7 +26,7 @@ router.get("/", auth, async (req, res) => {
       followers: followerDetails.map((user) => ({
         user_id: user.user_id,
         username: user.username,
-        profile_image: user.profile_image || default_profile, // 프로필 이미지 없을 경우 default 설정
+        profile_image: user.profile_image,
       })),
     });
   } catch (err) {

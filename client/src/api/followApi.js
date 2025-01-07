@@ -1,12 +1,12 @@
 import axios from "axios";
 
-const API_BASE_URL = "http://localhost:5001";
+const API_BASE_URL = "http://localhost:5001/follow";
 
 // 팔로우 요청 API
 export const followUser = async (followingId) => {
   try {
     const response = await axios.post(
-      `${API_BASE_URL}/follow/follow`,
+      `${API_BASE_URL}/follow`,
       { following_id: followingId },
       {
         headers: {
@@ -25,7 +25,7 @@ export const followUser = async (followingId) => {
 
 // 팔로워 목록 확인 API
 export const getUserFollowers = async (userId) => {
-  const response = await axios.get(`${API_BASE_URL}/follow/follower`, {
+  const response = await axios.get(`${API_BASE_URL}/follower`, {
     headers: {
       "Content-Type": "application/json",
     },
@@ -37,7 +37,7 @@ export const getUserFollowers = async (userId) => {
 
 // 팔로잉 목록 확인 API
 export const getUserFollowing = async (userId) => {
-  const response = await axios.get(`${API_BASE_URL}/follow/following`, {
+  const response = await axios.get(`${API_BASE_URL}/following`, {
     headers: {
       "Content-Type": "application/json",
     },

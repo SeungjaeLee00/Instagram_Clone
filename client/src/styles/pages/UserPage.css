@@ -1,188 +1,132 @@
-/* .user-page {
+.userPage {
+  font-family: Arial, sans-serif;
+  color: #262626;
   max-width: 1200px;
-  margin: 0 auto;
-  padding: 30px;
-  margin-left: 500px;
-  font-family: Arial, sans-serif;
-}
-
-.user-backClick-btn {
-  background-color: #f0f0f0;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  padding: 8px 16px;
-  font-size: 16px;
-  cursor: pointer;
-  color: #333;
-  margin-bottom: 20px;
-}
-
-.user-backClick-btn:hover {
-  background-color: #e0e0e0;
-}
-
-h2 {
-  font-size: 28px;
-  font-weight: bold;
-  color: #333;
-  margin-bottom: 20px;
-}
-
-.user-follow-info {
+  margin: 40px auto;
   display: flex;
-  gap: 30px;
-  margin-bottom: 40px;
+  flex-direction: column;
+  align-items: center;
 }
 
-.user-follow-info h3 {
-  font-size: 18px;
-  color: #666;
-  margin: 0;
-}
-
-.user-posts {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
-}
-
-.user-post {
-  background-color: #fff;
-  border: none;
-  padding: 16px;
-}
-
-.user-post-image {
-  width: 100%;
-  height: auto;
-  border-radius: 8px;
-  object-fit: cover;
-  margin-bottom: 12px;
-}
-
-.user-post p {
-  font-size: 14px;
-  color: #333;
-  margin-bottom: 12px;
-}
-
-.user-created-at {
-  font-size: 12px;
-  color: #999;
-} */
-/* 기본 스타일 */
-.user-page {
-  font-family: Arial, sans-serif;
-  max-width: 600px;
-  margin: 0 auto;
-  padding: 20px;
-  background-color: #fff;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-}
-
-h2 {
-  font-size: 24px;
-  font-weight: bold;
-  margin-bottom: 20px;
-  text-align: center;
-}
-
-/* 뒤로 가기 버튼 */
-.user-backClick-btn {
-  font-size: 16px;
-  color: #333;
+.userPage-backClick-btn {
+  align-self: flex-start;
+  margin-bottom: 10px;
   background: none;
   border: none;
-  cursor: pointer;
-  margin-bottom: 20px;
-  display: block;
-  width: 100%;
-  text-align: left;
-}
-
-.user-backClick-btn:hover {
-  color: #0073e6;
-}
-
-/* 팔로워, 팔로잉 정보 */
-.user-follow-info {
-  display: flex;
-  justify-content: space-around;
-  margin-bottom: 20px;
-}
-
-.user-follow-info h3 {
-  font-size: 18px;
-  font-weight: normal;
-  margin: 0;
-  text-align: center;
-  color: #555;
-}
-
-/* 팔로우 버튼 */
-.user-actions {
-  text-align: center;
-  margin-bottom: 20px;
-}
-
-.follow-btn {
-  padding: 10px 20px;
-  background-color: #0095f6;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
+  color: #0095f6;
   font-size: 16px;
-  width: 200px;
-  transition: background-color 0.3s ease;
+  cursor: pointer;
 }
 
-.follow-btn:hover {
-  background-color: #007bb5;
-}
-
-.follow-btn.following {
-  background-color: #8e8e8e;
-}
-
-.follow-btn.following:hover {
-  background-color: #707070;
-}
-
-/* 사용자 게시물 */
-.user-posts {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+.userPage-wrapper {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
   gap: 20px;
+}
+
+.userPage-top-section {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 50px;
+  padding: 20px 0;
+  border-bottom: 1px solid #dbdbdb;
+}
+
+.userPage-userPhoto {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.userPage-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  align-items: flex-start;
+}
+
+.userPage-actions {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.userPage-userName {
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.userPage-follow-btn,
+.userPage-dmSendBtn {
+  padding: 8px 16px;
+  background-color: #dbdbdb;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: bold;
+  line-height: 1.2;
+}
+
+.userPage-follow-btn.following {
+  background-color: #0095f6;
+  color: #fff;
+  border: none;
+}
+
+.userPage-follow-info {
+  display: flex;
+  gap: 30px; /* 게시물, 팔로워, 팔로잉 간 간격 */
+  font-size: 16px;
+  font-weight: bold;
+  color: #8e8e8e;
+}
+
+.userPage-userNickName {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.userPage-userIntroduce {
+  font-size: 16px;
+}
+
+.userPage-posts-section {
+  width: 100%;
+  text-align: center;
   margin-top: 20px;
 }
 
-.user-post {
-  position: relative;
-  background-color: #f5f5f5;
-  border-radius: 10px;
-  overflow: hidden;
-  padding: 15px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+.userPage-post {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 300px;
 }
 
-.user-post-image {
+.userPage-post-image {
   width: 100%;
-  height: auto;
+  height: 300px;
   object-fit: cover;
-  border-radius: 5px;
+  border: 1px solid #dbdbdb;
+  margin-bottom: 10px;
 }
 
-.user-post p {
-  font-size: 14px;
-  margin-top: 10px;
-  color: #333;
+.userPage-no-posts {
+  margin-top: 50px;
+  font-size: 16px;
+  color: #8e8e8e;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
 }
 
-.user-created-at {
-  font-size: 12px;
-  color: #999;
-  position: absolute;
-  bottom: 10px;
-  right: 10px;
+.userPage-no-posts img {
+  width: 50px;
+  height: 50px;
 }

@@ -5,6 +5,7 @@ import { getUserFollowers, getUserFollowing } from "../../api/followApi";
 import { deletePost, addLike } from "../../api/postApi";
 import { logoutUser, withdrawUser } from "../../api/authApi";
 import { addComment } from "../../api/commentApi";
+
 import useAuth from "../../hooks/useAuth";
 import PostDetailModal from "../../components/Modals/PostDetailModal";
 
@@ -12,7 +13,7 @@ import default_profile from "../../assets/default_profile.png";
 import settingIcon from "../../assets/setting.png";
 import manyImg from "../../assets/manyImg.png";
 
-import "../../styles/pages/MyPage.css";
+import "../../styles/pages/MyPage/MyPage.css";
 
 const MyPage = () => {
   const { isAuthenticated, user } = useAuth();
@@ -87,12 +88,17 @@ const MyPage = () => {
       navigate("/auth/login");
     }
   };
+
+  const goToDmListPage = () => {
+    navigate("/dm/chatroom");
+  };
+
   const openModal = (post) => {
     setSelectedPost({
       ...post,
       user: post.user_id,
     });
-    // console.log("myPage에서 모달로 전달하는 post:", post);
+    console.log("myPage에서 모달로 전달하는 post:", post);
 
     setIsModalOpen(true);
   };
@@ -190,7 +196,7 @@ const MyPage = () => {
   const handleDeleteAccount = async () => {
     if (window.confirm("정말로 회원 탈퇴를 진행하시겠습니까?")) {
       try {
-        const response = await withdrawUser();
+        await withdrawUser();
         alert("회원 탈퇴가 완료되었습니다.");
         navigate("/auth/login");
       } catch (error) {
@@ -232,6 +238,10 @@ const MyPage = () => {
           <div className="user-info">
             <h2>{profileData?.user_id || "사용자 이름"}</h2>
             <button onClick={goToEditProfile}>프로필 편집</button>
+            <button onClick={goToDmListPage} className="dm-list-button">
+              {" "}
+              DM
+            </button>
             <div className="settings-icon-container">
               <img
                 src={settingIcon}

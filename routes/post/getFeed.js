@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const { Post } = require("../../models/Post");
 const { Follow } = require("../../models/Follow");
+const { User } = require("../../models/User");
 const { auth } = require("../../routes/auth");
 
 const cookieParser = require("cookie-parser");
@@ -19,16 +20,26 @@ router.get("/", auth, async (req, res) => {
 
     // 팔로우한 사용자가 있을 때, 그들의 게시물 조회
     const followingIds = following.map((follow) => follow.following);
+    console.log("Following List:", following);
 
-    // 팔로우한 사용자의 게시물 조회 (게시물이 없을 수도 있음)
-    const posts = await Post.find({ user_id: { $in: followingIds } })
+    const activeUsers = await User.find({
+      _id: { $in: followingIds },
+      isActive: true,
+    }).select("_id");
+
+    console.log("Active users:", activeUsers);
+    const activeUserIds = activeUsers.map((user) => user._id);
+
+    // 탈퇴한 사용자의 게시물 제외
+    const posts = await Post.find({ user_id: { $in: activeUserIds } })
       .sort({ createdAt: -1 }) // 최신순 정렬
-      .limit(3) // 최대 3개 게시물
+      .limit(3)
       .populate("user_id", "user_id profile_image") // 'user_id' 필드의 'username' 가져오기
       .populate({
         path: "comments",
-        populate: { path: "user", select: "user_id username profile_image" }, // 댓글 작성자 정보 포함
+        populate: { path: "user", select: "user_id username profile_image" },
       });
+    console.log("Posts from followed users:", posts);
 
     // 팔로우한 사용자의 게시물이 없으면 내 게시물을 조회
     if (posts.length === 0) {
@@ -42,16 +53,16 @@ router.get("/", auth, async (req, res) => {
           populate: { path: "user", select: "user_id username profile_image" },
         });
 
-      console.log("My Posts:", myPosts); // 디버그: 내 게시물 확인
+      console.log("My Posts:", myPosts);
 
       // 내 게시물의 좋아요 수 및 댓글의 좋아요 수 포함
       const myPostsWithDetails = myPosts.map((post) => ({
         ...post.toObject(),
-        likesCount: post.likes.length, // 게시물 좋아요 수
+        likesCount: post.likes.length,
         comments: post.comments.map((comment) => ({
           ...comment.toObject(),
-          likesCount: comment.likes.length, // 댓글 좋아요 수
-          liked: comment.likes.includes(user_id), // 댓글 좋아요 여부
+          likesCount: comment.likes.length,
+          liked: comment.likes.includes(user_id),
         })),
       }));
 
@@ -64,10 +75,10 @@ router.get("/", auth, async (req, res) => {
     // 게시물의 좋아요 수 및 댓글의 좋아요 수 포함
     const postsWithDetails = posts.map((post) => ({
       ...post.toObject(),
-      likesCount: post.likes.length, // 게시물 좋아요 수
+      likesCount: post.likes.length,
       comments: post.comments.map((comment) => ({
         ...comment.toObject(),
-        liked: comment.likes.includes(user_id), // 댓글 좋아요 여부
+        liked: comment.likes.includes(user_id),
       })),
     }));
 

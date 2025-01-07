@@ -11,28 +11,25 @@ import ProtectedRoute from "../../components/Routes/ProtectedRoute";
 
 import CreatePage from "../../pages/CreatePage";
 import SearchPage from "../../pages/SearchPage";
-// import MessagesPage from "../../pages/MessagesPage";
-// import NotificationsPage from "../../pages/NotificationsPage";
+import MessagesPage from "../../pages/MessagesPage/MessagesPage";
+import ChatroomPage from "../../pages/MessagesPage/ChatroomPage";
+import NotificationsPage from "../../pages/AlarmPage/Notifications";
+
 import MyPage from "../../pages/MyPage/MyPage";
 import EditProfile from "../../pages/MyPage/EditProfile";
 import EditPost from "../../pages/MyPage/EditPost";
+
 import FollowPage from "../../pages/FollowPage/FollowPage";
 import FollowingPage from "../../pages/FollowPage/FollowingPage";
-import UserPage from "../../pages/UserPage";
 
-import ChatroomList from "../../pages/MessagesPage/ChatroomPage";
-import MessagesPage from "../../pages/MessagesPage/MessagesPage";
-import NotificationsPage from "../../pages/AlarmPage/Notifications";
+import UserPage from "../../pages/UserPage";
 
 const RoutesComponent = ({ isAuthenticated, setIsAuthenticated }) => (
   <Routes>
-    {/* 로그인 페이지 */}
     <Route
       path="/auth/login"
       element={<Login setIsAuthenticated={setIsAuthenticated} />}
     />
-
-    {/* 회원가입 및 비밀번호 관련 경로 */}
     <Route path="/auth/sign-up" element={<Signup />} />
     <Route path="/auth/sign-up/verify-email" element={<SignupVerify />} />
     <Route
@@ -42,14 +39,6 @@ const RoutesComponent = ({ isAuthenticated, setIsAuthenticated }) => (
     <Route path="/auth/verify-reset-code" element={<ResetPasswordVerify />} />
     <Route path="/auth/reset-password" element={<ResetPassword />} />
 
-    {/* 팔로우.팔로잉 목록 확인 경로 */}
-    <Route path="/follow" element={<FollowPage />} />
-    <Route path="/following" element={<FollowingPage />} />
-
-    {/* 다른 사람들 마이페이지 경로 */}
-    <Route path="/:userName/profile" element={<UserPage />} />
-
-    {/* 로그인된 사용자만 접근 가능한 경로들 */}
     <Route
       path="/"
       element={
@@ -58,6 +47,7 @@ const RoutesComponent = ({ isAuthenticated, setIsAuthenticated }) => (
         </ProtectedRoute>
       }
     />
+
     <Route
       path="/search"
       element={
@@ -66,16 +56,18 @@ const RoutesComponent = ({ isAuthenticated, setIsAuthenticated }) => (
         </ProtectedRoute>
       }
     />
+
     <Route
       path="/dm/chatroom"
       element={
         <ProtectedRoute isAuthenticated={isAuthenticated}>
-          <ChatroomList />
+          <ChatroomPage />
         </ProtectedRoute>
       }
     />
 
-    <Route path="dm/chatroom/:chatroomId" 
+    <Route
+      path="dm/chatroom/:chatroomId"
       element={
         <ProtectedRoute isAuthenticated={isAuthenticated}>
           <MessagesPage />
@@ -90,7 +82,8 @@ const RoutesComponent = ({ isAuthenticated, setIsAuthenticated }) => (
           <NotificationsPage />
         </ProtectedRoute>
       }
-    />
+    /> 
+
     <Route
       path="/create"
       element={
@@ -99,6 +92,7 @@ const RoutesComponent = ({ isAuthenticated, setIsAuthenticated }) => (
         </ProtectedRoute>
       }
     />
+
     <Route
       path="/mypage/profile"
       element={
@@ -122,6 +116,33 @@ const RoutesComponent = ({ isAuthenticated, setIsAuthenticated }) => (
       element={
         <ProtectedRoute isAuthenticated={isAuthenticated}>
           <EditPost />
+        </ProtectedRoute>
+      }
+    />
+
+    <Route
+      path="/:userName/profile"
+      element={
+        <ProtectedRoute isAuthenticated={isAuthenticated}>
+          <UserPage />
+        </ProtectedRoute>
+      }
+    />
+
+    <Route
+      path="/follow"
+      element={
+        <ProtectedRoute isAuthenticated={isAuthenticated}>
+          <FollowPage />
+        </ProtectedRoute>
+      }
+    />
+
+    <Route
+      path="/following"
+      element={
+        <ProtectedRoute isAuthenticated={isAuthenticated}>
+          <FollowingPage />
         </ProtectedRoute>
       }
     />

@@ -40,8 +40,7 @@ function App() {
           />
           </Layout>
       </Router>
-    </SocketProvider>
-    
+    </SocketProvider>   
   );
 }
 

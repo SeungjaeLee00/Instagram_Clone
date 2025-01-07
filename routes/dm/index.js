@@ -1,10 +1,12 @@
 const express = require("express");
 const router = express.Router();
 
-const {router: chatRoutes } = require("./message");
-const chatroomRoutes = require("./chatroom");
+const myChatroomList = require("./myChatroomList");
+const createChatroom = require("./createChatroom");
+const deleteChatroom = require("./deleteChatroom");
 
-router.use("/chatroom/:chatroomId", chatRoutes);
-router.use("/chatroom", chatroomRoutes);
+router.use("/list", myChatroomList);
+router.use("/create", createChatroom);
+router.use("/delete", deleteChatroom);
 
 module.exports = router;

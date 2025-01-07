@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { signupUser } from "../../api/authApi"; // API 함수 가져오기
-import "../../styles/pages/SignupPage.css";
+import { signupUser } from "../../api/authApi";
+import "../../styles/pages/SignupPage/SignupPage.css";
 
 // 이미지 로드
 import instalogo from "../../assets/instagram_logo.png";
@@ -31,7 +31,7 @@ const Signup = () => {
 
     // email 정규식
     const regex =
-      /^(([^<>()\[\].,;:\s@"]+(\.[^<>()\[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i;
+      /^(([^<>()\].,;:\s@"]+(\.[^<>()\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i;
 
     if (regex.test(value)) {
       setEmailValid(true);
@@ -83,6 +83,7 @@ const Signup = () => {
   const onclickConfirmButton = async () => {
     try {
       const data = await signupUser(email, password, name, user_id); // API 호출
+      console.log("가입 버튼 클릭 data", data);
       if (data.success) {
         alert("인증 이메일이 발송되었습니다.");
         navigate("/auth/sign-up/verify-email", { state: { email } });
@@ -99,6 +100,12 @@ const Signup = () => {
   const handleLogoClick = () => {
     navigate("/auth/login");
   };
+
+  // const handleKeyDown = (e) => {
+  //   if (e.key === "Enter" && !NotAllow) {
+  //     onclickConfirmButton();
+  //   }
+  // };
 
   // 가입 버튼 활성화
   useEffect(() => {
@@ -132,6 +139,7 @@ const Signup = () => {
             value={email}
             onChange={handleEmail}
             type="text"
+            // onKeyDown={handleKeyDown}
           />
           <div className="errorMessageWrap">
             {!emailValid && email.length > 0 && (
@@ -145,6 +153,7 @@ const Signup = () => {
             value={password}
             onChange={handlePassword}
             type="password"
+            // onKeyDown={handleKeyDown}
           />
           <div className="errorMessageWrap">
             {!passwordValid && password.length > 0 && (
@@ -158,6 +167,7 @@ const Signup = () => {
             value={name}
             onChange={handleName}
             type="text"
+            // onKeyDown={handleKeyDown}
           />
           <div className="errorMessageWrap">
             {name.length >= 64 && <div> 이름을 64자 미만으로 입력하세요. </div>}
@@ -170,6 +180,7 @@ const Signup = () => {
             onChange={handleUserId}
             type="text"
             maxLength={30}
+            // onKeyDown={handleKeyDown}
           />
           <div className="errorMessageWrap">
             {!userIdValid && user_id.length > 0 && (

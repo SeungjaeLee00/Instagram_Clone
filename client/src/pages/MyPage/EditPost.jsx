@@ -4,7 +4,7 @@ import { verifyToken } from "../../api/authApi";
 import { editPost } from "../../api/postApi";
 import useAuth from "../../hooks/useAuth";
 
-import "../../styles/pages/EditPost.css";
+import "../../styles/pages/MyPage/EditPost.css";
 import trashImg from "../../assets/trash.png";
 
 const EditPost = () => {

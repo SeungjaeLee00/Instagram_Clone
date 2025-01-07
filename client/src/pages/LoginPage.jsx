@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/pages/LoginPage.css";
 import { loginUser } from "../api/authApi"; // API 호출 함수 가져오기
+import { initializeSocket } from "../utils/socket"; // 소켓 초기화 함수 가져오기
 
 // 이미지 로드
 import instalogo from "../assets/instagram_logo.png";
@@ -77,6 +78,13 @@ const Login = ({ setIsAuthenticated }) => {
 
   }, [emailOrUsernameValid, passwordValid]);
 
+  // 엔터키로 로그인 처리
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter" && !NotAllow) {
+      onclickConfirmButton();
+    }
+  };
+
   return (
     <div className="login-page">
       {/* 로그인 부분 */}
@@ -95,6 +103,7 @@ const Login = ({ setIsAuthenticated }) => {
             value={emailOrUsername}
             onChange={handleEmailOrUserId}
             type="text"
+            onKeyDown={handleKeyDown}
           />
 
           <input
@@ -103,12 +112,14 @@ const Login = ({ setIsAuthenticated }) => {
             value={password}
             onChange={handlePassword}
             type="password"
+            onKeyDown={handleKeyDown}
           />
 
           <button
             className="login-submitButton"
             onClick={onclickConfirmButton}
             disabled={NotAllow}
+            // onKeyDown={handleKeyDown}
           >
             로그인
           </button>

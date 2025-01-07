@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { resetPassword } from "../../api/authApi"; // API 호출 함수
 import lock from "../../assets/lock.png";
-import "../../styles/pages/ResetPassword.css";
+import "../../styles/pages/ResetPasswordPage/ResetPassword.css";
 
 const ResetPW = () => {
   const [newPassword, setnewPassword] = useState(""); // 새로운 비밀번호
