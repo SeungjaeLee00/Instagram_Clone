@@ -34,6 +34,9 @@ const Chatroom = () => {
     });
   };
 
+  // 채팅방 만들기
+  // const
+
   // 채팅방 나가기
   const handleLeaveChatroom = async (chatroomId) => {
     // console.log("삭제할 채팅방 ID:", chatroomId);
@@ -51,6 +54,7 @@ const Chatroom = () => {
   return (
     <div>
       <h2 style={{ textAlign: "center" }}>채팅방 목록</h2>
+      <button style={{ marginLeft: "200px" }}>new Chat</button>
       {error && <p style={{ color: "red", textAlign: "center" }}>{error}</p>}
       <ul className="chatroom-list">
         {chatrooms && chatrooms.length > 0 ? (

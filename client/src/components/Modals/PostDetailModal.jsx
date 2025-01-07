@@ -41,6 +41,7 @@ const PostDetailModal = ({
         const updatedComments = post.comments.map((comment) => ({
           ...comment,
           user: {
+            ...comment.user,
             user_id: comment.user?.user_id,
             _id: comment.user?._id,
           },
@@ -147,12 +148,12 @@ const PostDetailModal = ({
 
   // 댓글 삭제
   const handleCommentDelete = async (commentId) => {
+    const loginUserId = user.userId;
     const commentToDelete = comments.find(
       (comment) => comment._id === commentId
     );
     if (!commentToDelete) return;
-
-    if (commentToDelete.user._id !== post.user_id._id) {
+    if (commentToDelete.user._id !== loginUserId) {
       alert("본인의 댓글만 삭제할 수 있습니다.");
       return;
     }
@@ -199,7 +200,8 @@ const PostDetailModal = ({
   const handleDelete = () => {
     if (window.confirm("게시물을 삭제하시겠습니까?")) {
       const postUserId = post.user_id?._id;
-      if (!postUserId) {
+      const loginUserId = user.userId;
+      if (postUserId !== loginUserId) {
         alert("이 게시물은 삭제할 권한이 없습니다.");
         return;
       }
@@ -241,7 +243,7 @@ const PostDetailModal = ({
   };
 
   if (!isOpen || !post) return null;
-  // console.log("포스트디데팅post", post)
+  console.log("포스트디데팅post", post);
 
   return (
     <div className="modal-overlay" onClick={onClose}>
@@ -328,9 +330,27 @@ const PostDetailModal = ({
                       {/* 프로필 이미지 */}
                       <img
                         src={comment.user.profile_image || default_profile}
+                        // src={comment?.user?.profile_image || default_profile}
                         alt="profile"
                         className="profileDetail-image"
                       />
+                      {/* <img
+                        src={(() => {
+                          console.log(comment.user); // 값 확인
+                          console.log(
+                            "Post Data:",
+                            JSON.stringify(post, null, 2)
+                          );
+                          console.log(
+                            "Comments:",
+                            JSON.stringify(post.comments, null, 2)
+                          );
+
+                          return comment.user.profile_image || default_profile;
+                        })()}
+                        alt="profile"
+                        className="profileDetail-image"
+                      /> */}
 
                       {/* 댓글 정보 */}
                       <div className="commentDetail-info">
@@ -357,14 +377,12 @@ const PostDetailModal = ({
                         }`}
                       ></button>
                       {/* 댓글 삭제 버튼 */}
-                      {comment.user._id === post.user_id._id && (
-                        <button
-                          onClick={() => handleCommentDelete(comment._id)}
-                          className="comment-delete-btn"
-                        >
-                          삭제
-                        </button>
-                      )}
+                      <button
+                        onClick={() => handleCommentDelete(comment._id)}
+                        className="comment-delete-btn"
+                      >
+                        삭제
+                      </button>
                     </div>
                   ))}
                 </div>

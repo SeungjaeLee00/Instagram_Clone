@@ -173,9 +173,9 @@ const UserPage = () => {
   const openModal = (post) => {
     setSelectedPost({
       ...post,
-      user: {
-        userId: userData.userId,
-        userName: userData.userName,
+      user_id: {
+        _id: userData.userId,
+        user_id: userData.userName,
         profile_image: userData.profile_image,
       },
       comments: post.comments || [],
