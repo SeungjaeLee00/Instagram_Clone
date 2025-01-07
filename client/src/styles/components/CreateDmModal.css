@@ -1,0 +1,158 @@
+/* 전체 */
+.chat-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.3);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* 모달 박스 */
+.chat-modal-content {
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  width: 400px;
+  padding: 20px 0;
+  color: #333;
+  font-family: Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+/* 헤더 */
+.chat-modal-header {
+  padding: 0 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  justify-content: center;
+}
+
+.chat-modal-header h3 {
+  font-size: 1.25rem;
+  font-weight: bold;
+  color: #333;
+  line-height: 1.2;
+}
+
+.chat-close-btn {
+  position: absolute;
+  right: 20px;
+  background: none;
+  border: none;
+  color: #333;
+  font-size: 1.25rem;
+  cursor: pointer;
+}
+
+.chat-close-btn:hover {
+  color: #666;
+}
+
+/* 검색 부분 */
+.chat-name-search {
+  padding: 0 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.chat-to-label {
+  font-size: 1rem;
+  color: #666;
+  min-width: 30px;
+}
+
+.chat-name-search input {
+  flex-grow: 1;
+  border: none;
+  background-color: transparent;
+  color: #333;
+  font-size: 0.95rem;
+  outline: none;
+  padding: 5px;
+}
+
+.chat-name-search input::placeholder {
+  color: #bbb;
+}
+
+.chat-name-list {
+  height: 400px;
+  display: flex;
+  flex-direction: column;
+}
+
+.chat-name-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 11px 15px 11px 15px;
+  cursor: pointer;
+}
+
+.checkbox {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid #ccc;
+  display: inline-block;
+  transition: background-color 0.3s;
+}
+
+.checkbox.checked {
+  background-color: #007bff;
+  border-color: #007bff;
+}
+
+.chat-name-item.selected {
+  background-color: #f0f8ff;
+}
+
+.chat-modal-footer button:disabled {
+  background-color: #ccc;
+}
+
+.chat-no-account-message {
+  color: #bbb;
+  font-size: 0.9rem;
+  text-align: left;
+}
+
+/* 푸터 */
+.chat-modal-footer {
+  display: flex;
+  padding: 10px 20px;
+  justify-content: flex-end;
+}
+
+.chat-chat-btn {
+  width: 100%;
+  padding: 12px;
+  font-size: 1rem;
+  border: none;
+  border-radius: 8px;
+  background-color: #007bff;
+  color: #fff;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.chat-chat-btn:disabled {
+  background-color: #d6d6d6;
+  cursor: not-allowed;
+}
+
+/* 구분선 */
+.chat-divider {
+  border: none;
+  border-top: 1px solid #ddd;
+  margin: 10px 0;
+}

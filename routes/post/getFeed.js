@@ -33,7 +33,6 @@ router.get("/", auth, async (req, res) => {
     // 탈퇴한 사용자의 게시물 제외
     const posts = await Post.find({ user_id: { $in: activeUserIds } })
       .sort({ createdAt: -1 }) // 최신순 정렬
-      .limit(3)
       .populate("user_id", "user_id profile_image") // 'user_id' 필드의 'username' 가져오기
       .populate({
         path: "comments",
@@ -46,7 +45,7 @@ router.get("/", auth, async (req, res) => {
       // 내 게시물 조회
       const myPosts = await Post.find({ user_id: user_id }) // 'user' -> 'user_id'로 수정
         .sort({ createdAt: -1 })
-        .limit(3)
+        .limit(5)
         .populate("user_id", "user_id profile_image")
         .populate({
           path: "comments",

@@ -1,12 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { chatroomList, deleteChatroom } from "../../api/messageApi";
+import CreateDmModal from "../../components/Modals/CreateDmModal";
+
 import "../../styles/pages/MessagesPage/ChatroomPage.css";
 
 const Chatroom = () => {
   const [chatroomsId, setChatroomsId] = useState([]);
   const [chatrooms, setChatrooms] = useState([]);
   const [userId, setUserId] = useState([]);
+  const [userName, setUserName] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
@@ -14,11 +18,12 @@ const Chatroom = () => {
     const fetchChatrooms = async () => {
       try {
         const data = await chatroomList();
-        console.log("chatrooms:", data);
+        // console.log("chatrooms:", data);
 
-        setChatrooms(data.chatrooms); // API에서 받은 채팅방 목록 저장
-        setChatroomsId(data.chatrooms_id); // 채팅방 _id 저장
+        setChatrooms(data.chatrooms);
+        setChatroomsId(data.chatrooms_id);
         setUserId(data.user_id);
+        setUserName(data.userName);
       } catch (err) {
         setError(err.message);
       }
@@ -35,7 +40,9 @@ const Chatroom = () => {
   };
 
   // 채팅방 만들기
-  // const
+  const addNewChatroom = (newChatroom) => {
+    setChatrooms((prev) => [...prev, newChatroom]);
+  };
 
   // 채팅방 나가기
   const handleLeaveChatroom = async (chatroomId) => {
@@ -53,12 +60,24 @@ const Chatroom = () => {
 
   return (
     <div>
-      <h2 style={{ textAlign: "center" }}>채팅방 목록</h2>
-      <button style={{ marginLeft: "200px" }}>new Chat</button>
+      <h2 style={{ textAlign: "center" }}>{userName}</h2>
+      <button
+        className="create-chatroomBtn"
+        style={{ marginLeft: "200px" }}
+        onClick={() => setIsModalOpen(true)}
+      >
+        new Chat
+      </button>
+      {isModalOpen && (
+        <CreateDmModal
+          onClose={() => setIsModalOpen(false)}
+          onAddChatroom={addNewChatroom}
+        />
+      )}
       {error && <p style={{ color: "red", textAlign: "center" }}>{error}</p>}
       <ul className="chatroom-list">
         {chatrooms && chatrooms.length > 0 ? (
-          chatrooms.map((chatroom, index) => (
+          chatrooms.map((chatroom) => (
             <li key={chatroom.chatroomId} className="chatroom-item">
               <div
                 onClick={() =>

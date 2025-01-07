@@ -45,6 +45,7 @@ router.get("/", auth, (req, res) => {
         message: "참여 중인 채팅방 목록",
         chatrooms: chatroomData,
         user_id: req.user._id,
+        userName: req.user.user_id,
       });
     })
     .catch((error) => {

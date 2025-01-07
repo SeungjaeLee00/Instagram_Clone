@@ -8,7 +8,7 @@ export const chatroomList = async () => {
     const response = await axios.get(`${API_BASE_URL}/list`, {
       withCredentials: true,
     });
-    console.log("채팅방 response.data", response.data);
+    // console.log("채팅방 response.data", response.data);
     return response.data;
   } catch (error) {
     if (error.response) {
@@ -29,7 +29,7 @@ export const createDM = async (chatId, title) => {
         withCredentials: true,
       }
     );
-    console.log("채팅방 생성 response:", response.data);
+    // console.log("채팅방 생성 response:", response.data);
     return response.data;
   } catch (error) {
     console.log(error);

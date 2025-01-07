@@ -30,7 +30,7 @@
 }
 
 .chatroom-item:active {
-  background-color: #004085; /* 클릭 시 더 어두운 파란색 */
+  background-color: #004085;
 }
 
 .leave-chatroom-button {
