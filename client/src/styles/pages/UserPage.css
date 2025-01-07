@@ -1,0 +1,157 @@
+.userPage {
+  font-family: Arial, sans-serif;
+  color: #262626;
+  max-width: 1200px;
+  margin: 40px auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.userPage-backClick-btn {
+  align-self: flex-start;
+  margin-bottom: 10px;
+  background: none;
+  border: none;
+  color: #0095f6;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.userPage-wrapper {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.userPage-top-section {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 50px;
+  padding: 20px 0;
+  border-bottom: 1px solid #dbdbdb;
+}
+
+.userPage-userPhoto {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.userPage-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  align-items: flex-start;
+}
+
+.userPage-actions {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.userPage-userName {
+  font-size: 25px;
+  font-weight: 600;
+}
+
+.userPage-follow-btn,
+.userPage-dmSendBtn {
+  padding: 8px 16px;
+  background-color: #dbdbdb;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: bold;
+  line-height: 1.2;
+}
+
+.userPage-follow-btn.following {
+  background-color: #0095f6;
+  color: #fff;
+  border: none;
+}
+
+.userPage-follow-info {
+  display: flex;
+  gap: 30px; /* 게시물, 팔로워, 팔로잉 간 간격 */
+  font-size: 20px;
+  font-weight: bold;
+  color: #8e8e8e;
+}
+
+.userPage-userNickName {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.userPage-userIntroduce {
+  font-size: 20px;
+}
+
+.userPage-posts-section {
+  width: 100%;
+
+  margin-top: 20px;
+}
+
+.userPage-posts-section h2 {
+  font-size: 20px;
+  color: #666;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.userPage-posts-section > div {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.userPage-post {
+  position: relative;
+  padding-top: 100%;
+  overflow: hidden;
+}
+
+.userPage-post-image {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  cursor: pointer;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.many-images-overlay {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  width: 30px;
+  height: 30px;
+  z-index: 10;
+}
+
+.userPage-no-posts {
+  margin-top: 50px;
+  font-size: 16px;
+  color: #8e8e8e;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.userPage-no-posts img {
+  width: 50px;
+  height: 50px;
+}

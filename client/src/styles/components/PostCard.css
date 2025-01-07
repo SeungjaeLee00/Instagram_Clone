@@ -1,0 +1,193 @@
+/* 게시물 카드 */
+.post-card {
+  max-width: 600px;
+  margin: 0 auto;
+  border: 1px solid #dbdbdb;
+  border-radius: 12px;
+  background-color: #fff;
+  overflow: hidden;
+  font-family: Arial, sans-serif;
+  position: relative;
+}
+
+/* 헤더 */
+.post-header {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  border-bottom: none;
+}
+
+.profile-image {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 10px;
+}
+
+.user-info {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 5px;
+  justify-content: flex-start;
+}
+
+.username {
+  font-weight: bold;
+  font-size: 15px;
+}
+
+.post-time {
+  font-size: 12px;
+  margin-top: 2px;
+  color: #8e8e8e;
+}
+
+/* 게시물 이미지 */
+.post-image {
+  position: relative;
+  width: 600px;
+  height: 600px;
+  overflow: hidden;
+}
+
+.post-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.many-img {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  width: 30px;
+  height: 30px;
+  z-index: 10;
+}
+
+.post-management {
+  display: flex;
+  justify-content: flex-end;
+  flex-grow: 1;
+}
+
+.post-management button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 22px;
+  font-weight: bold;
+  color: #262626;
+  padding: 0;
+  margin: 0;
+  box-shadow: none;
+  outline: none;
+}
+
+/* 수정/삭제 옵션 팝업 */
+.options-popup {
+  position: absolute;
+  top: 40px;
+  right: 10px;
+  background-color: white;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  padding: 5px;
+  z-index: 10;
+}
+
+.options-popup button {
+  background: none;
+  border: none;
+  padding: 10px;
+  text-align: left;
+  font-size: 14px;
+  color: #262626;
+}
+
+.options-popup button:hover {
+  color: #3897f0; /* Instagram 파란색 */
+}
+
+/* 액션 버튼 */
+.post-actions {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 10px 15px;
+  border-top: none;
+}
+
+/* DM 버튼 */
+.dm-btn {
+  background: url("../../assets/dm.png") no-repeat center center;
+  background-size: contain;
+  width: 22px;
+  height: 22px;
+  border: none;
+  cursor: pointer;
+}
+
+.dm-btn:hover {
+  color: #3897f0;
+}
+
+/* 좋아요 수 */
+.likes-count {
+  font-size: 14px;
+  font-weight: bold;
+  padding: 0 15px;
+  margin-bottom: 10px;
+}
+
+/* 게시물 설명 */
+.post-description {
+  font-size: 14px;
+  line-height: 1.5;
+  padding: 0 15px;
+}
+
+/* 댓글 보기 */
+.view-comments {
+  font-size: 14px;
+  color: #8e8e8e;
+  padding: 10px 15px;
+  cursor: pointer;
+}
+
+.view-comments:hover {
+  color: #3897f0;
+}
+
+/* 댓글 입력 */
+.add-comment {
+  display: flex;
+  align-items: center;
+  padding: 10px 15px;
+  border-top: 1px solid #efefef;
+}
+
+.comment-input {
+  flex-grow: 1;
+  border: none;
+  outline: none;
+  font-size: 14px;
+  padding: 5px;
+}
+
+.comment-input::placeholder {
+  color: #8e8e8e;
+}
+
+.comment-submit-btn {
+  background: none;
+  border: none;
+  color: #3897f0;
+  font-weight: bold;
+  cursor: pointer;
+}

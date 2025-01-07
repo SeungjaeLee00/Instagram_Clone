@@ -1,0 +1,139 @@
+.chat-page {
+  display: flex;
+  justify-content: center; /* 가로 가운데 정렬 */
+  margin-left: 300px;
+  height: 90%; /* 채팅창 높이 */
+}
+
+.chat-container {
+  display: flex;
+  flex-direction: column;
+  width: 45%; /* 채팅창 너비 */
+  background-color: #f5f5f5;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.chat-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  height: 100%;
+}
+
+.chat-area {
+  flex: 1;
+  padding: 10px;
+  overflow-y: auto;
+  background-color: #f9f9f9;
+}
+
+.input-area {
+  display: flex;
+  padding: 10px;
+  background-color: #fff;
+  border-top: 1px solid #ddd;
+}
+
+.input-area input[type="text"] {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-right: 10px;
+}
+
+.input-area button {
+  padding: 10px 20px;
+  background-color: #0084ff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.input-area button:hover {
+  background-color: #005bb5;
+}
+
+/* 채팅 메시지 스타일 */
+.message {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 15px;
+  max-width: 70%;
+  font-size: 14px;
+  word-wrap: break-word; /* 긴 단어가 끊어지도록 */
+}
+
+.message.self {
+  align-items: flex-end; /* 오른쪽 정렬 */
+  margin-left: auto; /* 오른쪽에 고정 */
+}
+
+.message.self .content {
+  background-color: #0084ff; /* 내가 보낸 메시지는 파란색 */
+  color: #fff; /* 글자 색 흰색 */
+  border-radius: 12px 12px 0 12px;
+  padding: 10px 15px;
+  word-wrap: break-word;
+  max-width: 80%;
+  width: auto; /* 글자 수에 비례하여 크기 조절 */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.message.other {
+  align-items: flex-start; /* 왼쪽 정렬 */
+  margin-right: auto; /* 왼쪽에 고정 */
+}
+
+.message.other .content {
+  background-color: #ffffff; /* 다른 사람이 보낸 메시지는 흰색 */
+  color: #000;
+  border-radius: 12px 12px 12px 0;
+  padding: 10px 15px;
+  word-wrap: break-word;
+  max-width: 80%;
+  width: auto; /* 글자 수에 비례하여 크기 조절 */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.message.self .username {
+  cursor: pointer;
+  font-size: 13px;
+  color: #888;
+  text-align: right; /* 이름을 오른쪽으로 정렬 */
+  margin-bottom: 5px;
+  margin-right: 5px; /* 오른쪽 여백 추가 */
+}
+
+.message.self .username:hover {
+  color: black;
+}
+
+.message.other .username {
+  cursor: pointer;
+  font-size: 13px;
+  color: #888;
+  text-align: left; /* 다른 사람의 이름은 왼쪽으로 정렬 */
+  margin-bottom: 5px;
+  margin-left: 5px; /* 왼쪽 여백 추가 */
+}
+
+.message.other .username:hover {
+  color: black;
+}
+
+.back-btn {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.back-btn:hover {
+  background-color: #0056b3;
+}

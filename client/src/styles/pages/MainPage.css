@@ -1,0 +1,27 @@
+.main-page {
+  display: flex;
+  justify-content: center; /* 중앙 정렬 */
+  padding: 20px;
+}
+
+.feed-container {
+  display: flex;
+  flex-direction: column; /* 항상 세로 배치 */
+  gap: 20px;
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  .main-page {
+    padding: 10px;
+  }
+
+  .feed-container {
+    padding: 10px;
+    flex-direction: column; /* 작은 화면에서도 세로 배치 유지 */
+  }
+
+  .post-card {
+    height: 600px; /* 작은 화면에서 더 큰 카드 높이 */
+  }
+}
