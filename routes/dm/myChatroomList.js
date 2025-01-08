@@ -20,6 +20,8 @@ router.get("/", auth, async (req, res) => {
     if (!chatrooms || chatrooms.length === 0) {
       return res.json({
         message: "채팅방이 없습니다.",
+        user_id: req.user._id,
+        userName: req.user.user_id,
       });
     }
 
@@ -47,7 +49,9 @@ router.get("/", auth, async (req, res) => {
         return {
           chatroomId: chatroom._id,
           chatroomName: chatroomName,
-          user_profile: otherUserProfile ? otherUserProfile.profile_image : null,
+          user_profile: otherUserProfile
+            ? otherUserProfile.profile_image
+            : null,
         };
       })
     );
