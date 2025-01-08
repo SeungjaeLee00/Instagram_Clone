@@ -75,31 +75,14 @@
   width: 100%;
 }
 
-.chat-more-button {
+.trash {
+  width: 30px;
+  height: 30px;
   background: none;
   border: none;
   cursor: pointer;
   position: absolute; /* 버튼을 절대 위치로 배치 */
   right: 40px;
-}
-
-.chatroom-menu {
-  background-color: white;
-  border: 1px solid #ccc;
-  position: absolute;
-  right: 80px;
-}
-
-.leave-chatroom-button {
-  background-color: #ff0000;
-  color: white;
-  border: none;
-  padding: 5px 10px;
-  cursor: pointer;
-}
-
-.leave-chatroom-button:hover {
-  background-color: #cc0000;
 }
 
 .chat-profile-image {

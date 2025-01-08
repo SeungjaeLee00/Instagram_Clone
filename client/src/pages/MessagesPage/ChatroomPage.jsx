@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { chatroomList, deleteChatroom } from "../../api/messageApi";
 import "../../styles/pages/MessagesPage/ChatroomPage.css";
 import newChat from "../../assets/newChat.png";
-import information from "../../assets/information.png";
+import trash from "../../assets/trash.png";
 import defaultProfile from "../../assets/default_profile.png";
 
 const Chatroom = () => {
@@ -12,7 +12,6 @@ const Chatroom = () => {
   const [userId, setUserId] = useState([]); // 로그인 된 user의 object id
   const [otherUserProfile, setOtherUserProfile] = useState(""); // profile image
   const [error, setError] = useState(null);
-  const [showMenu, setShowMenu] = useState(null); // 메뉴 표시 상태
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -40,25 +39,19 @@ const Chatroom = () => {
     });
   };
 
-  // i 버튼 클릭 시 메뉴 토글
-  const handleMoreClick = (chatroomId) => {
-    setShowMenu((prev) => (prev === chatroomId ? null : chatroomId)); // 클릭한 채팅방 메뉴를 토글
-  };
-
   // 채팅방 나가기
   const handleLeaveChatroom = async (chatroomId) => {
     // console.log("삭제할 채팅방 ID:", chatroomId);
+    alert("채팅방을 삭제하겠습니다.");
     try {
       await deleteChatroom(chatroomId);
       setChatrooms((prev) =>
         prev.filter((chatroom) => chatroom.chatroomId !== chatroomId)
       );
-      setShowMenu(null); // 메뉴 닫기
     } catch (err) {
       setError(err.message);
     }
   };
-
 
   return (
     <div className = "chatroom-page">
@@ -95,25 +88,12 @@ const Chatroom = () => {
                   <strong>{chatroom.chatroomName}</strong>
                 </div>
 
-                <button
-                  onClick={() => handleMoreClick(chatroom.chatroomId)}
-                  className="chat-more-button"
-                >
-                  <img src={information} alt="More Options" />
-                </button>
-
-                {showMenu === chatroom.chatroomId && (
-                  <div className="chatroom-menu">
-                    <button
-                      onClick={() => {
-                        handleLeaveChatroom(chatroom.chatroomId); // 바로 나가기 실행
-                      }}
-                      className="leave-chatroom-button"
-                    >
-                      나가기
-                    </button>
-                  </div>
-                )}
+                <img className="trash"
+                  src={trash}  
+                  onClick={() => {
+                  handleLeaveChatroom(chatroom.chatroomId); // 바로 나가기 실행
+                  }
+                } />
               </li>
             ))
           ) : (
