@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/pages/LoginPage.css";
 import { loginUser } from "../api/authApi"; // API 호출 함수 가져오기
-import { initializeSocket } from "../utils/socket"; // 소켓 초기화 함수 가져오기
 
 // 이미지 로드
 import instalogo from "../assets/instagram_logo.png";
@@ -52,6 +51,7 @@ const Login = ({ setIsAuthenticated }) => {
         setIsAuthenticated(true); // 인증 상태 설정
         alert("로그인 성공");
         sessionStorage.clear(); // 로그인 성공 시 sessionstrage 삭제 
+        sessionStorage.setItem("userId", userId); // 로그인 성공 시 세션 스토리지에 사용자 ID 저장
         navigate("/"); // 메인 페이지로 이동
       } else {
         alert("로그인 실패: 유효한 토큰이 없습니다.");

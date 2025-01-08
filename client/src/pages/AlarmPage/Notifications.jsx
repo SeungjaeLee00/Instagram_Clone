@@ -9,6 +9,7 @@ const Notification = () => {
   // session Storage에서 알림 가져오기
   useEffect(() => {
     const storedNotifications = JSON.parse(sessionStorage.getItem("notifications")) || [];
+    console.log(storedNotifications);
     setNotifications(storedNotifications);
   }, []);
 
