@@ -47,14 +47,17 @@ const Chatroom = () => {
   // 채팅방 나가기
   const handleLeaveChatroom = async (chatroomId) => {
     // console.log("삭제할 채팅방 ID:", chatroomId);
-
-    try {
-      await deleteChatroom(chatroomId);
-      setChatrooms((prev) =>
-        prev.filter((chatroom) => chatroom.chatroomId !== chatroomId)
-      );
-    } catch (err) {
-      setError(err.message);
+    if (window.confirm("채팅방을 나가시겠습니까?")) {
+      try {
+        await deleteChatroom(chatroomId);
+        setChatrooms((prev) =>
+          prev.filter((chatroom) => chatroom.chatroomId !== chatroomId)
+        );
+        alert("채팅방을 나갔습니다.");
+      } catch (err) {
+        setError(err.message);
+        alert("채팅방 나가기에 실패했습니다.");
+      }
     }
   };
 

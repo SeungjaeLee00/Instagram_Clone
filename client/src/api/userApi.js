@@ -2,6 +2,7 @@ import axios from "axios";
 
 const API_BASE_URL = "http://localhost:5001/search";
 
+// 단일 사용자
 export const fetchSingleUserProfile = async (userName) => {
   try {
     const response = await axios.get(
@@ -18,6 +19,7 @@ export const fetchSingleUserProfile = async (userName) => {
   }
 };
 
+// 다중 사용자
 export const fetchMultiUsersProfile = async (userName) => {
   try {
     const response = await axios.get(
