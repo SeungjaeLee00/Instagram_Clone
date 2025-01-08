@@ -58,6 +58,7 @@ router.get("/", auth, async (req, res) => {
       message: "참여 중인 채팅방 목록",
       chatrooms: filteredChatroomData,
       user_id: req.user._id,
+      userName: req.user.user_id,
     });
   } catch (error) {
     res.status(500).json({

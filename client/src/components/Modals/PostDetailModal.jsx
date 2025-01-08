@@ -333,6 +333,12 @@ const PostDetailModal = ({
                         // src={comment?.user?.profile_image || default_profile}
                         alt="profile"
                         className="profileDetail-image"
+                        onClick={() =>
+                          goToUserProfile(
+                            comment.user._id,
+                            comment.user?.user_id
+                          )
+                        }
                       />
                       {/* <img
                         src={(() => {
@@ -355,7 +361,17 @@ const PostDetailModal = ({
                       {/* 댓글 정보 */}
                       <div className="commentDetail-info">
                         <div className="commentDetail-userInfo">
-                          <strong>{comment.user.user_id}</strong> {comment.text}
+                          <strong
+                            onClick={() =>
+                              goToUserProfile(
+                                comment.user._id,
+                                comment.user?.user_id
+                              )
+                            }
+                          >
+                            {comment.user.user_id}
+                          </strong>{" "}
+                          {comment.text}
                         </div>
                         <div className="commentDetail-commentInfo">
                           <span className="commentDetail-time">

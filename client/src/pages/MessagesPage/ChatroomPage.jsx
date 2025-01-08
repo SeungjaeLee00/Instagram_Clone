@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { chatroomList, deleteChatroom } from "../../api/messageApi";
+import CreateDmModal from "../../components/Modals/CreateDmModal";
+
 import "../../styles/pages/MessagesPage/ChatroomPage.css";
 import newChat from "../../assets/newChat.png";
 import trash from "../../assets/trash.png";
@@ -11,6 +13,8 @@ const Chatroom = () => {
   const [chatrooms, setChatrooms] = useState([]);
   const [userId, setUserId] = useState([]); // 로그인 된 user의 object id
   const [otherUserProfile, setOtherUserProfile] = useState(""); // profile image
+  const [userName, setUserName] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
@@ -18,11 +22,12 @@ const Chatroom = () => {
     const fetchChatrooms = async () => {
       try {
         const data = await chatroomList();
-        console.log("chatrooms:", data.chatrooms);
+        console.log("chatrooms:", data);
 
-        setChatrooms(data.chatrooms); // API에서 받은 채팅방 목록 저장
-        setChatroomsId(data.chatrooms_id); // 채팅방 _id 저장
+        setChatrooms(data.chatrooms);
+        setChatroomsId(data.chatrooms_id);
         setUserId(data.user_id);
+        setUserName(data.userName);
         setOtherUserProfile(data.user_profile);
       } catch (err) {
         setError(err.message);
@@ -39,29 +44,46 @@ const Chatroom = () => {
     });
   };
 
+  // 채팅방 만들기
+  const addNewChatroom = (newChatroom) => {
+    setChatrooms((prev) => [...prev, newChatroom]);
+  };
+
   // 채팅방 나가기
   const handleLeaveChatroom = async (chatroomId) => {
     // console.log("삭제할 채팅방 ID:", chatroomId);
-    alert("채팅방을 삭제하겠습니다.");
-    try {
-      await deleteChatroom(chatroomId);
-      setChatrooms((prev) =>
-        prev.filter((chatroom) => chatroom.chatroomId !== chatroomId)
-      );
-    } catch (err) {
-      setError(err.message);
+    if (window.confirm("채팅방을 나가시겠습니까?")) {
+      try {
+        await deleteChatroom(chatroomId);
+        setChatrooms((prev) =>
+          prev.filter((chatroom) => chatroom.chatroomId !== chatroomId)
+        );
+        alert("채팅방을 나갔습니다.");
+      } catch (err) {
+        setError(err.message);
+        alert("채팅방 나가기에 실패했습니다.");
+      }
     }
   };
 
   return (
     <div className = "chatroom-page">
       <div className = "chatroom-content">
-        <h2 style={{ textAlign: "Left" }}>메시지
+        <h2 style={{ textAlign: "Left" }}>{userName}
           <button className="new-chat-button">
             <img 
-              src = {newChat} alt = "New Chat" />
+              src = {newChat} alt = "New Chat" 
+              onClick={() => setIsModalOpen(true)}
+            />
           </button>
         </h2>
+
+        {isModalOpen && (
+        <CreateDmModal
+          onClose={() => setIsModalOpen(false)}
+          onAddChatroom={addNewChatroom}
+        />
+        )}
 
         {error && <p style={{ color: "red", textAlign: "center" }}>{error}</p>}
         
@@ -102,7 +124,7 @@ const Chatroom = () => {
         </ul>
       </div>
     </div>
-  );
+  )
 };
 
 export default Chatroom;

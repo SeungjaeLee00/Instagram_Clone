@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
-import { fetchUserProfile } from "../api/userApi";
+import { fetchSingleUserProfile } from "../api/userApi";
 import { followUser, getUserFollowing } from "../api/followApi";
 import { createDM } from "../api/messageApi";
 import { addLike } from "../api/postApi";
@@ -13,6 +13,7 @@ import PostDetailModal from "../components/Modals/PostDetailModal";
 
 import "../styles/pages/UserPage.css";
 import default_profile from "../assets/default_profile.png";
+import manyImg from "../assets/manyImg.png";
 
 const UserPage = () => {
   const { userName } = useParams();
@@ -30,11 +31,12 @@ const UserPage = () => {
 
   useEffect(() => {
     // console.log("user", user);
+    //
     if (user && user.userId) {
       const getUserProfile = async () => {
         try {
           setIsLoading(true);
-          const data = await fetchUserProfile(userName);
+          const data = await fetchSingleUserProfile(userName);
           setUserData(data);
           // console.log("data", data);
           // console.log("data.userName", data.userName);
@@ -258,6 +260,7 @@ const UserPage = () => {
           </div>
         </div>
 
+        {/* 게시물 */}
         <div className="userPage-posts-section">
           <h2>게시물</h2>
           {userData.posts.length > 0 ? (
@@ -270,6 +273,15 @@ const UserPage = () => {
                     onClick={() => openModal(post)}
                     className="userPage-post-image"
                   />
+                  {post.images.length > 1 && (
+                    <div className="many-images-overlay">
+                      <img
+                        src={manyImg}
+                        alt="Multiple Images"
+                        className="many-images-icon"
+                      />
+                    </div>
+                  )}
                 </div>
               ))}
             </div>

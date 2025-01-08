@@ -35,8 +35,8 @@
 }
 
 .userPage-userPhoto {
-  width: 150px;
-  height: 150px;
+  width: 200px;
+  height: 200px;
   border-radius: 50%;
   object-fit: cover;
 }
@@ -56,7 +56,7 @@
 }
 
 .userPage-userName {
-  font-size: 20px;
+  font-size: 25px;
   font-weight: 600;
 }
 
@@ -81,39 +81,64 @@
 .userPage-follow-info {
   display: flex;
   gap: 30px; /* 게시물, 팔로워, 팔로잉 간 간격 */
-  font-size: 16px;
+  font-size: 20px;
   font-weight: bold;
   color: #8e8e8e;
 }
 
 .userPage-userNickName {
-  font-size: 16px;
+  font-size: 20px;
   font-weight: bold;
 }
 
 .userPage-userIntroduce {
-  font-size: 16px;
+  font-size: 20px;
 }
 
 .userPage-posts-section {
   width: 100%;
-  text-align: center;
+
   margin-top: 20px;
 }
 
+.userPage-posts-section h2 {
+  font-size: 20px;
+  color: #666;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.userPage-posts-section > div {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
 .userPage-post {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 300px;
+  position: relative;
+  padding-top: 100%;
+  overflow: hidden;
 }
 
 .userPage-post-image {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   width: 100%;
-  height: 300px;
+  height: 100%;
   object-fit: cover;
-  border: 1px solid #dbdbdb;
-  margin-bottom: 10px;
+  cursor: pointer;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.many-images-overlay {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  width: 30px;
+  height: 30px;
+  z-index: 10;
 }
 
 .userPage-no-posts {
