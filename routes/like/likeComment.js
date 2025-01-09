@@ -44,6 +44,8 @@ router.post("/:commentId/like", auth, async (req, res) => {
         commenterId: commenterId,
         commentId: commentId,
         likerId: userId,
+        likerName: req.user.user_id,
+        likerProfile: req.user.profile_image,
         message: "댓글을 좋아합니다",
       });
 

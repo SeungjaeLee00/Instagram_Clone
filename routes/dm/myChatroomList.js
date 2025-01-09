@@ -20,6 +20,8 @@ router.get("/", auth, async (req, res) => {
     if (!chatrooms || chatrooms.length === 0) {
       return res.json({
         message: "채팅방이 없습니다.",
+        user_id: req.user._id,
+        userName: req.user.user_id,
       });
     }
 

@@ -1,58 +1,94 @@
 /* 전체 페이지 스타일 */
 .notifications-page {
-    margin-left: 55px; /* 왼쪽 60px 여백 */
+    margin-left: 55px; /* 왼쪽 여백 */
     overflow: hidden; /* 스크롤 숨기기 */
     padding: 20px; /* 안쪽 여백 */
     height: 100%; /* 화면 전체 높이 */
     box-sizing: border-box; /* 패딩 포함하여 크기 계산 */
-} 
+}
 
+/* 알림 내용 스타일 */
 .notifications-content {
-    width: 500px; 
+    width: 600px; 
     height: 100%; /* 화면 높이에 맞춤 */
     overflow-y: auto;   /* 세로 스크롤 활성화 */
     flex: 1; /* 남은 영역을 차지 */
-    background-color: #fff; /* 필요에 따라 배경색 지정 */
+    background-color: #fff; /* 배경색 */
     padding: 20px;
     border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 컴포넌트에 그림자 추가 */
-    transition: overflow 0.3s ease; /* 부드럽게 전환되도록 */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 그림자 */
+    transition: overflow 0.3s ease; /* 부드러운 스크롤 전환 */
 }
 
+/* 스크롤 활성화 */
 .notifications-content:hover {
-    overflow-y: auto;   /* 마우스 오버 시 스크롤 표시 */
+    overflow-y: auto;
 }
 
-/* 알림 */
+/* 알림 제목 스타일 */
 .notifications-content h3 {
-    font-size: 20px; /* 글자 크기 */
+    font-size: 20px;
     padding: 10px 15px;
 }
 
-/* 왼쪽 사이드바와 겹침 방지 */
+/* 알림 목록 스타일 */
 .notifications-content ul {
     list-style: none;
     padding: 0;
     margin: 0;
-    width: 100%; /* 컨텐츠를 가로 전체로 확장 */
+    width: 100%;
 }
 
-/* 알림 목록 스타일 */
-.notifications-content li {
-    font-size: 13px; /* 글자 크기 */
-    padding: 10px 15px; /* 내부 여백 */
-    margin-bottom: 10px; /* 항목 간 간격 */
-    border-bottom: 0.5px solid #ddd; /* 하단 구분선 */
-    box-sizing: border-box; /* 구분선을 포함한 크기 계산 */
-    width: calc(100% - 30px); /* 좌우 패딩(15px씩) 제외 */
+/* 알림 항목 스타일 */
+.noti {
+    display: flex; /* Flexbox 레이아웃 */
+    justify-content: space-between; /* 좌우 정렬 */
+    align-items: center; /* 세로 중앙 정렬 */
+    font-size: 13px;
+    padding: 10px 15px;
+    margin-bottom: 10px;
+    border-bottom: 0.5px solid #ddd;
+    box-sizing: border-box;
+    width: calc(100% - 30px);
     word-break: break-word; /* 긴 텍스트 줄바꿈 */
-    line-height: 1.6; /* 줄 간격 설정 */
+    line-height: 1.6; /* 줄 간격 */
 }
 
+.noti-profile {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+    object-fit: cover;
+  }
+
+/* 알림 메시지 스타일 */
+.noti-message {
+    font-family: "Arial", sans-serif; /* Arial을 기본 글꼴로 사용 */
+    flex-grow: 1; /* 남는 공간 차지 */
+    font-size: 13px;
+    color: #000000;
+}
+
+/* 오른쪽 영역 (타임스탬프와 삭제 버튼) */
+.noti-right-content {
+    display: flex;
+    align-items: center; /* 세로 중앙 정렬 */
+    gap: 10px; /* 요소 간 간격 */
+}
 
 /* 타임스탬프 스타일 */
-.timestamp {
+.noti-timestamp {
     font-size: 0.8em;
     color: gray;
-    margin-left: 10px;
+    white-space: nowrap; /* 텍스트가 줄바꿈되지 않도록 설정 */
+}
+
+/* 삭제 버튼 스타일 */
+.noti-trash {
+    width: 30px;
+    height: 30px;
+    background: none;
+    border: none;
+    cursor: pointer;
 }

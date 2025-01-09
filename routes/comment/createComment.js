@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const { Comment } = require("../../models/Comment"); // 댓글 모델
 const { Post } = require("../../models/Post"); // 게시물 모델
+const { Notification } = require("../../models/Notification"); // 알림 모델
 const { auth } = require("../auth");
 
 const cookieParser = require("cookie-parser");
@@ -21,7 +22,7 @@ router.post("/:postId", auth, async (req, res) => {
       return res.status(404).json({ message: "게시물을 찾을 수 없습니다." });
     }
 
-    // 포스트 작성자 id 저장
+    // 포스트 작성자 object id 저장
     const postUserId = post.user_id;
 
     // 댓글 생성
@@ -45,6 +46,7 @@ router.post("/:postId", auth, async (req, res) => {
       select: "_id user_id profile_image",
     });
 
+    // console.log("comenterProfile: ", populatedComment.user.profile_image);
     // emitComment 호출
     emitComment({
       postId: postId,
@@ -53,6 +55,7 @@ router.post("/:postId", auth, async (req, res) => {
       commentText: newComment.text,
       commenterId: userId,
       commenterName: populatedComment.user.user_id,
+      comenterProfile: populatedComment.user.profile_image,
     });
 
     return res.status(201).json({

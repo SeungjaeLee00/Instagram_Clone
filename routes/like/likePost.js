@@ -48,6 +48,7 @@ router.post("/:postId/like", auth, async (req, res) => {
         postId: postId,
         likerId: userId,
         likerName: likerName, // user_id 추가(24.12.20)
+        likerProfile: req.user.profile_image,
         message: "게시물을 좋아합니다",
       });
 
