@@ -49,7 +49,9 @@ router.get("/", auth, async (req, res) => {
         return {
           chatroomId: chatroom._id,
           chatroomName: chatroomName,
-          user_profile: otherUserProfile ? otherUserProfile.profile_image : null,
+          user_profile: otherUserProfile
+            ? otherUserProfile.profile_image
+            : null,
         };
       })
     );
