@@ -7,6 +7,5 @@
 **프로젝트 시작**
 
 ```jsx
-cd server
 npm run dev
 ```
