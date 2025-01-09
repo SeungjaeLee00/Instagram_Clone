@@ -3,7 +3,11 @@ import { useNavigate } from "react-router-dom";
 
 import { timeAgo } from "../../utils/timeAgo";
 import useAuth from "../../hooks/useAuth";
-import { deleteComment, addCommentLike } from "../../api/commentApi";
+import {
+  deleteComment,
+  addCommentLike,
+  getComments,
+} from "../../api/commentApi";
 
 import "../../styles/components/PostDetailModal.css";
 import default_profile from "../../assets/default_profile.png";
@@ -31,9 +35,6 @@ const PostDetailModal = ({
 
   useEffect(() => {
     if (user) {
-      // console.log("user", user);
-      // console.log("post", post);
-
       if (post && post.comments) {
         setLiked(post.liked);
         setPostLikesCount(post.likesCount);
@@ -47,23 +48,24 @@ const PostDetailModal = ({
           },
           likesCount: comment.likes.length,
         }));
+        // 오래된 순 정렬
+        updatedComments.sort(
+          (a, b) => new Date(a.createdAt) - new Date(b.createdAt)
+        );
         setComments(updatedComments);
       }
-      // console.log("user.userId", user.userId);
-      // console.log("post.user_id._id", post.user_id._id);
     }
   }, [post, user]);
 
   // 게시물 좋아요
   const handleLike = async () => {
     const newLiked = !liked;
-    setLiked(newLiked); // UI에 즉각 반영
+    setLiked(newLiked);
     setPostLikesCount((prev) => (newLiked ? prev + 1 : prev - 1));
     try {
-      await onLike(post._id, newLiked); // 부모 컴포넌트에 좋아요 요청
+      await onLike(post._id, newLiked);
     } catch (error) {
       console.error("좋아요 처리 중 오류:", error);
-      // 좋아요 복원
       setLiked(!newLiked);
       setPostLikesCount((prev) => (newLiked ? prev - 1 : prev + 1));
     }
@@ -84,18 +86,16 @@ const PostDetailModal = ({
           : comment
       )
     );
-
     try {
-      const response = await addCommentLike(commentId); // 서버 요청
-
+      const response = await addCommentLike(commentId);
       // 서버 응답 후 좋아요 상태와 갯수 업데이트
       setComments((prevComments) =>
         prevComments.map((comment) =>
           comment._id === commentId
             ? {
                 ...comment,
-                liked: response.isliked, // 서버 응답에 따른 liked 상태
-                likesCount: response.likesCount, // 서버 응답에 따른 좋아요 수
+                liked: response.isliked,
+                likesCount: response.likesCount,
               }
             : comment
         )
@@ -112,13 +112,11 @@ const PostDetailModal = ({
     if (!commentText.trim()) return;
     try {
       const response = await onUpdate(post._id, commentText);
-
       const newComment = response?.comment;
       // console.log("모달에서 newComment: ", newComment);
       if (!newComment) {
         throw new Error("댓글 추가 응답에 comment 정보가 없습니다.");
       }
-
       const formattedComment = {
         ...newComment,
         user: {
@@ -131,10 +129,14 @@ const PostDetailModal = ({
         liked: false,
       };
 
-      console.log("formattedComment", formattedComment);
+      // console.log("formattedComment", formattedComment);
 
-      // 새 댓글을 기존 댓글 리스트의 맨 앞에 추가
-      setComments((prevComments) => [formattedComment, ...prevComments]);
+      // 기존 댓글에 새 댓글 추가 및 오래된 순 정렬
+      setComments((prevComments) =>
+        [...prevComments, formattedComment].sort(
+          (a, b) => new Date(a.createdAt) - new Date(b.createdAt)
+        )
+      );
 
       setCommentText("");
 
@@ -160,11 +162,11 @@ const PostDetailModal = ({
 
     try {
       await deleteComment(commentId, post.user_id._id);
-
-      // 댓글 삭제 후, 로컬 상태에서 해당 댓글 제거
       setComments((prevComments) =>
         prevComments.filter((comment) => comment._id !== commentId)
       );
+      const updatedComments = await getComments(post._id, user.userId);
+      setComments(updatedComments);
     } catch (error) {
       console.error("댓글 삭제 중 오류 발생:", error);
       alert("댓글 삭제에 실패했습니다.");
@@ -243,7 +245,7 @@ const PostDetailModal = ({
   };
 
   if (!isOpen || !post) return null;
-  console.log("포스트디데팅post", post);
+  // console.log("포스트디데팅post", post);
 
   return (
     <div className="modal-overlay" onClick={onClose}>
