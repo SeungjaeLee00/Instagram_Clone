@@ -27,17 +27,19 @@ router.post("/:commentId/like", auth, async (req, res) => {
     if (existingLikeIndex !== -1) {
       // 이미 좋아요가 눌린 경우 좋아요 취소
       comment.likes.splice(existingLikeIndex, 1); // 좋아요 제거
+      comment.liked = false;
       await comment.save();
 
       return res.status(200).json({
         message: "댓글 좋아요가 취소되었습니다.",
         likesCount: comment.likes.length,
-        isliked: false, // 현재 사용자가 좋아요를 누르지 않은 상태
-        likes: comment.likes, // 좋아요를 누른 사용자 ID 배열
+        liked: comment.liked,
+        likes: comment.likes,
       });
     } else {
       // 좋아요 추가
-      comment.likes.push(userId); // 좋아요 추가
+      comment.likes.push(userId);
+      comment.liked = true;
       await comment.save();
 
       // 좋아요 알림 emit
@@ -54,7 +56,7 @@ router.post("/:commentId/like", auth, async (req, res) => {
       return res.status(201).json({
         message: "댓글 좋아요가 추가되었습니다.",
         likesCount: comment.likes.length,
-        isliked: true, // 현재 사용자가 좋아요를 누른 상태
+        liked: comment.liked,
         likes: comment.likes, // 좋아요를 누른 사용자 ID 배열
       });
     }

@@ -10,6 +10,22 @@ export const fetchPosts = async () => {
   return response.data.posts;
 };
 
+// 단건 게시물 조회 API
+export const fetchPostById = async (postId) => {
+  try {
+    const response = await axios.get(
+      `${API_BASE_URL}/post/get-post/${postId}`,
+      {
+        withCredentials: true, // 쿠키 인증
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("게시물 조회 중 오류:", error);
+    throw error;
+  }
+};
+
 // 게시물 삭제 API
 export const deletePost = async (postId, userId) => {
   const response = await axios.delete(`${API_BASE_URL}/post/delete/${postId}`, {

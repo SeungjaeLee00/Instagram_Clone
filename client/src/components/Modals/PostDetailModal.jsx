@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-
 import { timeAgo } from "../../utils/timeAgo";
 import useAuth from "../../hooks/useAuth";
 import {
@@ -16,18 +15,28 @@ const PostDetailModal = ({
   post,
   isOpen,
   onClose,
-  onLike,
-  onUpdate,
-  onDelete,
+  postLike,
+  postDelete,
+  addComment,
+  likeComment,
+  deleteComment,
 }) => {
   const navigate = useNavigate();
   const { isAuthenticated, user } = useAuth();
-  const [showOptions, setShowOptions] = useState(false);
-  const [liked, setLiked] = useState(false); // 게시물 좋아요 상태
-  const [postLikesCount, setPostLikesCount] = useState(0); // 게시물 좋아요 개수
+  const [postLiked, setPostLiked] = useState(false);
+  const [postLikesCount, setPostLikesCount] = useState(0);
+
+  const [commentLiked, setCommentLiked] = useState([]);
+  // const [commentLiked, setCommentLiked] = useState(false);
+  const [commentLikesCount, setCommentLikesCount] = useState(0);
+
   const [comments, setComments] = useState(post.comments || []);
-  const [commentText, setCommentText] = useState("");
+  const [addComments, setAddComments] = useState(post.comments || []); // 댓글 추가
+
   const commentInputRef = useRef(null);
+  const [commentText, setCommentText] = useState("");
+
+  const [showOptions, setShowOptions] = useState(false);
   const [visibleComments, setVisibleComments] = useState(6);
   const [isExpanded, setIsExpanded] = useState(false);
   const [selectedPost, setSelectedPost] = useState(null);
@@ -36,7 +45,7 @@ const PostDetailModal = ({
   useEffect(() => {
     if (user) {
       if (post && post.comments) {
-        setLiked(post.liked);
+        setPostLiked(post.liked);
         setPostLikesCount(post.likesCount);
 
         const updatedComments = post.comments.map((comment) => ({
@@ -52,131 +61,22 @@ const PostDetailModal = ({
         updatedComments.sort(
           (a, b) => new Date(a.createdAt) - new Date(b.createdAt)
         );
-        setComments(updatedComments);
+        setComments(updatedComments); // 전체 댓글 관리
       }
     }
   }, [post, user]);
 
   // 게시물 좋아요
-  const handleLike = async () => {
-    const newLiked = !liked;
-    setLiked(newLiked);
-    setPostLikesCount((prev) => (newLiked ? prev + 1 : prev - 1));
+  const handlePostLike = async () => {
+    const newPostLiked = !postLiked;
+    setPostLiked(newPostLiked);
+    setPostLikesCount((prev) => (newPostLiked ? prev + 1 : prev - 1));
     try {
-      await onLike(post._id, newLiked);
+      await postLike(post._id);
     } catch (error) {
       console.error("좋아요 처리 중 오류:", error);
-      setLiked(!newLiked);
-      setPostLikesCount((prev) => (newLiked ? prev - 1 : prev + 1));
-    }
-  };
-
-  // 댓글 좋아요
-  const handleCommentLike = async (commentId) => {
-    setComments((prevComments) =>
-      prevComments.map((comment) =>
-        comment._id === commentId
-          ? {
-              ...comment,
-              liked: !comment.liked,
-              likesCount: comment.liked
-                ? comment.likesCount - 1
-                : comment.likesCount + 1,
-            }
-          : comment
-      )
-    );
-    try {
-      const response = await addCommentLike(commentId);
-      // 서버 응답 후 좋아요 상태와 갯수 업데이트
-      setComments((prevComments) =>
-        prevComments.map((comment) =>
-          comment._id === commentId
-            ? {
-                ...comment,
-                liked: response.isliked,
-                likesCount: response.likesCount,
-              }
-            : comment
-        )
-      );
-    } catch (error) {
-      console.error("댓글 좋아요 처리 중 오류:", error);
-    }
-  };
-
-  const handleCommentChange = (e) => setCommentText(e.target.value);
-
-  // 댓글 추가
-  const handleCommentSubmit = async () => {
-    if (!commentText.trim()) return;
-    try {
-      const response = await onUpdate(post._id, commentText);
-      const newComment = response?.comment;
-      // console.log("모달에서 newComment: ", newComment);
-      if (!newComment) {
-        throw new Error("댓글 추가 응답에 comment 정보가 없습니다.");
-      }
-      const formattedComment = {
-        ...newComment,
-        user: {
-          _id: newComment.user._id,
-          user_id: newComment.user.user_id,
-          profile_image: newComment.user.profile_image || default_profile,
-        },
-        likes: [],
-        likesCount: 0,
-        liked: false,
-      };
-
-      // console.log("formattedComment", formattedComment);
-
-      // 기존 댓글에 새 댓글 추가 및 오래된 순 정렬
-      setComments((prevComments) =>
-        [...prevComments, formattedComment].sort(
-          (a, b) => new Date(a.createdAt) - new Date(b.createdAt)
-        )
-      );
-
-      setCommentText("");
-
-      if (commentInputRef.current) {
-        commentInputRef.current.focus();
-      }
-    } catch (error) {
-      console.error("댓글 추가 중 오류가 발생했습니다:", error);
-    }
-  };
-
-  // 댓글 삭제
-  const handleCommentDelete = async (commentId) => {
-    const loginUserId = user.userId;
-    const commentToDelete = comments.find(
-      (comment) => comment._id === commentId
-    );
-    if (!commentToDelete) return;
-    if (commentToDelete.user._id !== loginUserId) {
-      alert("본인의 댓글만 삭제할 수 있습니다.");
-      return;
-    }
-
-    try {
-      await deleteComment(commentId, post.user_id._id);
-      setComments((prevComments) =>
-        prevComments.filter((comment) => comment._id !== commentId)
-      );
-      const updatedComments = await getComments(post._id, user.userId);
-      setComments(updatedComments);
-    } catch (error) {
-      console.error("댓글 삭제 중 오류 발생:", error);
-      alert("댓글 삭제에 실패했습니다.");
-    }
-  };
-
-  // 버튼 클릭 시 입력 필드로 포커스를 이동
-  const handleFocusInput = () => {
-    if (commentInputRef.current) {
-      commentInputRef.current.focus();
+      setPostLiked(!newPostLiked);
+      setPostLikesCount((prev) => (newPostLiked ? prev - 1 : prev + 1));
     }
   };
 
@@ -200,14 +100,93 @@ const PostDetailModal = ({
 
   // 게시물 삭제
   const handleDelete = () => {
-    if (window.confirm("게시물을 삭제하시겠습니까?")) {
-      const postUserId = post.user_id?._id;
-      const loginUserId = user.userId;
-      if (postUserId !== loginUserId) {
-        alert("이 게시물은 삭제할 권한이 없습니다.");
-        return;
+    const postUserId = post.user_id?._id;
+    postDelete(post._id, postUserId);
+  };
+
+  const handleCommentChange = (e) => setCommentText(e.target.value);
+  // 댓글 달기
+  const handleCommentSubmit = async () => {
+    if (!commentText.trim()) return;
+    try {
+      const response = await addComment(post._id, commentText);
+      const newComment = response?.comment;
+      if (!newComment) {
+        throw new Error("댓글 추가 응답에 comment 정보가 없습니다.");
       }
-      onDelete(post._id, postUserId);
+      const formattedComment = {
+        ...newComment,
+        user: {
+          _id: newComment.user._id,
+          user_id: newComment.user.user_id,
+          profile_image: newComment.user.profile_image || default_profile,
+        },
+        likes: [],
+        likesCount: 0,
+        liked: false,
+      };
+
+      // 기존 댓글에 새 댓글 추가 및 오래된 순 정렬
+      setAddComments((prevComments) =>
+        [...prevComments, formattedComment].sort(
+          (a, b) => new Date(a.createdAt) - new Date(b.createdAt)
+        )
+      );
+      const updatedComments = await getComments(post._id, user.userId);
+      setComments(updatedComments);
+
+      setCommentText("");
+
+      if (commentInputRef.current) {
+        commentInputRef.current.focus();
+      }
+    } catch (error) {
+      console.error("댓글 추가 중 오류가 발생했습니다:", error);
+    }
+  };
+
+  // 댓글 좋아
+  const handleCommentLike = async (commentId) => {
+    setComments(
+      (prevComments) =>
+        prevComments.map((comment) =>
+          comment._id === commentId
+            ? {
+                ...comment,
+                liked: !comment.liked,
+                likesCount: comment.liked
+                  ? comment.likesCount - 1
+                  : comment.likesCount + 1,
+              }
+            : comment
+        ),
+      () => {
+        // 콜백 -> UI 업데이트
+        setComments((prevComments) => prevComments);
+      }
+    );
+
+    try {
+      await likeComment(commentId);
+    } catch (error) {
+      console.error("좋아요 처리 중 오류:", error);
+    }
+  };
+
+  // 댓글 삭제
+  const handleCommentDelete = async (commentId) => {
+    await deleteComment(commentId);
+    setComments((prevComments) =>
+      prevComments.filter((comment) => comment._id !== commentId)
+    );
+    // const updatedComments = await getComments(post._id, user.userId);
+    // setComments(updatedComments);
+  };
+
+  // 버튼 클릭 시 입력 필드로 포커스를 이동
+  const handleFocusInput = () => {
+    if (commentInputRef.current) {
+      commentInputRef.current.focus();
     }
   };
 
@@ -245,7 +224,6 @@ const PostDetailModal = ({
   };
 
   if (!isOpen || !post) return null;
-  // console.log("포스트디데팅post", post);
 
   return (
     <div className="modal-overlay" onClick={onClose}>
@@ -332,7 +310,6 @@ const PostDetailModal = ({
                       {/* 프로필 이미지 */}
                       <img
                         src={comment.user.profile_image || default_profile}
-                        // src={comment?.user?.profile_image || default_profile}
                         alt="profile"
                         className="profileDetail-image"
                         onClick={() =>
@@ -342,23 +319,6 @@ const PostDetailModal = ({
                           )
                         }
                       />
-                      {/* <img
-                        src={(() => {
-                          console.log(comment.user); // 값 확인
-                          console.log(
-                            "Post Data:",
-                            JSON.stringify(post, null, 2)
-                          );
-                          console.log(
-                            "Comments:",
-                            JSON.stringify(post.comments, null, 2)
-                          );
-
-                          return comment.user.profile_image || default_profile;
-                        })()}
-                        alt="profile"
-                        className="profileDetail-image"
-                      /> */}
 
                       {/* 댓글 정보 */}
                       <div className="commentDetail-info">
@@ -387,12 +347,11 @@ const PostDetailModal = ({
 
                       {/* 좋아요 버튼 */}
                       <button
-                        onClick={() => {
-                          handleCommentLike(comment._id, !comment.liked);
-                        }}
+                        key={comment._id}
                         className={`comment-like-btn ${
                           comment.liked ? "liked" : "unliked"
                         }`}
+                        onClick={() => handleCommentLike(comment._id)}
                       ></button>
                       {/* 댓글 삭제 버튼 */}
                       <button
@@ -423,8 +382,8 @@ const PostDetailModal = ({
             <div className="btnDetail-section">
               <div className="like-btn-section">
                 <button
-                  className={`like-btn ${liked ? "liked" : "unliked"}`}
-                  onClick={handleLike}
+                  className={`like-btn ${postLiked ? "liked" : "unliked"}`}
+                  onClick={handlePostLike}
                 ></button>
               </div>
 

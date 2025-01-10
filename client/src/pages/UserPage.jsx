@@ -6,7 +6,12 @@ import { fetchSingleUserProfile } from "../api/userApi";
 import { followUser, getUserFollowing } from "../api/followApi";
 import { createDM } from "../api/messageApi";
 import { addLike } from "../api/postApi";
-import { addComment } from "../api/commentApi";
+import {
+  addComment,
+  addCommentLike,
+  deleteComment,
+  getComments,
+} from "../api/commentApi";
 
 import useAuth from "../hooks/useAuth";
 import PostDetailModal from "../components/Modals/PostDetailModal";
@@ -16,49 +21,54 @@ import default_profile from "../assets/default_profile.png";
 import manyImg from "../assets/manyImg.png";
 
 const UserPage = () => {
-  const { userName } = useParams();
   const navigate = useNavigate();
+  const { userName } = useParams();
   const { isAuthenticated, user } = useAuth();
   const [userData, setUserData] = useState(null);
   const [posts, setPosts] = useState([]);
   const [isFollowing, setIsFollowing] = useState(false);
-  // eslint-disable-next-line
   const [followingList, setFollowingList] = useState([]);
+
   const [selectedPost, setSelectedPost] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
 
   useEffect(() => {
-    // console.log("user", user);
-    //
     if (user && user.userId) {
       const getUserProfile = async () => {
         try {
-          setIsLoading(true);
-          const data = await fetchSingleUserProfile(userName);
-          setUserData(data);
-          // console.log("data", data);
-          // console.log("data.userName", data.userName);
-          // console.log(user.userId);
+          const userProfile = await fetchSingleUserProfile(userName);
+          const postList = userProfile.posts;
+          const updatedPosts = postList
+            ? postList.map((post) => ({
+                ...post,
+                liked: post.likes.includes(user.userId),
+                comments: post.comments.map((comment) => ({
+                  ...comment,
+                  liked: comment.likes.includes(user.userId),
+                })),
+              }))
+            : [];
 
-          // 내 팔로잉 목록
           const followingData = await getUserFollowing(user.userId);
+          setUserData(userProfile);
+          setPosts(updatedPosts || []);
           setFollowingList(followingData.following || []);
-          // console.log("followingList", followingList);
 
           // 팔로잉 목록에 현재 보고 있는 유저가 포함되어 있는지 확인
           const isUserFollowing =
             Array.isArray(followingData.following) &&
             followingData.following.some(
-              (user) => user.user_id === data.userName
+              (user) => user.user_id === userProfile.userName
             );
           setIsFollowing(isUserFollowing);
-          // console.log("isUserFollowing", isUserFollowing);
         } catch (err) {
           console.error("에러 발생:", err);
           setError(
-            err.response?.data?.message || "사용자 정보를 불러오지 못했습니다."
+            err.response?.userProfile?.message ||
+              "사용자 정보를 불러오지 못했습니다."
           );
         } finally {
           setIsLoading(false);
@@ -72,16 +82,17 @@ const UserPage = () => {
     navigate(-1);
   };
 
-  // 게시물 좋아요 처리 함수
-  const handleLike = async (postId, newLiked) => {
+  // 게시물 좋아요
+  const handleLikePost = async (postId) => {
     try {
       const response = await addLike(postId);
+      console.log("남페이지에서 게시물 좋아요:", response);
       setPosts((prevPosts) =>
         prevPosts.map((post) =>
           post._id === postId
             ? {
                 ...post,
-                liked: newLiked,
+                liked: response.liked,
                 likesCount: response.likesCount,
               }
             : post
@@ -96,8 +107,10 @@ const UserPage = () => {
   const handleAddComment = async (postId, newCommentText) => {
     try {
       const response = await addComment(postId, newCommentText);
-      console.log("myPage에서 댓글 달기:", response);
+      // console.log("남페이지에서 댓글 달기:", response);
       const { comment } = response;
+      // await getComments(postId, user.userId);
+
       setPosts((prevPosts) =>
         prevPosts.map((post) =>
           post._id === postId
@@ -111,16 +124,77 @@ const UserPage = () => {
             : post
         )
       );
+
+      if (selectedPost && selectedPost._id === postId) {
+        setSelectedPost((prevSelectedPost) => ({
+          ...prevSelectedPost,
+          comments: [
+            { ...comment, likesCount: 0, liked: false },
+            ...prevSelectedPost.comments,
+          ],
+        }));
+      }
+
       return { comment };
     } catch (error) {
       console.error("댓글 추가 중 오류가 발생했습니다:", error);
     }
   };
 
+  // 댓글 좋아요
+  const handleLikeComment = async (commentId) => {
+    try {
+      const response = await addCommentLike(commentId);
+      console.log("myPage에서 댓글 좋아요:", response);
+      setPosts((prevComments) =>
+        prevComments.map((comment) =>
+          comment._id === commentId
+            ? {
+                ...comment,
+                liked: response.liked,
+                likesCount: response.likesCount,
+              }
+            : comment
+        )
+      );
+    } catch (error) {
+      console.error("댓글 좋아요 처리 중 오류:", error);
+    }
+  };
+
+  // 댓글 삭제
+  const handleCommentDelete = async (commentId) => {
+    const loginUserId = user.userId;
+    const commentToDelete = posts
+      .flatMap((post) => post.comments)
+      .find((comment) => comment._id === commentId);
+    if (!commentToDelete) {
+      return;
+    }
+
+    if (commentToDelete.user._id !== loginUserId) {
+      alert("본인의 댓글만 삭제할 수 있습니다.");
+      return;
+    }
+
+    try {
+      const dComment = await deleteComment(
+        commentId,
+        posts.map((post) => post.user_id)
+      );
+      console.log("남페이지에서 삭제하는 댓글", dComment);
+      setPosts((prevComments) =>
+        prevComments.filter((comment) => comment._id !== commentId)
+      );
+    } catch (error) {
+      console.error("댓글 삭제 중 오류 발생:", error);
+      alert("댓글 삭제에 실패했습니다.");
+    }
+  };
+
   const handleFollowClick = async () => {
     try {
       const followingId = userData.userId;
-      // console.log(followingId);
 
       if (isFollowing) {
         await followUser(followingId, "unfollow");
@@ -172,22 +246,19 @@ const UserPage = () => {
     });
   };
 
-  const openModal = (post) => {
-    setSelectedPost({
-      ...post,
-      user_id: {
-        _id: userData.userId,
-        user_id: userData.userName,
-        profile_image: userData.profile_image,
-      },
-      comments: post.comments || [],
-      liked: post.liked || false,
-      likes: post.likes || [],
-      likesCount: post.likesCount || 0,
-    });
-    // console.log("userPage에서 모달로 전달하는 post:", post);
-
-    setIsModalOpen(true);
+  const openModal = async (post) => {
+    try {
+      const comments = await getComments(post._id, user.userId);
+      setSelectedPost({
+        ...post,
+        user: post.user_id,
+        comments: comments,
+      });
+      console.log("post", post);
+      setIsModalOpen(true);
+    } catch (error) {
+      console.error("댓글 가져오기 실패:", error);
+    }
   };
 
   const closeModal = () => {
@@ -203,7 +274,8 @@ const UserPage = () => {
     return <div className="error-message">{error}</div>;
   }
 
-  console.log("userData", userData);
+  // console.log("userData", userData);
+  // console.log("posts", posts);
   return (
     <div className="userPage">
       <button className="userPage-backClick-btn" onClick={handleBackClick}>
@@ -234,9 +306,7 @@ const UserPage = () => {
             </div>
 
             <div className="userPage-follow-info">
-              <p className="userPage-posts">
-                게시물 {userData.posts.length || 0}
-              </p>
+              <p className="userPage-posts">게시물 {posts.length || 0}</p>
               <p className="userPage-follower" onClick={goToFollowersPage}>
                 팔로워{" "}
                 {
@@ -263,9 +333,9 @@ const UserPage = () => {
         {/* 게시물 */}
         <div className="userPage-posts-section">
           <h2>게시물</h2>
-          {userData.posts.length > 0 ? (
+          {posts.length > 0 ? (
             <div>
-              {userData.posts.map((post) => (
+              {posts.map((post) => (
                 <div className="userPage-post" key={post._id}>
                   <img
                     src={post.images[0]}
@@ -297,9 +367,10 @@ const UserPage = () => {
           post={selectedPost}
           isOpen={isModalOpen}
           onClose={closeModal}
-          onLike={handleLike}
-          onUpdate={handleAddComment}
-          setPosts={setPosts}
+          postLike={handleLikePost}
+          addComment={handleAddComment}
+          likeComment={handleLikeComment}
+          deleteComment={handleCommentDelete}
         />
       )}
     </div>

@@ -37,7 +37,7 @@ mongoose
 // CORS 설정
 app.use(
   cors({
-    origin: "http://localhost:3000", // React 앱이 실행 중인 포트
+    origin: "http://localhost:3000",
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
     credentials: true, // 인증 정보와 쿠키 포함 허용
   })

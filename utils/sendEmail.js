@@ -1,8 +1,8 @@
 const nodemailer = require("nodemailer");
-require("dotenv").config(); // 환경변수
+require("dotenv").config();
 
 const transporter = nodemailer.createTransport({
-  service: "gmail", // Gmail 사용
+  service: "gmail",
   auth: {
     user: process.env.GMAIL_USER,
     pass: process.env.GMAIL_PASS,
@@ -13,15 +13,15 @@ const transporter = nodemailer.createTransport({
 const sendVerificationEmail = async (email, verificationCode) => {
   try {
     await transporter.sendMail({
-      from: `"(임시)인스타그램" <${process.env.GMAIL_USER}>`,
+      from: `"SSinstagram" <${process.env.GMAIL_USER}>`,
       to: email,
-      subject: "(임시)인스타그램 회원가입 이메일 인증 코드",
+      subject: "SSinstagram 회원가입 이메일 인증 코드",
       text: `인증코드: ${verificationCode}`,
     });
-    return true; // 이메일 전송 성공
+    return true;
   } catch (error) {
     console.error("Error sending email:", error);
-    return false; // 이메일 전송 실패
+    return false;
   }
 };
 

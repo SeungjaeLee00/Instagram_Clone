@@ -3,69 +3,48 @@ import { useNavigate } from "react-router-dom";
 import PostDetailModal from "./Modals/PostDetailModal";
 import { timeAgo } from "../utils/timeAgo";
 import useAuth from "../hooks/useAuth";
-
+import { createDM } from "../api/messageApi";
+import { getComments } from "../api/commentApi";
 import default_profile from "../assets/default_profile.png";
 import manyImg from "../assets/manyImg.png";
 import "../styles/components/PostCard.css";
 
-const PostCard = ({ post, onUpdate, onDelete, onLike }) => {
+const PostCard = ({
+  post,
+  addComment,
+  postDelete,
+  postLike,
+  likeComment,
+  deleteComment,
+}) => {
   const navigate = useNavigate();
   const { isAuthenticated, user } = useAuth();
-
   const [liked, setLiked] = useState(post.liked);
   const [likesCount, setLikesCount] = useState(post.likesCount);
   const [showOptions, setShowOptions] = useState(false);
   const [commentText, setCommentText] = useState("");
-  const [comments, setComments] = useState(post.comments || []);
+  const [comments, setComments] = useState(post.comments || []); // 댓글 추가
+  const [commentLiked, setCommentLiked] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedPost, setSelectedPost] = useState(null);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     if (user) {
       setLiked(post.liked);
       setLikesCount(post.likesCount);
       setComments(post.comments || []);
-      // console.log("user", user);
-      // console.log("post", post);
+      // comments 배열 업데이트
+      const updatedComments = (post.comments || []).map((comment) => ({
+        ...comment,
+        liked: (comment.likes || []).includes(user.userId), // 댓글 좋아요 여부 설정
+        likesCount: (comment.likes || []).length, // 댓글 좋아요 수 추가
+      }));
 
-      // console.log("user.userId", user.userId);
-      // console.log("post.user_id._id", post.user_id._id);
+      setCommentLiked(updatedComments);
+      // console.log("commentLiked", commentLiked);
     }
   }, [post, user]);
-
-  // 댓글 입력 필드 변경
-  const handleCommentChange = (e) => {
-    setCommentText(e.target.value);
-  };
-
-  // 댓글 추가
-  const handleCommentSubmit = async () => {
-    if (!commentText.trim()) return;
-    try {
-      const response = await onUpdate(post._id, commentText);
-      const newComment = response.comment;
-      console.log("postCard에서 댓글 달기:", newComment);
-
-      setComments((prevComments) => [...prevComments, newComment]); // 새 댓글 추가
-      setCommentText("");
-    } catch (error) {
-      console.error("댓글 추가 중 오류가 발생했습니다:", error);
-      alert("댓글 추가에 실패했습니다.");
-    }
-  };
-
-  // 게시물 좋아요
-  const handleLike = async () => {
-    try {
-      const newLiked = !liked;
-      setLiked(newLiked);
-      await onLike(post._id, newLiked);
-      setLikesCount((prev) => (newLiked ? prev + 1 : prev - 1));
-    } catch (error) {
-      console.error("좋아요 처리 중 오류가 발생했습니다", error);
-      setLiked(liked);
-    }
-  };
 
   // 게시물 수정
   const handleEdit = () => {
@@ -85,9 +64,17 @@ const PostCard = ({ post, onUpdate, onDelete, onLike }) => {
     }
   };
 
-  // DM 버튼: 클릭 시 게시물 유저의 메세지 페이지로 이동(임시)
-  const handleDm = () => {
-    navigate(`/messages/${post.user_id.user_id}`);
+  // 게시물 좋아요
+  const handleLike = async () => {
+    try {
+      const newLiked = !liked;
+      setLiked(newLiked);
+      await postLike(post._id, newLiked);
+      setLikesCount((prev) => (newLiked ? prev + 1 : prev - 1));
+    } catch (error) {
+      console.error("좋아요 처리 중 오류가 발생했습니다", error);
+      setLiked(liked);
+    }
   };
 
   // 게시물 삭제
@@ -98,13 +85,33 @@ const PostCard = ({ post, onUpdate, onDelete, onLike }) => {
         alert("사용자 정보가 없습니다.");
         return;
       }
-      onDelete(post._id, postUserId);
+      postDelete(post._id, postUserId);
     }
   };
 
+  // 댓글 추가
+  const handleCommentSubmit = async () => {
+    if (!commentText.trim()) return;
+    try {
+      const response = await addComment(post._id, commentText);
+      const newComment = response.comment;
+      console.log("postCard에서 댓글 달기:", newComment);
+
+      setComments((prevComments) => [...prevComments, newComment]); // 새 댓글 추가
+      setCommentText("");
+    } catch (error) {
+      console.error("댓글 추가 중 오류가 발생했습니다:", error);
+      alert("댓글 추가에 실패했습니다.");
+    }
+  };
+
+  // 댓글 입력 필드 변경
+  const handleCommentChange = (e) => {
+    setCommentText(e.target.value);
+  };
+
   const openModal = () => {
-    setSelectedPost(post); // 클릭한 게시물 데이터를 상태에 저장
-    // console.log("postCard에서 모달로 보내는 post:", post);
+    setSelectedPost(post);
     setIsModalOpen(true);
   };
 
@@ -113,12 +120,35 @@ const PostCard = ({ post, onUpdate, onDelete, onLike }) => {
     setSelectedPost(null);
   };
 
+  const handleDmClick = async () => {
+    try {
+      console.log("post.user_id", post.user_id.user_id);
+      const dmTo = post.user_id.user_id;
+
+      if (dmTo && isAuthenticated) {
+        const response = await createDM(dmTo);
+        console.log("dmClick", response);
+
+        const { chatroomId, chatroomName, user_object_id } = response;
+
+        if (chatroomId && chatroomName && user_object_id) {
+          navigate(`/dm/chatroom/${chatroomId}`, {
+            state: { user_object_id, chatroomName },
+          });
+        } else {
+          console.error("DM 생성 응답에 필요한 데이터가 부족합니다.");
+        }
+      }
+    } catch (err) {
+      setError("채팅을 만들 수 없습니다.");
+    }
+  };
+
   // 클릭 시 사용자 프로필 이동
   const goToUserProfile = (clickedUserId, clickedUserName) => {
     if (clickedUserId === user.userId) {
       navigate(`/mypage/profile`);
     } else {
-      // console.log("clickedUserName", clickedUserName);
       navigate(`/${clickedUserName}/profile`);
     }
   };
@@ -172,7 +202,7 @@ const PostCard = ({ post, onUpdate, onDelete, onLike }) => {
           onClick={handleLike}
         ></button>
         <button className="comment-btn" onClick={openModal}></button>
-        <button onClick={handleDm} className="dm-btn"></button>
+        <button onClick={handleDmClick} className="dm-btn"></button>
       </div>
 
       <div className="likes-count">좋아요 {likesCount}개</div>
@@ -207,9 +237,11 @@ const PostCard = ({ post, onUpdate, onDelete, onLike }) => {
         }}
         isOpen={isModalOpen}
         onClose={closeModal}
-        onLike={handleLike}
-        onDelete={onDelete}
-        onUpdate={onUpdate}
+        postLike={postLike}
+        postDelete={postDelete}
+        addComment={addComment}
+        likeComment={likeComment}
+        deleteComment={deleteComment}
       />
     </div>
   );

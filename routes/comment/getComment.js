@@ -13,13 +13,22 @@ router.get("/:postId/comments", async (req, res) => {
     }
 
     // 게시물에 해당하는 댓글들을 조회
-    const comments = await Comment.find({ post: postId })
-      .populate("user", "user_id username profile_image")
-      .sort({ createdAt: -1 }); // 최신 댓글부터 정렬
+    const comments = await Comment.find({ post: postId }).populate(
+      "user",
+      "user_id username profile_image"
+    );
+    // .populate("commentLike", "liked likes likeCount");
+
+    const commentsWithLikeCount = comments.map((comment) => ({
+      ...comment.toObject(),
+      // liked: comment.likes.includes(user_id),
+      likesCount: comment.likes.length,
+    }));
 
     return res.status(200).json({
       message: "댓글 조회가 성공적으로 이루어졌습니다.",
       comments: comments,
+      commentDetail: commentsWithLikeCount,
     });
   } catch (error) {
     return res.status(500).json({

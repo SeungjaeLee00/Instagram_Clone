@@ -2,9 +2,14 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getMyProfile, getMyPosts } from "../../api/mypageApi";
 import { getUserFollowers, getUserFollowing } from "../../api/followApi";
-import { deletePost, addLike } from "../../api/postApi";
+import { deletePost, addLike, fetchPostById } from "../../api/postApi";
 import { logoutUser, withdrawUser } from "../../api/authApi";
-import { addComment } from "../../api/commentApi";
+import {
+  addComment,
+  addCommentLike,
+  deleteComment,
+  getComments,
+} from "../../api/commentApi";
 
 import useAuth from "../../hooks/useAuth";
 import PostDetailModal from "../../components/Modals/PostDetailModal";
@@ -18,14 +23,16 @@ import "../../styles/pages/MyPage/MyPage.css";
 const MyPage = () => {
   const { isAuthenticated, user } = useAuth();
   const [profileData, setProfileData] = useState(null);
-  const [posts, setPosts] = useState([]);
-  const [followers, setFollowers] = useState([]);
-  const [following, setFollowing] = useState([]);
   const [name, setName] = useState([]);
   const [introduce, setIntroduce] = useState([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [followers, setFollowers] = useState([]);
+  const [following, setFollowing] = useState([]);
+
+  const [posts, setPosts] = useState([]);
   const [selectedPost, setSelectedPost] = useState(null);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -37,24 +44,13 @@ const MyPage = () => {
       const fetchData = async () => {
         try {
           const profile = await getMyProfile(user.userId);
-          // console.log("mypage-token", token);
           const postList = await getMyPosts();
-          // console.log("profile", profile);
-
-          // console.log("포스트 리스트 확인:", postList);
-
           const updatedPosts = postList.map((post) => ({
             ...post,
-            liked: post.likes.includes(user.userId), // 로그인된 사용자의 ID가 likes 배열에 있는지 확인
+            liked: post.likes.includes(user.userId),
           }));
-
-          // console.log("업데이트한 포스트 리스트:", updatedPosts);
-
           const followerList = await getUserFollowers(user.userId);
-          // console.log("followerList", followerList);
-
           const followingList = await getUserFollowing(user.userId);
-          // console.log("followingList", followingList);
 
           setProfileData(profile);
           setPosts(updatedPosts || []);
@@ -62,11 +58,6 @@ const MyPage = () => {
           setFollowing(followingList.following || []);
           setIntroduce(profile.introduce || "");
           setName(profile.user_name || "");
-
-          // console.log("profile.introduce", profile.introduce);
-
-          // console.log("setFollowers", followerList);
-          // console.log("setFollowings", followingList);
         } catch (error) {
           console.error("데이터 로드 실패:", error);
           setError("데이터를 불러오는 중 오류가 발생했습니다.");
@@ -93,14 +84,21 @@ const MyPage = () => {
     navigate("/dm/chatroom");
   };
 
-  const openModal = (post) => {
-    setSelectedPost({
-      ...post,
-      user: post.user_id,
-    });
-    console.log("myPage에서 모달로 전달하는 post:", post);
-
-    setIsModalOpen(true);
+  const openModal = async (post) => {
+    try {
+      const comments = await getComments(post._id, user.userId);
+      // const newpost = await fetchPostById(post._id);
+      setSelectedPost({
+        ...post,
+        user: post.user_id,
+        comments: comments,
+        // liked: newpost.liked,
+      });
+      // console.log("post", post);
+      setIsModalOpen(true);
+    } catch (error) {
+      console.error("댓글 가져오기 실패:", error);
+    }
   };
 
   const closeModal = () => {
@@ -131,8 +129,8 @@ const MyPage = () => {
     }
   };
 
-  // 게시물 좋아요 처리 함수
-  const handleLike = async (postId, newLiked) => {
+  // 게시물 좋아요
+  const handleLikePost = async (postId) => {
     try {
       const response = await addLike(postId);
       setPosts((prevPosts) =>
@@ -140,7 +138,7 @@ const MyPage = () => {
           post._id === postId
             ? {
                 ...post,
-                liked: newLiked,
+                liked: response.liked,
                 likesCount: response.likesCount,
               }
             : post
@@ -155,7 +153,7 @@ const MyPage = () => {
   const handleAddComment = async (postId, newCommentText) => {
     try {
       const response = await addComment(postId, newCommentText);
-      console.log("myPage에서 댓글 달기:", response);
+      // console.log("myPage에서 댓글 달기:", response);
       const { comment } = response;
       setPosts((prevPosts) =>
         prevPosts.map((post) =>
@@ -170,9 +168,71 @@ const MyPage = () => {
             : post
         )
       );
+      if (selectedPost && selectedPost._id === postId) {
+        setSelectedPost((prevSelectedPost) => ({
+          ...prevSelectedPost,
+          comments: [
+            { ...comment, likesCount: 0, liked: false },
+            ...prevSelectedPost.comments,
+          ],
+        }));
+      }
+
       return { comment };
     } catch (error) {
       console.error("댓글 추가 중 오류가 발생했습니다:", error);
+    }
+  };
+
+  // 댓글 좋아요
+  const handleLikeComment = async (commentId) => {
+    try {
+      const response = await addCommentLike(commentId);
+      const likeComment = response;
+      console.log("myPage에서 댓글 좋아요:", response);
+      setPosts((prevComments) =>
+        prevComments.map((comment) =>
+          comment._id === commentId
+            ? {
+                ...comment,
+                liked: response.liked,
+                likesCount: response.likesCount,
+              }
+            : comment
+        )
+      );
+    } catch (error) {
+      console.error("댓글 좋아요 처리 중 오류:", error);
+    }
+  };
+
+  // 댓글 삭제
+  const handleCommentDelete = async (commentId) => {
+    const loginUserId = user.userId;
+    const commentToDelete = posts
+      .flatMap((post) => post.comments)
+      .find((comment) => comment._id === commentId);
+    if (!commentToDelete) {
+      return;
+    }
+
+    if (commentToDelete.user._id !== loginUserId) {
+      alert("본인의 댓글만 삭제할 수 있습니다.");
+      return;
+    }
+
+    try {
+      const dComment = await deleteComment(
+        commentId,
+        posts.map((post) => post.user_id._id)
+      );
+      console.log("마이페이지에서 삭제하는 댓글", dComment);
+      setPosts((prevComments) =>
+        prevComments.filter((comment) => comment._id !== commentId)
+      );
+    } catch (error) {
+      console.error("댓글 삭제 중 오류 발생:", error);
+      alert("댓글 삭제에 실패했습니다.");
     }
   };
 
@@ -206,14 +266,6 @@ const MyPage = () => {
     }
   };
 
-  const toggleSettingMenu = () => {
-    setMenuOpen((prev) => !prev); // 메뉴 열고 닫기 토글
-  };
-
-  const closeSettingMenu = () => {
-    setMenuOpen(false); // 메뉴 닫기
-  };
-
   const goToFollowersPage = () => {
     navigate("/follow", { state: { followers } });
   };
@@ -222,9 +274,18 @@ const MyPage = () => {
     navigate("/following", { state: { following } });
   };
 
+  const toggleSettingMenu = () => {
+    setMenuOpen((prev) => !prev); // 메뉴 열고 닫기 토글
+  };
+
+  const closeSettingMenu = () => {
+    setMenuOpen(false); // 메뉴 닫기
+  };
+
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
 
+  // console.log("마이페이지", posts);
   return (
     <div className="my-page">
       <div className="profile-header">
@@ -332,10 +393,11 @@ const MyPage = () => {
           post={selectedPost}
           isOpen={isModalOpen}
           onClose={closeModal}
-          onDelete={handleDeletePost}
-          onLike={handleLike}
-          onUpdate={handleAddComment}
-          setPosts={setPosts}
+          postDelete={handleDeletePost}
+          postLike={handleLikePost}
+          addComment={handleAddComment}
+          likeComment={handleLikeComment}
+          deleteComment={handleCommentDelete}
         />
       )}
     </div>
@@ -343,3 +405,5 @@ const MyPage = () => {
 };
 
 export default MyPage;
+
+// 댓글 삭제, 댓글 좋아요를 모달을 열 때 같이 보내야하는 거임

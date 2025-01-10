@@ -38,7 +38,7 @@ router.get("/", auth, async (req, res) => {
         path: "comments",
         populate: { path: "user", select: "user_id username profile_image" },
       });
-    console.log("Posts from followed users:", posts);
+    // console.log("Posts from followed users:", posts);
 
     // 팔로우한 사용자의 게시물이 없으면 내 게시물을 조회
     if (posts.length === 0) {
@@ -52,7 +52,7 @@ router.get("/", auth, async (req, res) => {
           populate: { path: "user", select: "user_id username profile_image" },
         });
 
-      console.log("My Posts:", myPosts);
+      // console.log("My Posts:", myPosts);
 
       // 내 게시물의 좋아요 수 및 댓글의 좋아요 수 포함
       const myPostsWithDetails = myPosts.map((post) => ({
@@ -60,8 +60,8 @@ router.get("/", auth, async (req, res) => {
         likesCount: post.likes.length,
         comments: post.comments.map((comment) => ({
           ...comment.toObject(),
-          likesCount: comment.likes.length,
           liked: comment.likes.includes(user_id),
+          likesCount: comment.likes.length,
         })),
       }));
 
@@ -78,6 +78,7 @@ router.get("/", auth, async (req, res) => {
       comments: post.comments.map((comment) => ({
         ...comment.toObject(),
         liked: comment.likes.includes(user_id),
+        likesCount: comment.likes.length,
       })),
     }));
 

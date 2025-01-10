@@ -25,15 +25,16 @@ export const getComments = async (postId, userId) => {
       withCredentials: true,
     }
   );
+  // console.log("response.data.comments", response.data.comments);
   return response.data.comments;
 };
 
 // 댓글 좋아요 추가 API
-export const addCommentLike = async (commentId, isLiked) => {
+export const addCommentLike = async (commentId) => {
   try {
     const response = await axios.post(
       `${API_BASE_URL}/likes/comments/${commentId}/like`,
-      { isLiked },
+      {},
       {
         headers: {
           "Content-Type": "application/json",
@@ -41,6 +42,7 @@ export const addCommentLike = async (commentId, isLiked) => {
         withCredentials: true,
       }
     );
+    console.log("response.data", response.data);
     return response.data;
   } catch (error) {
     console.error("댓글 좋아요 처리 중 오류 발생", error);
