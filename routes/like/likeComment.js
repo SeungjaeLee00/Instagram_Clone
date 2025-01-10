@@ -16,6 +16,7 @@ router.post("/:commentId/like", auth, async (req, res) => {
   try {
     const comment = await Comment.findById(commentId);
     const commenterId = comment.user;
+    const postId = comment.post;
 
     if (!comment) {
       return res.status(404).json({ message: "댓글을 찾을 수 없습니다." });
@@ -41,6 +42,7 @@ router.post("/:commentId/like", auth, async (req, res) => {
 
       // 좋아요 알림 emit
       emitCommentLike({
+        postId: postId,
         commenterId: commenterId,
         commentId: commentId,
         likerId: userId,

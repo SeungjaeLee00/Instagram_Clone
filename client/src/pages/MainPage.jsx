@@ -16,6 +16,7 @@ const MainPage = () => {
       const fetchUserPosts = async () => {
         try {
           const postList = await fetchPosts();
+          console.log("postList : ", postList);
           const postsWithLikesCount = postList.map((post) => ({
             ...post,
             likes: (post.likes || []).map((like) => like.toString()),

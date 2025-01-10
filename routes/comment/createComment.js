@@ -2,7 +2,6 @@ const express = require("express");
 const router = express.Router();
 const { Comment } = require("../../models/Comment"); // 댓글 모델
 const { Post } = require("../../models/Post"); // 게시물 모델
-const { Notification } = require("../../models/Notification"); // 알림 모델
 const { auth } = require("../auth");
 
 const cookieParser = require("cookie-parser");

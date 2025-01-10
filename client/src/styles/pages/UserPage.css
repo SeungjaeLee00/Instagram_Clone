@@ -3,6 +3,7 @@
   color: #262626;
   max-width: 1200px;
   margin: 40px auto;
+  padding-left:30px;
   display: flex;
   flex-direction: column;
   align-items: center;

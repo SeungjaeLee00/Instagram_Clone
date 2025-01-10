@@ -1,7 +1,7 @@
 .chat-page {
   display: flex;
   justify-content: center; /* 가로 가운데 정렬 */
-  margin-left: 300px;
+  margin-left: 0px;
   height: 90%; /* 채팅창 높이 */
 }
 

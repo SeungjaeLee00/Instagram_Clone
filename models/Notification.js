@@ -28,13 +28,20 @@ const NotificationSchema = new mongoose.Schema({
     ref: "User",
     required: true,
   },
-  type: {
+  NotificationType: {
     type: String,
+    required: true,
   },
   profile_image: { 
     type: String, 
     ref: "User",
-    default: "" },
+    default: "" 
+  },
+  // post 위치
+  postId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Post",
+  }
 });
 
 const Notification = mongoose.model("Notification", NotificationSchema);

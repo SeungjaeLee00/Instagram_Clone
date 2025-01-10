@@ -1,15 +1,17 @@
 /* 전체 페이지 스타일 */
 .notifications-page {
-    margin-left: 55px; /* 왼쪽 여백 */
+    /* margin-left: 55px; 왼쪽 여백 */
+    /* margin-left: 10px; */
     overflow: hidden; /* 스크롤 숨기기 */
-    padding: 20px; /* 안쪽 여백 */
+    /* padding: 20px; 안쪽 여백 */
     height: 100%; /* 화면 전체 높이 */
     box-sizing: border-box; /* 패딩 포함하여 크기 계산 */
 }
 
 /* 알림 내용 스타일 */
 .notifications-content {
-    width: 600px; 
+    max-width: 600px;
+    /* width: 600px;  */
     height: 100%; /* 화면 높이에 맞춤 */
     overflow-y: auto;   /* 세로 스크롤 활성화 */
     flex: 1; /* 남은 영역을 차지 */
@@ -54,12 +56,20 @@
     line-height: 1.6; /* 줄 간격 */
 }
 
+.noti:hover {
+    background-color: #d4d4d4; /* 호버 시 배경색 */
+    transform: scale(1.02); /* 살짝 확대 효과 */
+    cursor: pointer; /* 클릭 가능한 UI로 표시 */
+  }
+
 .noti-profile {
     width: 40px;
     height: 40px;
     border-radius: 50%;
     margin-right: 10px;
     object-fit: cover;
+    cursor: pointer; /* 버튼처럼 보이게 */
+    transition: transform 0.2s ease; /* 마우스 오버 시 부드러운 확대 효과 */
   }
 
 /* 알림 메시지 스타일 */
@@ -68,6 +78,13 @@
     flex-grow: 1; /* 남는 공간 차지 */
     font-size: 13px;
     color: #000000;
+}
+
+.noti-other-user-id {
+    cursor: pointer;
+    font-weight:100;
+    font-size: 14px;
+    color:#2b2828;
 }
 
 /* 오른쪽 영역 (타임스탬프와 삭제 버튼) */
@@ -86,8 +103,8 @@
 
 /* 삭제 버튼 스타일 */
 .noti-trash {
-    width: 30px;
-    height: 30px;
+    width: 20px;
+    height: 20px;
     background: none;
     border: none;
     cursor: pointer;
