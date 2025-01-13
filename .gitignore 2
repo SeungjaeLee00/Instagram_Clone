@@ -1,7 +1,0 @@
-/node_modules
-/build
-dev.js
- 
-.env
-
-s3.js
