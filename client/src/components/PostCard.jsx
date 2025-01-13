@@ -9,6 +9,8 @@ import default_profile from "../assets/default_profile.png";
 import manyImg from "../assets/manyImg.png";
 import "../styles/components/PostCard.css";
 
+// ㅇㅇ
+
 const PostCard = ({ post, addComment, postDelete, postLike }) => {
   const navigate = useNavigate();
   const { isAuthenticated, user } = useAuth();
