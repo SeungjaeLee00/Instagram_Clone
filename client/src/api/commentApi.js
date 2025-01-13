@@ -51,7 +51,7 @@ export const addCommentLike = async (commentId) => {
 };
 
 // 댓글 삭제 API
-export const deleteComment = async (commentId, userId) => {
+export const deleteSelectComment = async (commentId, userId) => {
   const response = await axios.delete(
     `${API_BASE_URL}/comment/delete/${commentId}`,
     {
@@ -59,5 +59,9 @@ export const deleteComment = async (commentId, userId) => {
       data: { userId },
     }
   );
-  return response.data;
+  // const result = await response.json();
+  // console.log("Comment deleted successfully:", result);
+  // return result;
+  // console.log("server-response", response);
+  return response;
 };

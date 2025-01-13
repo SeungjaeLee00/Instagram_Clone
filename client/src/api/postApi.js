@@ -19,6 +19,7 @@ export const fetchPostById = async (postId) => {
         withCredentials: true, // 쿠키 인증
       }
     );
+    // console.log("게시물 단건 조회", response);
     return response.data;
   } catch (error) {
     console.error("게시물 조회 중 오류:", error);

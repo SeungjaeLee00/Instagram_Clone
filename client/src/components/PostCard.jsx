@@ -4,27 +4,21 @@ import PostDetailModal from "./Modals/PostDetailModal";
 import { timeAgo } from "../utils/timeAgo";
 import useAuth from "../hooks/useAuth";
 import { createDM } from "../api/messageApi";
-import { getComments } from "../api/commentApi";
+import { getComments, addCommentLike } from "../api/commentApi";
 import default_profile from "../assets/default_profile.png";
 import manyImg from "../assets/manyImg.png";
 import "../styles/components/PostCard.css";
 
-const PostCard = ({
-  post,
-  addComment,
-  postDelete,
-  postLike,
-  likeComment,
-  deleteComment,
-}) => {
+const PostCard = ({ post, addComment, postDelete, postLike }) => {
   const navigate = useNavigate();
   const { isAuthenticated, user } = useAuth();
+  const [posts, setPosts] = useState([]);
   const [liked, setLiked] = useState(post.liked);
   const [likesCount, setLikesCount] = useState(post.likesCount);
   const [showOptions, setShowOptions] = useState(false);
   const [commentText, setCommentText] = useState("");
-  const [comments, setComments] = useState(post.comments || []); // 댓글 추가
-  const [commentLiked, setCommentLiked] = useState([]);
+  const [comments, setComments] = useState(post.comments || []);
+  // const [commentLiked, setCommentLiked] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedPost, setSelectedPost] = useState(null);
   const [error, setError] = useState("");
@@ -34,14 +28,15 @@ const PostCard = ({
       setLiked(post.liked);
       setLikesCount(post.likesCount);
       setComments(post.comments || []);
-      // comments 배열 업데이트
+
       const updatedComments = (post.comments || []).map((comment) => ({
         ...comment,
-        liked: (comment.likes || []).includes(user.userId), // 댓글 좋아요 여부 설정
-        likesCount: (comment.likes || []).length, // 댓글 좋아요 수 추가
+        liked: (comment.likes || []).includes(user.userId),
+        likesCount: (comment.likes || []).length,
       }));
+      // setCommentLiked(updatedComments);
+      // setComments(updatedComments || []);
 
-      setCommentLiked(updatedComments);
       // console.log("commentLiked", commentLiked);
     }
   }, [post, user]);
@@ -65,11 +60,12 @@ const PostCard = ({
   };
 
   // 게시물 좋아요
-  const handleLike = async () => {
+  const handlePostLike = async () => {
     try {
       const newLiked = !liked;
       setLiked(newLiked);
       await postLike(post._id, newLiked);
+      console.log("포스트카드에서 게시물 좋아요");
       setLikesCount((prev) => (newLiked ? prev + 1 : prev - 1));
     } catch (error) {
       console.error("좋아요 처리 중 오류가 발생했습니다", error);
@@ -105,14 +101,45 @@ const PostCard = ({
     }
   };
 
+  // 댓글 좋아요
+  const handleLikeComment = async (commentId) => {
+    try {
+      const response = await addCommentLike(commentId);
+      console.log("포스트카드에서 댓글 좋아요:", response);
+      setComments((prevComments) =>
+        prevComments.map((comment) =>
+          comment._id === commentId
+            ? {
+                ...comment,
+                liked: response.liked,
+                likesCount: response.likesCount,
+              }
+            : comment
+        )
+      );
+    } catch (error) {
+      console.error("좋아요 처리 중 오류가 발생했습니다", error);
+    }
+  };
+
   // 댓글 입력 필드 변경
   const handleCommentChange = (e) => {
     setCommentText(e.target.value);
   };
 
-  const openModal = () => {
-    setSelectedPost(post);
-    setIsModalOpen(true);
+  const openModal = async (post) => {
+    try {
+      const comments = await getComments(post._id, user.userId);
+      console.log("comments", comments);
+      setSelectedPost({
+        ...post,
+        user: post.user_id,
+        comments: comments,
+      });
+      setIsModalOpen(true);
+    } catch (error) {
+      console.error("게시물 정보 가져오기 실패:", error);
+    }
   };
 
   const closeModal = () => {
@@ -199,9 +226,12 @@ const PostCard = ({
       <div className="post-actions">
         <button
           className={`like-btn ${liked ? "liked" : "unliked"}`}
-          onClick={handleLike}
+          onClick={handlePostLike}
         ></button>
-        <button className="comment-btn" onClick={openModal}></button>
+        <button
+          className="comment-btn"
+          onClick={() => openModal(post)}
+        ></button>
         <button onClick={handleDmClick} className="dm-btn"></button>
       </div>
 
@@ -211,7 +241,7 @@ const PostCard = ({
         <strong>{post.user_id?.user_id}</strong> {post.text}
       </div>
 
-      <div className="view-comments" onClick={openModal}>
+      <div className="view-comments" onClick={() => openModal(post)}>
         댓글 {comments.length || 0}개 모두 보기
       </div>
 
@@ -240,8 +270,8 @@ const PostCard = ({
         postLike={postLike}
         postDelete={postDelete}
         addComment={addComment}
-        likeComment={likeComment}
-        deleteComment={deleteComment}
+        likeComment={handleLikeComment}
+        // deleteComment={deleteComment}
       />
     </div>
   );

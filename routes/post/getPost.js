@@ -2,8 +2,8 @@ const express = require("express");
 const router = express.Router();
 const { auth } = require("../../routes/auth");
 const { Post } = require("../../models/Post");
-const { User } = require("../../models/User");
-const { Like } = require("../../models/Like");
+// const { User } = require("../../models/User");
+// const { Like } = require("../../models/Like");
 
 const cookieParser = require("cookie-parser");
 router.use(cookieParser());
@@ -23,21 +23,15 @@ router.get("/:id", auth, async (req, res) => {
     if (!post) {
       return res.status(404).json({ message: "게시물을 찾을 수 없습니다." });
     }
-
+    const loginUserId = req.user._id;
+    const isLiked = post.likes.includes(loginUserId);
     const likesCount = post.likes.length; // 좋아요 수
-
-    // // 각 댓글에 대한 좋아요 수 추가
-    // const commentsWithLikeCount = post.comments.map((comment) => ({
-    //   ...comment.toObject(),
-    //   liked: comment.likes.includes(user_id),
-    //   likesCount: comment.likes.length,
-    // }));
 
     return res.status(200).json({
       post: {
         ...post.toObject(),
         likesCount,
-        // comments: commentsWithLikeCount,
+        liked: isLiked,
       },
     });
   } catch (error) {

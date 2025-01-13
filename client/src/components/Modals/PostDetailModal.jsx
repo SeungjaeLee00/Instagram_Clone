@@ -2,11 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { timeAgo } from "../../utils/timeAgo";
 import useAuth from "../../hooks/useAuth";
-import {
-  deleteComment,
-  addCommentLike,
-  getComments,
-} from "../../api/commentApi";
+import { deleteSelectComment, getComments } from "../../api/commentApi";
 
 import "../../styles/components/PostDetailModal.css";
 import default_profile from "../../assets/default_profile.png";
@@ -19,10 +15,11 @@ const PostDetailModal = ({
   postDelete,
   addComment,
   likeComment,
-  deleteComment,
 }) => {
   const navigate = useNavigate();
   const { isAuthenticated, user } = useAuth();
+
+  const [posts, setPosts] = useState([]);
   const [postLiked, setPostLiked] = useState(false);
   const [postLikesCount, setPostLikesCount] = useState(0);
 
@@ -73,6 +70,7 @@ const PostDetailModal = ({
     setPostLikesCount((prev) => (newPostLiked ? prev + 1 : prev - 1));
     try {
       await postLike(post._id);
+      console.log("모달디테일에서 게시물 좋아요");
     } catch (error) {
       console.error("좋아요 처리 중 오류:", error);
       setPostLiked(!newPostLiked);
@@ -105,6 +103,7 @@ const PostDetailModal = ({
   };
 
   const handleCommentChange = (e) => setCommentText(e.target.value);
+
   // 댓글 달기
   const handleCommentSubmit = async () => {
     if (!commentText.trim()) return;
@@ -175,12 +174,33 @@ const PostDetailModal = ({
 
   // 댓글 삭제
   const handleCommentDelete = async (commentId) => {
-    await deleteComment(commentId);
-    setComments((prevComments) =>
-      prevComments.filter((comment) => comment._id !== commentId)
+    const loginUserId = user.userId;
+    const commentToDelete = post.comments.find(
+      (comment) => comment._id === commentId
     );
-    // const updatedComments = await getComments(post._id, user.userId);
-    // setComments(updatedComments);
+    if (!commentToDelete) {
+      return;
+    }
+    if (commentToDelete.user._id !== loginUserId) {
+      alert("본인의 댓글만 삭제할 수 있습니다.");
+      return;
+    }
+    try {
+      const response = await deleteSelectComment(commentId, loginUserId);
+      console.log("re", response.status);
+      if (response.status === 200) {
+        // console.log("댓글 삭제 성공:", response.data.message);
+        setComments((prevComments) =>
+          prevComments.filter((comment) => comment._id !== commentId)
+        );
+      } else {
+        // console.error("댓글 삭제 실패:", response.data.message);
+        alert("댓글 삭제에 실패했습니다.");
+      }
+    } catch (error) {
+      // console.error("댓글 삭제 중 오류 발생:", error);
+      alert("댓글 삭제에 실패했습니다.");
+    }
   };
 
   // 버튼 클릭 시 입력 필드로 포커스를 이동
@@ -306,7 +326,7 @@ const PostDetailModal = ({
               {post.comments?.length > 0 ? (
                 <div className="commentsDetail-list">
                   {comments.slice(0, visibleComments).map((comment, index) => (
-                    <div key={index} className="commentDetail-item">
+                    <div key={comment._id} className="commentDetail-item">
                       {/* 프로필 이미지 */}
                       <img
                         src={comment.user.profile_image || default_profile}

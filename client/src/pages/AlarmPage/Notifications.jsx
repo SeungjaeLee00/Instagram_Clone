@@ -1,35 +1,37 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSocket } from "../../hooks/SocketContext";
-import { fetchNotifications, deleteNotification } from "../../api/notificationApi";
+import {
+  fetchNotifications,
+  deleteNotification,
+} from "../../api/notificationApi";
 import { getMyPosts } from "../../api/mypageApi";
-import { addComment } from "../../api/commentApi";
-import { deletePost, addLike } from "../../api/postApi";
+import { addComment, addCommentLike, getComments } from "../../api/commentApi";
+import { deletePost, addLike, fetchPostById } from "../../api/postApi";
 import PostDetailModal from "../../components/Modals/PostDetailModal";
 
 import useAuth from "../../hooks/useAuth";
 import trash from "../../assets/trash.png";
 import defaultProfile from "../../assets/default_profile.png";
-import "../../styles/pages/NotificationPage.css"
+import "../../styles/pages/NotificationPage.css";
 
 const Notification = () => {
-  const { isAuthenticated, user } = useAuth();
+  const { user } = useAuth();
   const { newNotification } = useSocket();
   const [notifications, setNotifications] = useState([]);
 
   const [posts, setPosts] = useState([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedPost, setSelectedPost] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   const [error, setError] = useState(null);
 
-  const navigate = useNavigate(); // 네비게이션 훅
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchNotificationsList = async () => {
       try {
         const response = await fetchNotifications();
-        console.log("response : ", response);
-
         const notificationsList = response.map((notification) => ({
           message: notification.Notification,
           timestamp: notification.date,
@@ -47,10 +49,10 @@ const Notification = () => {
     };
     fetchNotificationsList();
   }, []);
-  
-   // 새로운 알림이 들어오면 기존 알림 목록에 추가
-   useEffect(() => {
-    console.log("new Notification now : ", newNotification);
+
+  // 새로운 알림이 들어오면 기존 알림 목록에 추가
+  useEffect(() => {
+    // console.log("new Notification now : ", newNotification);
     if (newNotification) {
       setNotifications((prevNotifications) => [
         {
@@ -65,20 +67,19 @@ const Notification = () => {
         ...prevNotifications,
       ]);
     }
-  }, [newNotification]); // newNotification이 변경될 때마다 실행
+  }, [newNotification]);
 
   // 알림 삭제하기
   const handleDeleteNotification = async (notificationId) => {
-    try{
-      // 알림 삭제 요청 (API)
+    try {
       await deleteNotification(notificationId);
-
       setNotifications((prevNotifications) =>
-        prevNotifications.filter((notification) => notification.id !== notificationId)
+        prevNotifications.filter(
+          (notification) => notification.id !== notificationId
+        )
       );
-
       alert("알림을 삭제하였습니다.");
-    } catch(err) {
+    } catch (err) {
       alert("알림 삭제에 실패했습니다.");
     }
   };
@@ -88,37 +89,82 @@ const Notification = () => {
     navigate(`/${userId}/profile/`);
   };
 
+  // 알림 클릭 시 모달에 내용 전달
   const handleNotificationclick = async (notification) => {
     if (
       notification.NotificationType === "new-comment" ||
       notification.NotificationType === "like-post" ||
       notification.NotificationType === "like-comment"
     ) {
-      try{
+      try {
         const postList = await getMyPosts();
-        console.log("postList: ", postList);
+        const matchingPost = postList.find(
+          (post) => post._id === notification.postId
+        );
 
-        const matchingPost = postList.find(post => post._id === notification.postId);     
-        openModal(matchingPost); // 모달창 열기
+        if (matchingPost) {
+          const postData = await fetchPostById(matchingPost._id);
+          const liked = postData.post?.liked || false;
 
+          setPosts((prevPosts) => {
+            const isAlreadyInPosts = prevPosts.some(
+              (post) => post._id === postData.post._id
+            );
+            return isAlreadyInPosts ? prevPosts : [...prevPosts, postData.post];
+          });
+
+          // console.log("matchingPost", postData.post);
+
+          openModal(postData.post);
+        } else {
+          alert("관련된 게시물을 찾을 수 없습니다.");
+        }
       } catch (error) {
         console.error("데이터 로드 실패:", error);
         setError("데이터를 불러오는 중 오류가 발생했습니다.");
-      } 
+      }
     }
   };
 
-  // 모달 열기
-  const openModal = (post) => {
-    setSelectedPost(post);
-    setIsModalOpen(true);
+  const openModal = async (post) => {
+    try {
+      const comments = await getComments(post._id, user.userId);
+      setSelectedPost({
+        ...post,
+        user: post.user_id,
+        comments: comments,
+      });
+      setIsModalOpen(true);
+    } catch (error) {
+      console.error("게시물 정보 가져오기 실패:", error);
+    }
   };
 
-  // 모달 닫기
   const closeModal = () => {
     setIsModalOpen(false);
     setSelectedPost(null);
-  }
+  };
+
+  // 게시물 좋아요
+  const handleLikePost = async (postId) => {
+    try {
+      const updatedPost = await addLike(postId);
+      setPosts((prevPosts) =>
+        prevPosts.map((post) =>
+          post._id === postId
+            ? {
+                ...post,
+                likesCount: updatedPost.likesCount,
+                liked: updatedPost.likes.includes(user?.userId),
+              }
+            : post
+        )
+      );
+      console.log("노티페이지에서 게시물 좋아요");
+    } catch (error) {
+      console.error("좋아요 처리 중 오류가 발생했습니다", error);
+    }
+  };
 
   // 게시물 삭제
   const handleDeletePost = async (postId) => {
@@ -143,31 +189,11 @@ const Notification = () => {
     }
   };
 
-  // 게시물 좋아요 처리 함수
-  const handleLike = async (postId, newLiked) => {
-    try {
-      const response = await addLike(postId);
-      setPosts((prevPosts) =>
-        prevPosts.map((post) =>
-          post._id === postId
-            ? {
-                ...post,
-                liked: newLiked,
-                likesCount: response.likesCount,
-              }
-            : post
-        )
-      );
-    } catch (error) {
-      console.error("좋아요 처리 중 오류:", error);
-    }
-  };
-
   // 댓글 달기
   const handleAddComment = async (postId, newCommentText) => {
     try {
       const response = await addComment(postId, newCommentText);
-      console.log("Notification에서 댓글 달기:", response);
+      // console.log("알림페이지에서 댓글 달기:", response);
       const { comment } = response;
       setPosts((prevPosts) =>
         prevPosts.map((post) =>
@@ -188,6 +214,27 @@ const Notification = () => {
     }
   };
 
+  // 댓글 좋아요
+  const handleLikeComment = async (commentId) => {
+    try {
+      const response = await addCommentLike(commentId);
+      // console.log("알림페이지에서 댓글 좋아요:", response);
+      setPosts((prevComments) =>
+        prevComments.map((comment) =>
+          comment._id === commentId
+            ? {
+                ...comment,
+                liked: response.liked,
+                likesCount: response.likesCount,
+              }
+            : comment
+        )
+      );
+    } catch (error) {
+      console.error("댓글 좋아요 처리 중 오류:", error);
+    }
+  };
+
   return (
     <div className="notifications-page">
       <div className="notifications-content">
@@ -197,17 +244,17 @@ const Notification = () => {
         ) : (
           <ul>
             {notifications.map((notification, index) => (
-              <li 
-                key={index} 
+              <li
+                key={index}
                 className="noti"
-                onClick = {()=> handleNotificationclick(notification)}
+                onClick={() => handleNotificationclick(notification)}
               >
                 <img
                   className="noti-profile"
                   alt="profile"
-                  src={notification.profile || defaultProfile} // 기본 이미지 설정
+                  src={notification.profile || defaultProfile}
                   onClick={(e) => {
-                    e.stopPropagation(); // 부모 클릭 이벤트 전파 방지
+                    e.stopPropagation();
                     handleProfileClick(notification.other_user_id);
                   }}
                 />
@@ -216,10 +263,12 @@ const Notification = () => {
                   <span
                     className="noti-other-user-id"
                     onClick={(e) => {
-                      e.stopPropagation(); // 부모 클릭 이벤트 전파 방지
+                      e.stopPropagation();
                       handleProfileClick(notification.other_user_id);
                     }}
-                  > {notification.other_user_id} 
+                  >
+                    {" "}
+                    {notification.other_user_id}
                   </span>
                   {notification.message}
                 </span>
@@ -233,7 +282,7 @@ const Notification = () => {
                     alt="trash"
                     src={trash}
                     onClick={(e) => {
-                      e.stopPropagation(); // 부모 클릭 이벤트 전파 방지
+                      e.stopPropagation();
                       handleDeleteNotification(notification.id);
                     }}
                   />
@@ -243,14 +292,15 @@ const Notification = () => {
           </ul>
         )}
         {isModalOpen && selectedPost && (
-        <PostDetailModal
-          post={selectedPost}
-          isOpen={isModalOpen}
-          onClose={closeModal}
-          onDelete={handleDeletePost}
-          onLike={handleLike}
-          onUpdate={handleAddComment}
-        />
+          <PostDetailModal
+            post={selectedPost}
+            isOpen={isModalOpen}
+            onClose={closeModal}
+            postDelete={handleDeletePost}
+            postLike={handleLikePost}
+            addComment={handleAddComment}
+            likeComment={handleLikeComment}
+          />
         )}
       </div>
     </div>

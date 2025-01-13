@@ -4,12 +4,7 @@ import { getMyProfile, getMyPosts } from "../../api/mypageApi";
 import { getUserFollowers, getUserFollowing } from "../../api/followApi";
 import { deletePost, addLike, fetchPostById } from "../../api/postApi";
 import { logoutUser, withdrawUser } from "../../api/authApi";
-import {
-  addComment,
-  addCommentLike,
-  deleteComment,
-  getComments,
-} from "../../api/commentApi";
+import { addComment, addCommentLike, getComments } from "../../api/commentApi";
 
 import useAuth from "../../hooks/useAuth";
 import PostDetailModal from "../../components/Modals/PostDetailModal";
@@ -87,17 +82,14 @@ const MyPage = () => {
   const openModal = async (post) => {
     try {
       const comments = await getComments(post._id, user.userId);
-      // const newpost = await fetchPostById(post._id);
       setSelectedPost({
         ...post,
         user: post.user_id,
         comments: comments,
-        // liked: newpost.liked,
       });
-      // console.log("post", post);
       setIsModalOpen(true);
     } catch (error) {
-      console.error("댓글 가져오기 실패:", error);
+      console.error("게시물 정보 가져오기 실패:", error);
     }
   };
 
@@ -132,20 +124,21 @@ const MyPage = () => {
   // 게시물 좋아요
   const handleLikePost = async (postId) => {
     try {
-      const response = await addLike(postId);
+      const updatedPost = await addLike(postId);
       setPosts((prevPosts) =>
         prevPosts.map((post) =>
           post._id === postId
             ? {
                 ...post,
-                liked: response.liked,
-                likesCount: response.likesCount,
+                likesCount: updatedPost.likesCount,
+                liked: updatedPost.likes.includes(user?.userId),
               }
             : post
         )
       );
+      console.log("마이페이지에서 게시물 좋아요");
     } catch (error) {
-      console.error("좋아요 처리 중 오류:", error);
+      console.error("좋아요 처리 중 오류가 발생했습니다", error);
     }
   };
 
@@ -188,7 +181,6 @@ const MyPage = () => {
   const handleLikeComment = async (commentId) => {
     try {
       const response = await addCommentLike(commentId);
-      const likeComment = response;
       console.log("myPage에서 댓글 좋아요:", response);
       setPosts((prevComments) =>
         prevComments.map((comment) =>
@@ -203,36 +195,6 @@ const MyPage = () => {
       );
     } catch (error) {
       console.error("댓글 좋아요 처리 중 오류:", error);
-    }
-  };
-
-  // 댓글 삭제
-  const handleCommentDelete = async (commentId) => {
-    const loginUserId = user.userId;
-    const commentToDelete = posts
-      .flatMap((post) => post.comments)
-      .find((comment) => comment._id === commentId);
-    if (!commentToDelete) {
-      return;
-    }
-
-    if (commentToDelete.user._id !== loginUserId) {
-      alert("본인의 댓글만 삭제할 수 있습니다.");
-      return;
-    }
-
-    try {
-      const dComment = await deleteComment(
-        commentId,
-        posts.map((post) => post.user_id._id)
-      );
-      console.log("마이페이지에서 삭제하는 댓글", dComment);
-      setPosts((prevComments) =>
-        prevComments.filter((comment) => comment._id !== commentId)
-      );
-    } catch (error) {
-      console.error("댓글 삭제 중 오류 발생:", error);
-      alert("댓글 삭제에 실패했습니다.");
     }
   };
 
@@ -357,7 +319,6 @@ const MyPage = () => {
           <div className="introduce">{introduce || ""}</div>
         </div>
       </div>
-
       <div className="posts-section">
         <h2>게시물</h2>
         {posts.length > 0 ? (
@@ -387,7 +348,6 @@ const MyPage = () => {
           </div>
         )}
       </div>
-
       {isModalOpen && selectedPost && (
         <PostDetailModal
           post={selectedPost}
@@ -397,7 +357,6 @@ const MyPage = () => {
           postLike={handleLikePost}
           addComment={handleAddComment}
           likeComment={handleLikeComment}
-          deleteComment={handleCommentDelete}
         />
       )}
     </div>

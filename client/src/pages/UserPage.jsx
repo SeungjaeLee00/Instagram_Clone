@@ -9,7 +9,7 @@ import { addLike } from "../api/postApi";
 import {
   addComment,
   addCommentLike,
-  deleteComment,
+  deleteSelectComment,
   getComments,
 } from "../api/commentApi";
 
@@ -85,21 +85,21 @@ const UserPage = () => {
   // 게시물 좋아요
   const handleLikePost = async (postId) => {
     try {
-      const response = await addLike(postId);
-      console.log("남페이지에서 게시물 좋아요:", response);
+      const updatedPost = await addLike(postId);
       setPosts((prevPosts) =>
         prevPosts.map((post) =>
           post._id === postId
             ? {
                 ...post,
-                liked: response.liked,
-                likesCount: response.likesCount,
+                likesCount: updatedPost.likesCount,
+                liked: updatedPost.likes.includes(user?.userId),
               }
             : post
         )
       );
+      console.log("남페이지에서 게시물 좋아요");
     } catch (error) {
-      console.error("좋아요 처리 중 오류:", error);
+      console.error("좋아요 처리 중 오류가 발생했습니다", error);
     }
   };
 
@@ -159,36 +159,6 @@ const UserPage = () => {
       );
     } catch (error) {
       console.error("댓글 좋아요 처리 중 오류:", error);
-    }
-  };
-
-  // 댓글 삭제
-  const handleCommentDelete = async (commentId) => {
-    const loginUserId = user.userId;
-    const commentToDelete = posts
-      .flatMap((post) => post.comments)
-      .find((comment) => comment._id === commentId);
-    if (!commentToDelete) {
-      return;
-    }
-
-    if (commentToDelete.user._id !== loginUserId) {
-      alert("본인의 댓글만 삭제할 수 있습니다.");
-      return;
-    }
-
-    try {
-      const dComment = await deleteComment(
-        commentId,
-        posts.map((post) => post.user_id)
-      );
-      console.log("남페이지에서 삭제하는 댓글", dComment);
-      setPosts((prevComments) =>
-        prevComments.filter((comment) => comment._id !== commentId)
-      );
-    } catch (error) {
-      console.error("댓글 삭제 중 오류 발생:", error);
-      alert("댓글 삭제에 실패했습니다.");
     }
   };
 
@@ -254,7 +224,7 @@ const UserPage = () => {
         user: post.user_id,
         comments: comments,
       });
-      console.log("post", post);
+      // console.log("post", post);
       setIsModalOpen(true);
     } catch (error) {
       console.error("댓글 가져오기 실패:", error);
@@ -370,7 +340,6 @@ const UserPage = () => {
           postLike={handleLikePost}
           addComment={handleAddComment}
           likeComment={handleLikeComment}
-          deleteComment={handleCommentDelete}
         />
       )}
     </div>
