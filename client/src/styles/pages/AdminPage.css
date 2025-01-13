@@ -1,0 +1,60 @@
+.admin-page {
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+    background-color: #f9f9f9;
+    font-family: Arial, sans-serif;
+}
+
+.admin-wrapper {
+    width: 60%; /* 세로로 정렬되므로 너비를 적절히 조정 */
+    display: flex;
+    flex-direction: column;
+    gap: 20px; /* 카드 간격 */
+}
+
+.admin-title {
+    color: #3d9970;
+    cursor: pointer;
+    transition: color 0.2s;
+    text-align: left;
+}
+
+.admin-title:hover {
+    color: #2d805b;
+    text-decoration: underline;
+}
+
+.admin-card {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.admin-card h2 {
+    color: #3d9970;
+    font-size: 20px;
+    margin-bottom: 10px;
+    text-align: center; /* 제목을 중앙 정렬 */
+}
+
+.admin-card p {
+    margin: 5px 0;
+    font-size: 14px;
+    color: #555;
+}
+
+.admin-card p span {
+    font-weight: bold;
+    color: #333;
+}
+
+@media (max-width: 768px) {
+    .admin-wrapper {
+        width: 90%; /* 작은 화면에서 너비 확장 */
+    }
+}

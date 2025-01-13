@@ -16,7 +16,8 @@ const Sidebar = () => {
     { id: 4, path: "/notifications", label: "알림", icon: "❤️" },
     { id: 5, path: "/create", label: "만들기", icon: "➕" },
     { id: 6, path: "/mypage/profile", label: "프로필", icon: "👤" },
-    // { id: 7, path: "/test", label: "라우터 테스트", icon: "🧪" },
+    { id: 7, path: "/storage", label: "보관함", icon: "🧪" },
+    { id: 8, path: "/admin", label: "관리자 페이지(임시)", icon: "🧪" },
   ];
 
   useEffect(() => {

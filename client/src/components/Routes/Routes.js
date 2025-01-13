@@ -24,6 +24,9 @@ import FollowingPage from "../../pages/FollowPage/FollowingPage";
 
 import UserPage from "../../pages/UserPage";
 
+import AdminPage from "../../pages/AdminPage";
+import StoragePage from "../../pages/MyPage/Storage";
+
 const RoutesComponent = ({ isAuthenticated, setIsAuthenticated }) => (
   <Routes>
     <Route
@@ -53,6 +56,24 @@ const RoutesComponent = ({ isAuthenticated, setIsAuthenticated }) => (
       element={
         <ProtectedRoute isAuthenticated={isAuthenticated}>
           <SearchPage />
+        </ProtectedRoute>
+      }
+    />
+    
+    <Route
+      path="/admin"
+      element={
+        <ProtectedRoute isAuthenticated={isAuthenticated}>
+          <AdminPage />
+        </ProtectedRoute>
+      }
+    />
+
+    <Route
+      path="/storage"
+      element={
+        <ProtectedRoute isAuthenticated={isAuthenticated}>
+          <StoragePage />
         </ProtectedRoute>
       }
     />
