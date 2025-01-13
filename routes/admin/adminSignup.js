@@ -14,7 +14,6 @@ router.post("/", async (req, res) => {
 
   try {
     // console.log("Received inviteCode:", inviteCode);
-    // 확인용
 
     // 초대 코드 검증
     if (inviteCode !== ADMIN_INVITE_CODE) {
