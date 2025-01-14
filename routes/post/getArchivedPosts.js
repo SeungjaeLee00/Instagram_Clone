@@ -1,4 +1,3 @@
-// 내 보관 게시물 전체 보기
 const express = require("express");
 const router = express.Router();
 const { Post } = require("../../models/Post");
