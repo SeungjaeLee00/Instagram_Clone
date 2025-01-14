@@ -52,7 +52,7 @@ router.post("/", auth, upload, async (req, res) => {
 
     // 새로운 게시물 생성 및 저장
     const newPost = new Post({
-      user_id: userId,
+      user: userId,
       text: text || "",
       images: imageUrls,
     });

@@ -3,14 +3,10 @@ const bcrypt = require("bcryptjs");
 const saltRounds = 10;
 const jwt = require("jsonwebtoken");
 const Util = require("util");
-require("dotenv").config();
 
 const userSchema = mongoose.Schema({
-  // 닉네임
   user_id: {
     type: String,
-    unique: 1,
-    required: true, // 필드 반드시 필요
   },
   email: {
     type: String,
@@ -39,18 +35,22 @@ const userSchema = mongoose.Schema({
   introduce: {
     type: String,
     maxlength: 100,
-    default: "",
   },
-  profile_image: { type: String, default: "" },
+  image: String,
   token: {
     type: String,
   },
   role: {
     // user는 관리자 또는 일반인
-    type: String, // 문자열로 변경
-    enum: ["user", "admin"], // 가능한 값 설정
-    default: "user", // 기본값: 일반 사용자
+    type: Number, // 예를 들어, number가 1이면 관리자, 0이면 일반유저
+    default: 0,
   },
+  // role: {
+  //   // user는 관리자 또는 일반인
+  //   type: String, // 문자열로 변경
+  //   enum: ['user', 'admin'], // 가능한 값 설정
+  //   default: 'user', // 기본값: 일반 사용자
+  // },
   tokenExp: {
     // token이 유효하는 기간
     type: String,
@@ -73,11 +73,6 @@ const userSchema = mongoose.Schema({
   passwordResetExpires: {
     type: Date,
     default: null,
-  },
-
-  isActive: {
-    type: Boolean,
-    default: true, // 기본값은 활성화된 상태
   },
 });
 
@@ -127,7 +122,7 @@ userSchema.methods.comparePassword = async function (plainPassword) {
 // 토큰 생성 메서드
 userSchema.methods.generateToken = function () {
   const payload = { _id: this._id.toHexString() };
-  const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "1h" });
+  const token = jwt.sign(payload, "secretToken", { expiresIn: "10m" });
   this.token = token;
   // user를 저장한 후, user와 token을 함께 반환
   return this.save().then(() => ({ token, user: this }));
@@ -137,10 +132,10 @@ userSchema.methods.generateToken = function () {
 userSchema.statics.findByToken = function (token) {
   const user = this;
 
-  return Util.promisify(jwt.verify)(token, process.env.JWT_SECRET)
+  return Util.promisify(jwt.verify)(token, "secretToken")
     .then((decoded) => {
       return user.findOne({
-        _id: decoded._id,
+        _id: decoded,
         token: token,
       });
     })

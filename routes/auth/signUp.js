@@ -9,11 +9,9 @@ router.use(express.json());
 
 // 회원가입 처리 및 이메일 인증 코드 발송
 router.post("/", async (req, res) => {
-  // const { email } = req.body;
-  const { email, user_id } = req.body;
+  const { email } = req.body;
 
   try {
-    console.log("회원가입 시도", req.body);
     // 이메일이 이미 존재하는지 확인
     const existingUser = await User.findOne({ email });
     if (existingUser) {
@@ -21,7 +19,7 @@ router.post("/", async (req, res) => {
       if (existingUser.isEmailVerified) {
         return res
           .status(400)
-          .json({ success: false, message: "이미 사용 중인 이메일입니다." });
+          .json({ success: false, message: "이미 가입된 사용자입니다." });
       }
       // 이미 존재하는 사용자가 인증코드를 재요청한 경우, 인증코드 재전송 처리
       const emailVerificationCode = crypto.randomBytes(3).toString("hex"); // 6자리 코드 생성
@@ -34,7 +32,6 @@ router.post("/", async (req, res) => {
         emailVerificationCode
       );
       if (!emailSent) {
-        console.error("이메일 전송 실패");
         return res
           .status(500)
           .json({ success: false, message: "이메일 전송 실패" });
@@ -44,14 +41,6 @@ router.post("/", async (req, res) => {
       return res
         .status(200)
         .json({ success: true, message: "인증코드가 재전송되었습니다." });
-    }
-
-    // 아이디 중복 여부
-    const existingUserByUserId = await User.findOne({ user_id });
-    if (existingUserByUserId) {
-      return res
-        .status(400)
-        .json({ success: false, message: "이미 사용 중인 아이디입니다." });
     }
 
     // 새로운 사용자에 대한 인증코드 생성 및 이메일 전송
@@ -67,7 +56,6 @@ router.post("/", async (req, res) => {
     // 이메일로 인증번호 전송
     const emailSent = await sendVerificationEmail(email, emailVerificationCode);
     if (!emailSent) {
-      console.error("이메일 전송 실패");
       return res
         .status(500)
         .json({ success: false, message: "이메일 전송 실패" });
@@ -76,7 +64,6 @@ router.post("/", async (req, res) => {
     await user.save(); // 사용자 정보 저장
     res.status(200).json({ success: true, message: "이메일 전송 성공" });
   } catch (err) {
-    console.error("서버 오류:", err); // 전체적인 오류 로깅
     res.status(500).json({ success: false, err });
   }
 });
