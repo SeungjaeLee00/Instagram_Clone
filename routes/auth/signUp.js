@@ -3,7 +3,7 @@ const router = express.Router();
 const { User } = require("../../models/User");
 const crypto = require("crypto");
 // const bcrypt = require("bcryptjs");
-const { sendVerificationEmail } = require("../../utils/sendEmail"); // 이메일 전송 유틸
+const { sendVerificationEmail } = require("../../utils/sendEmail");
 
 router.use(express.json());
 

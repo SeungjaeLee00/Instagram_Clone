@@ -1,3 +1,4 @@
+// 내 보관 게시물 전체 보기
 const express = require("express");
 const router = express.Router();
 const { Post } = require("../../models/Post");
@@ -6,11 +7,13 @@ const { auth } = require("../../routes/auth");
 const cookieParser = require("cookie-parser");
 router.use(cookieParser());
 
-// 내 게시물 전체 보기
-router.get("/myFeed", auth, async (req, res) => {
+router.get("/archivedPost", auth, async (req, res) => {
   const user_id = req.user._id;
   try {
-    const myPosts = await Post.find({ user_id: user_id, archived: false }) // 'user' -> 'user_id'로 수정
+    const myPosts = await Post.find({
+      user_id: user_id,
+      archived: true,
+    })
       .sort({ createdAt: -1 })
       .populate("user_id", "user_id profile_image")
       .populate({
@@ -18,7 +21,6 @@ router.get("/myFeed", auth, async (req, res) => {
         populate: { path: "user", select: "user_id username profile_image" },
       });
 
-    // console.log("My Posts:", myPosts); // 디버그: 내 게시물 확인
     const myPostsWithDetails = myPosts.map((post) => ({
       ...post.toObject(),
       likesCount: post.likes.length, // 게시물 좋아요 수
@@ -29,7 +31,7 @@ router.get("/myFeed", auth, async (req, res) => {
       })),
     }));
     return res.status(200).json({
-      message: "내 전체 게시물을 조회합니다.",
+      message: "내 보관된 게시물을 조회합니다.",
       posts: myPostsWithDetails,
     });
   } catch (error) {

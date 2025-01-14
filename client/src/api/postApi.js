@@ -16,13 +16,29 @@ export const fetchPostById = async (postId) => {
     const response = await axios.get(
       `${API_BASE_URL}/post/get-post/${postId}`,
       {
-        withCredentials: true, // 쿠키 인증
+        withCredentials: true,
       }
     );
-    // console.log("게시물 단건 조회", response);
     return response.data;
   } catch (error) {
     console.error("게시물 조회 중 오류:", error);
+    throw error;
+  }
+};
+
+// 게시물 보관/보관 취소 API
+export const archivePost = async (postId, userId, archive) => {
+  try {
+    const response = await axios.put(
+      `${API_BASE_URL}/post/archive/${postId}/archive`,
+      { userId: userId, archive: archive },
+      {
+        withCredentials: true,
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("게시물 보관/취소 처리 중 오류 발생", error);
     throw error;
   }
 };

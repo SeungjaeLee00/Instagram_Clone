@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getMyProfile, getMyPosts } from "../../api/mypageApi";
 import { getUserFollowers, getUserFollowing } from "../../api/followApi";
-import { deletePost, addLike, fetchPostById } from "../../api/postApi";
+import { deletePost, addLike } from "../../api/postApi";
 import { logoutUser, withdrawUser } from "../../api/authApi";
 import { addComment, addCommentLike, getComments } from "../../api/commentApi";
 
@@ -44,6 +44,7 @@ const MyPage = () => {
             ...post,
             liked: post.likes.includes(user.userId),
           }));
+
           const followerList = await getUserFollowers(user.userId);
           const followingList = await getUserFollowing(user.userId);
 
@@ -82,10 +83,17 @@ const MyPage = () => {
   const openModal = async (post) => {
     try {
       const comments = await getComments(post._id, user.userId);
+      const commentsWithLikesCount = comments.map((comment) => ({
+        ...comment,
+        likesCount: (comment.likes || []).length,
+      }));
+
+      // console.log("마이페이지에서 확인하는 comments", commentsWithLikesCount);
+
       setSelectedPost({
         ...post,
         user: post.user_id,
-        comments: comments,
+        comments: commentsWithLikesCount,
       });
       setIsModalOpen(true);
     } catch (error) {
@@ -93,9 +101,20 @@ const MyPage = () => {
     }
   };
 
-  const closeModal = () => {
-    setIsModalOpen(false);
-    setSelectedPost(null);
+  const closeModal = async () => {
+    try {
+      const postList = await getMyPosts(); // 모달 닫을 때 최신 정보로 업데이트
+      const updatedPosts = postList.map((post) => ({
+        ...post,
+        liked: post.likes.includes(user.userId),
+      }));
+      setPosts(updatedPosts);
+
+      setIsModalOpen(false);
+      setSelectedPost(null);
+    } catch (error) {
+      console.error("게시물 정보 업데이트 실패:", error);
+    }
   };
 
   // 게시물 삭제
@@ -146,7 +165,7 @@ const MyPage = () => {
   const handleAddComment = async (postId, newCommentText) => {
     try {
       const response = await addComment(postId, newCommentText);
-      // console.log("myPage에서 댓글 달기:", response);
+      console.log("myPage에서 댓글 달기:", response);
       const { comment } = response;
       setPosts((prevPosts) =>
         prevPosts.map((post) =>
@@ -161,6 +180,7 @@ const MyPage = () => {
             : post
         )
       );
+      // console.log("selectedPost._id", selectedPost._id);
       if (selectedPost && selectedPost._id === postId) {
         setSelectedPost((prevSelectedPost) => ({
           ...prevSelectedPost,
@@ -353,8 +373,8 @@ const MyPage = () => {
           post={selectedPost}
           isOpen={isModalOpen}
           onClose={closeModal}
-          postDelete={handleDeletePost}
           postLike={handleLikePost}
+          postDelete={handleDeletePost}
           addComment={handleAddComment}
           likeComment={handleLikeComment}
         />
@@ -364,5 +384,3 @@ const MyPage = () => {
 };
 
 export default MyPage;
-
-// 댓글 삭제, 댓글 좋아요를 모달을 열 때 같이 보내야하는 거임

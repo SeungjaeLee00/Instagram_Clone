@@ -22,7 +22,7 @@ const Chatroom = () => {
     const fetchChatrooms = async () => {
       try {
         const data = await chatroomList();
-        console.log("chatrooms:", data);
+        // console.log("chatrooms:", data);
 
         setChatrooms(data.chatrooms);
         setChatroomsId(data.chatrooms_id);
@@ -67,26 +67,28 @@ const Chatroom = () => {
   };
 
   return (
-    <div className = "chatroom-page">
-      <div className = "chatroom-content">
-        <h2 style={{ textAlign: "Left" }}>{userName}
+    <div className="chatroom-page">
+      <div className="chatroom-content">
+        <h2 style={{ textAlign: "Left" }}>
+          {userName}
           <button className="new-chat-button">
-            <img 
-              src = {newChat} alt = "New Chat" 
+            <img
+              src={newChat}
+              alt="New Chat"
               onClick={() => setIsModalOpen(true)}
             />
           </button>
         </h2>
 
         {isModalOpen && (
-        <CreateDmModal
-          onClose={() => setIsModalOpen(false)}
-          onAddChatroom={addNewChatroom}
-        />
+          <CreateDmModal
+            onClose={() => setIsModalOpen(false)}
+            onAddChatroom={addNewChatroom}
+          />
         )}
 
         {error && <p style={{ color: "red", textAlign: "center" }}>{error}</p>}
-        
+
         <ul className="chatroom-list">
           {chatrooms && chatrooms.length > 0 ? (
             chatrooms.map((chatroom, index) => (
@@ -98,8 +100,8 @@ const Chatroom = () => {
                       chatroom.chatroomName
                     )
                   }
-                  style={{ display: "flex", cursor: "pointer" }}>
-
+                  style={{ display: "flex", cursor: "pointer" }}
+                >
                   {/* 프로필 이미지 */}
                   <img
                     src={chatroom.user_profile || defaultProfile} // 기본 프로필 이미지 경로
@@ -110,12 +112,13 @@ const Chatroom = () => {
                   <strong>{chatroom.chatroomName}</strong>
                 </div>
 
-                <img className="trash"
-                  src={trash}  
+                <img
+                  className="trash"
+                  src={trash}
                   onClick={() => {
-                  handleLeaveChatroom(chatroom.chatroomId); // 바로 나가기 실행
-                  }
-                } />
+                    handleLeaveChatroom(chatroom.chatroomId); // 바로 나가기 실행
+                  }}
+                />
               </li>
             ))
           ) : (
@@ -124,7 +127,7 @@ const Chatroom = () => {
         </ul>
       </div>
     </div>
-  )
+  );
 };
 
 export default Chatroom;

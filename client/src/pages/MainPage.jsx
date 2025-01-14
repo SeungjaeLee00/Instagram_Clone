@@ -2,8 +2,7 @@ import React, { useEffect, useState } from "react";
 import "../styles/pages/MainPage.css";
 import PostCard from "../components/PostCard";
 import { fetchPosts, deletePost, addLike } from "../api/postApi";
-import { fetchPostById } from "../api/postApi";
-import { addComment, addCommentLike } from "../api/commentApi";
+import { addComment } from "../api/commentApi";
 import useAuth from "../hooks/useAuth";
 
 const MainPage = () => {
@@ -17,7 +16,7 @@ const MainPage = () => {
       const fetchUserPosts = async () => {
         try {
           const postList = await fetchPosts();
-          console.log("postList : ", postList);
+          // console.log("postList : ", postList);
           const postsWithLikesCount = postList.map((post) => ({
             ...post,
             likes: (post.likes || []).map((like) => like.toString()),
@@ -28,7 +27,7 @@ const MainPage = () => {
               liked: (comment.likes || []).includes(user?.userId),
             })),
           }));
-          // console.log("postsWithLikesCount", postsWithLikesCount);
+
           setPosts(postsWithLikesCount);
         } catch (error) {
           console.error("게시물 로딩 실패:", error);
@@ -87,21 +86,25 @@ const MainPage = () => {
   const handleAddComment = async (postId, newCommentText) => {
     try {
       const response = await addComment(postId, newCommentText);
+      console.log("메인페이지에서 댓글 달기", response);
       const { comment } = response;
 
-      setPosts((prevPosts) =>
-        prevPosts.map((post) =>
+      setPosts((prevPosts) => {
+        const updatedPosts = prevPosts.map((post) =>
           post._id === postId
             ? {
                 ...post,
                 comments: [
                   { ...comment, likesCount: 0, liked: false },
-                  ...post.comments,
+                  ...(post.comments || []),
                 ],
               }
             : post
-        )
-      );
+        );
+        console.log("업데이트된 posts 상태:", updatedPosts);
+        return updatedPosts;
+      });
+
       return { comment };
     } catch (error) {
       console.error("댓글 추가 중 오류가 발생했습니다:", error);
@@ -112,8 +115,6 @@ const MainPage = () => {
     return <div>게시물을 로딩 중입니다...</div>;
   }
 
-  // console.log("메인에서 확인하는 posts: ", posts);
-
   return (
     <div className="main-page">
       {isAuthenticated ? (
@@ -121,16 +122,18 @@ const MainPage = () => {
           {posts.length === 0 ? (
             <p>친구들을 팔로우 해보세요 🙄</p>
           ) : (
-            posts.map((post) => (
-              <PostCard
-                key={post._id}
-                post={post}
-                postLike={handleAddLike}
-                postDelete={handleDeletePost}
-                addComment={handleAddComment}
-                // likeComment={handleLikeComment}
-              />
-            ))
+            // posts 상태가 변경되었을 때 강제 리렌더링
+            <div key={JSON.stringify(posts)}>
+              {posts.map((post) => (
+                <PostCard
+                  key={post._id}
+                  post={post}
+                  postLike={handleAddLike}
+                  postDelete={handleDeletePost}
+                  addComment={handleAddComment}
+                />
+              ))}
+            </div>
           )}
         </div>
       ) : (

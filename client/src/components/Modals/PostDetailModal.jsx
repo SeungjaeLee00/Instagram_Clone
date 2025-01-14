@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { timeAgo } from "../../utils/timeAgo";
 import useAuth from "../../hooks/useAuth";
 import { deleteSelectComment, getComments } from "../../api/commentApi";
+import { archivePost } from "../../api/postApi";
 
 import "../../styles/components/PostDetailModal.css";
 import default_profile from "../../assets/default_profile.png";
@@ -18,20 +19,16 @@ const PostDetailModal = ({
 }) => {
   const navigate = useNavigate();
   const { isAuthenticated, user } = useAuth();
-
-  const [posts, setPosts] = useState([]);
   const [postLiked, setPostLiked] = useState(false);
   const [postLikesCount, setPostLikesCount] = useState(0);
-
-  const [commentLiked, setCommentLiked] = useState([]);
-  // const [commentLiked, setCommentLiked] = useState(false);
-  const [commentLikesCount, setCommentLikesCount] = useState(0);
 
   const [comments, setComments] = useState(post.comments || []);
   const [addComments, setAddComments] = useState(post.comments || []); // 댓글 추가
 
   const commentInputRef = useRef(null);
   const [commentText, setCommentText] = useState("");
+
+  const [isArchived, setIsArchived] = useState(false);
 
   const [showOptions, setShowOptions] = useState(false);
   const [visibleComments, setVisibleComments] = useState(6);
@@ -52,7 +49,7 @@ const PostDetailModal = ({
             user_id: comment.user?.user_id,
             _id: comment.user?._id,
           },
-          likesCount: comment.likes.length,
+          likesCount: comment.likesCount,
         }));
         // 오래된 순 정렬
         updatedComments.sort(
@@ -60,6 +57,7 @@ const PostDetailModal = ({
         );
         setComments(updatedComments); // 전체 댓글 관리
       }
+      // console.log("모달디테일에서 확인하는 댓글 상태: ", post.comments);
     }
   }, [post, user]);
 
@@ -100,6 +98,30 @@ const PostDetailModal = ({
   const handleDelete = () => {
     const postUserId = post.user_id?._id;
     postDelete(post._id, postUserId);
+    setShowOptions(false);
+  };
+
+  // 게시물 보관
+  const handleArchive = async () => {
+    if (isAuthenticated) {
+      try {
+        if (!post._id) return;
+        const loginUserId = user.userId;
+
+        const archive = !isArchived;
+        const response = await archivePost(post._id, loginUserId, archive);
+        console.log(response.message);
+
+        if (response.message.includes("보관 완료되었습니다.")) {
+          setIsArchived(true);
+        } else if (response.message.includes("보관 취소되었습니다.")) {
+          setIsArchived(false);
+        }
+      } catch (error) {
+        console.error("보관 처리 중 오류 발생:", error);
+      }
+      setShowOptions(false);
+    }
   };
 
   const handleCommentChange = (e) => setCommentText(e.target.value);
@@ -144,29 +166,26 @@ const PostDetailModal = ({
     }
   };
 
-  // 댓글 좋아
+  // 댓글 좋아요
   const handleCommentLike = async (commentId) => {
-    setComments(
-      (prevComments) =>
-        prevComments.map((comment) =>
-          comment._id === commentId
-            ? {
-                ...comment,
-                liked: !comment.liked,
-                likesCount: comment.liked
-                  ? comment.likesCount - 1
-                  : comment.likesCount + 1,
-              }
-            : comment
-        ),
-      () => {
-        // 콜백 -> UI 업데이트
-        setComments((prevComments) => prevComments);
-      }
+    setComments((prevComments) =>
+      prevComments.map((comment) =>
+        comment._id === commentId
+          ? {
+              ...comment,
+              liked: !comment.liked,
+              likesCount: comment.liked
+                ? comment.likesCount - 1
+                : comment.likesCount + 1,
+            }
+          : comment
+      )
     );
+    // console.log("모달디테일에서 props 요청 전 확인하는 comments:", comments);
 
     try {
       await likeComment(commentId);
+      // console.log("모달디테일에서 props 요청 후 확인하는 comments:", comments); // console.log가 실행될 때 comments는 아직 업데이트 전의 상태를 참조함
     } catch (error) {
       console.error("좋아요 처리 중 오류:", error);
     }
@@ -187,7 +206,7 @@ const PostDetailModal = ({
     }
     try {
       const response = await deleteSelectComment(commentId, loginUserId);
-      console.log("re", response.status);
+      // console.log("re", response.status);
       if (response.status === 200) {
         // console.log("댓글 삭제 성공:", response.data.message);
         setComments((prevComments) =>
@@ -316,6 +335,7 @@ const PostDetailModal = ({
                 {showOptions && (
                   <div className="optionsDetail-popup">
                     <button onClick={handleEdit}>수정</button>
+                    <button onClick={handleArchive}>보관</button>
                     <button onClick={handleDelete}>삭제</button>
                   </div>
                 )}

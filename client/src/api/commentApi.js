@@ -42,7 +42,7 @@ export const addCommentLike = async (commentId) => {
         withCredentials: true,
       }
     );
-    console.log("response.data", response.data);
+    // console.log("response.data", response.data);
     return response.data;
   } catch (error) {
     console.error("댓글 좋아요 처리 중 오류 발생", error);

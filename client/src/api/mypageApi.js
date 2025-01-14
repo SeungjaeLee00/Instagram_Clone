@@ -45,3 +45,14 @@ export const getMyPosts = async () => {
   });
   return response.data.posts;
 };
+
+// 내 보관 게시물 전체 보기 API
+export const getMyArchivedPosts = async () => {
+  const response = await axios.get(
+    `${API_BASE_URL}/post/my-archived/archivedPost`,
+    {
+      withCredentials: true,
+    }
+  );
+  return response.data.posts;
+};

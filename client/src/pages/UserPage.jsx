@@ -45,10 +45,10 @@ const UserPage = () => {
             ? postList.map((post) => ({
                 ...post,
                 liked: post.likes.includes(user.userId),
-                comments: post.comments.map((comment) => ({
-                  ...comment,
-                  liked: comment.likes.includes(user.userId),
-                })),
+                // comments: post.comments.map((comment) => ({
+                //   ...comment,
+                //   liked: comment.likes.includes(user.userId),
+                // })),
               }))
             : [];
 
@@ -109,8 +109,6 @@ const UserPage = () => {
       const response = await addComment(postId, newCommentText);
       // console.log("남페이지에서 댓글 달기:", response);
       const { comment } = response;
-      // await getComments(postId, user.userId);
-
       setPosts((prevPosts) =>
         prevPosts.map((post) =>
           post._id === postId
@@ -219,10 +217,17 @@ const UserPage = () => {
   const openModal = async (post) => {
     try {
       const comments = await getComments(post._id, user.userId);
+      const commentsWithLikesCount = comments.map((comment) => ({
+        ...comment,
+        likesCount: (comment.likes || []).length,
+      }));
+
+      console.log("유저페이지에서 확인하는 comments", commentsWithLikesCount);
+
       setSelectedPost({
         ...post,
         user: post.user_id,
-        comments: comments,
+        comments: commentsWithLikesCount,
       });
       // console.log("post", post);
       setIsModalOpen(true);
