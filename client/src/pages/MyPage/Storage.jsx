@@ -13,6 +13,7 @@ const Storage = () => {
   const [posts, setPosts] = useState([]);
   const [selectedPost, setSelectedPost] = useState(null);
   const [showOptions, setShowOptions] = useState(false);
+  const [activePost, setActivePost] = useState(null); // 현재 활성화된 팝업 상태
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -55,6 +56,7 @@ const Storage = () => {
 
   const handleImageClick = (postId) => {
     setSelectedPost(postId);
+    setActivePost(postId);
     setShowOptions(true);
   };
 
@@ -104,24 +106,31 @@ const Storage = () => {
                   <img
                     src={post.images[0]}
                     alt={`Post ${post._id}`}
-                    onClick={() => handleImageClick(post._id)}
+                    // onClick={() => handleImageClick(post._id)}
                   />
+                  <div className="post-menu-icon"
+                    onClick={() => handleImageClick(post._id)}
+                    >
+                        ⋮
+                    </div>
+                    {activePost === post._id && (
+                        <div className="storage-popup">
+                            <button onClick={() => handleOptionClick("cancelArchive")}>
+                                보관 취소
+                            </button>
+                            <button onClick={() => handleOptionClick("delete")}>삭제</button>
+                        </div>
+                    )}
                 </div>
               ))}
+              
             </div>
           ) : (
             <div className="no-posts-message">
               <p>보관된 게시물이 없습니다 🤓</p>
             </div>
           )}
-          {showOptions && (
-            <div className="options-popup">
-              <button onClick={() => handleOptionClick("cancelArchive")}>
-                보관 취소
-              </button>
-              <button onClick={() => handleOptionClick("delete")}>삭제</button>
-            </div>
-          )}
+          
         </div>
       </div>
     </div>
