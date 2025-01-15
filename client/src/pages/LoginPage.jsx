@@ -73,7 +73,6 @@ const Login = ({ setIsAuthenticated }) => {
       return;
     }
     setNotAllow(true);
-
   }, [emailOrUsernameValid, passwordValid]);
 
   // 엔터키로 로그인 처리

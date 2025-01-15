@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 
 const postSchema = new mongoose.Schema({
+  archived: { type: Boolean, default: false },
   user_id: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",

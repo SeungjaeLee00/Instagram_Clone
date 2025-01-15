@@ -129,10 +129,17 @@ const Notification = () => {
   const openModal = async (post) => {
     try {
       const comments = await getComments(post._id, user.userId);
+      const commentsWithLikesCount = comments.map((comment) => ({
+        ...comment,
+        likesCount: (comment.likes || []).length,
+      }));
+
+      console.log("노티페이지에서 확인하는 comments", commentsWithLikesCount);
+
       setSelectedPost({
         ...post,
         user: post.user_id,
-        comments: comments,
+        comments: commentsWithLikesCount,
       });
       setIsModalOpen(true);
     } catch (error) {
@@ -193,7 +200,7 @@ const Notification = () => {
   const handleAddComment = async (postId, newCommentText) => {
     try {
       const response = await addComment(postId, newCommentText);
-      // console.log("알림페이지에서 댓글 달기:", response);
+      console.log("알림페이지에서 댓글 달기:", response);
       const { comment } = response;
       setPosts((prevPosts) =>
         prevPosts.map((post) =>
@@ -208,6 +215,15 @@ const Notification = () => {
             : post
         )
       );
+      if (selectedPost && selectedPost._id === postId) {
+        setSelectedPost((prevSelectedPost) => ({
+          ...prevSelectedPost,
+          comments: [
+            { ...comment, likesCount: 0, liked: false },
+            ...prevSelectedPost.comments,
+          ],
+        }));
+      }
       return { comment };
     } catch (error) {
       console.error("댓글 추가 중 오류가 발생했습니다:", error);

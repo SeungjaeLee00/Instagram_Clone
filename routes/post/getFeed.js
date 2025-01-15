@@ -43,7 +43,7 @@ router.get("/", auth, async (req, res) => {
     // 팔로우한 사용자의 게시물이 없으면 내 게시물을 조회
     if (posts.length === 0) {
       // 내 게시물 조회
-      const myPosts = await Post.find({ user_id: user_id }) // 'user' -> 'user_id'로 수정
+      const myPosts = await Post.find({ user_id: user_id, archived: false }) // 'user' -> 'user_id'로 수정
         .sort({ createdAt: -1 })
         .limit(5)
         .populate("user_id", "user_id profile_image")

@@ -12,13 +12,13 @@ import "../styles/components/PostCard.css";
 const PostCard = ({ post, addComment, postDelete, postLike }) => {
   const navigate = useNavigate();
   const { isAuthenticated, user } = useAuth();
-  const [posts, setPosts] = useState([]);
+
   const [liked, setLiked] = useState(post.liked);
   const [likesCount, setLikesCount] = useState(post.likesCount);
   const [showOptions, setShowOptions] = useState(false);
   const [commentText, setCommentText] = useState("");
   const [comments, setComments] = useState(post.comments || []);
-  // const [commentLiked, setCommentLiked] = useState([]);
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedPost, setSelectedPost] = useState(null);
   const [error, setError] = useState("");
@@ -34,8 +34,7 @@ const PostCard = ({ post, addComment, postDelete, postLike }) => {
         liked: (comment.likes || []).includes(user.userId),
         likesCount: (comment.likes || []).length,
       }));
-      // setCommentLiked(updatedComments);
-      // setComments(updatedComments || []);
+      setComments(updatedComments || []);
 
       // console.log("commentLiked", commentLiked);
     }
@@ -85,7 +84,7 @@ const PostCard = ({ post, addComment, postDelete, postLike }) => {
     }
   };
 
-  // 댓글 추가
+  // 댓글 달기
   const handleCommentSubmit = async () => {
     if (!commentText.trim()) return;
     try {
@@ -117,6 +116,7 @@ const PostCard = ({ post, addComment, postDelete, postLike }) => {
             : comment
         )
       );
+      return response;
     } catch (error) {
       console.error("좋아요 처리 중 오류가 발생했습니다", error);
     }
@@ -130,11 +130,17 @@ const PostCard = ({ post, addComment, postDelete, postLike }) => {
   const openModal = async (post) => {
     try {
       const comments = await getComments(post._id, user.userId);
-      console.log("comments", comments);
+      const commentsWithLikesCount = comments.map((comment) => ({
+        ...comment,
+        likesCount: (comment.likes || []).length,
+      }));
+
+      console.log("포스트카드에서 확인하는 comments", commentsWithLikesCount);
+
       setSelectedPost({
         ...post,
         user: post.user_id,
-        comments: comments,
+        comments: commentsWithLikesCount,
       });
       setIsModalOpen(true);
     } catch (error) {
@@ -258,21 +264,17 @@ const PostCard = ({ post, addComment, postDelete, postLike }) => {
         </button>
       </div>
 
-      <PostDetailModal
-        post={{
-          ...post,
-          liked,
-          likesCount,
-          comments,
-        }}
-        isOpen={isModalOpen}
-        onClose={closeModal}
-        postLike={postLike}
-        postDelete={postDelete}
-        addComment={addComment}
-        likeComment={handleLikeComment}
-        // deleteComment={deleteComment}
-      />
+      {isModalOpen && selectedPost && (
+        <PostDetailModal
+          post={selectedPost}
+          isOpen={isModalOpen}
+          onClose={closeModal}
+          postLike={postLike}
+          postDelete={postDelete}
+          addComment={addComment}
+          likeComment={handleLikeComment}
+        />
+      )}
     </div>
   );
 };

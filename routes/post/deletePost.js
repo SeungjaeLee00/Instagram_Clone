@@ -16,7 +16,7 @@ router.delete("/:id", auth, async (req, res) => {
   const { id } = req.params;
   const { userId } = req.body; // 클라이언트에서 받은 userId
   console.log("요청 받은 userId:", userId);
-  console.log("인증된 사용자 ID:", req.user._id); // auth 미들웨어에서 전달한 사용자 ID 확인
+  console.log("인증된 사용자 ID:", req.user._id);
 
   try {
     const post = await Post.findById(id);
