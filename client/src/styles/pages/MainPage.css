@@ -10,6 +10,9 @@
   gap: 20px;
   width: 100%;
 }
+.main-feed {
+  gap: 20px;
+}
 
 @media (max-width: 768px) {
   .main-page {
