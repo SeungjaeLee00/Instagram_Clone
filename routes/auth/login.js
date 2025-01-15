@@ -25,6 +25,10 @@ router.post("/", (req, res) => {
         );
       }
 
+      if (user.role === "admin") {
+        throw new Error("관리자는 일반 사용자로 로그인할 수 없습니다.");
+      }
+
       const isValid = user.isEmailVerified;
 
       // 유효한 이메일인지 확인

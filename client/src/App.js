@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router } from "react-router-dom";
 import Layout from "../src/components/Common/Layout";
 import { verifyToken } from "./api/authApi";
+import { fetchSingleUserProfile } from "./api/userApi";
 import RoutesComponent from "../src/components/Routes/Routes";
 
 import { SocketProvider } from "./hooks/SocketContext";
@@ -29,18 +30,17 @@ function App() {
   if (loading) {
     return <div>로딩 중...</div>;
   }
-
   return (
     <SocketProvider>
-        <Router>
-          <Layout>
+      <Router>
+        <Layout>
           <RoutesComponent
-          isAuthenticated={isAuthenticated}
-          setIsAuthenticated={setIsAuthenticated}
+            isAuthenticated={isAuthenticated}
+            setIsAuthenticated={setIsAuthenticated}
           />
-          </Layout>
+        </Layout>
       </Router>
-    </SocketProvider>   
+    </SocketProvider>
   );
 }
 
