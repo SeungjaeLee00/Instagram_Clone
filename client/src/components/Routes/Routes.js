@@ -27,12 +27,19 @@ import UserPage from "../../pages/UserPage";
 import AdminPage from "../../pages/AdminPage";
 import StoragePage from "../../pages/MyPage/Storage";
 
+import Kakao from "../../components/Common/Kakao";
+
 const RoutesComponent = ({ isAuthenticated, setIsAuthenticated }) => (
   <Routes>
     <Route
       path="/auth/login"
       element={<Login setIsAuthenticated={setIsAuthenticated} />}
     />
+    <Route
+      path="/auth/kakao/callback"
+      element={<Kakao setIsAuthenticated={setIsAuthenticated} />}
+    />
+
     <Route path="/auth/sign-up" element={<Signup />} />
     <Route path="/auth/sign-up/verify-email" element={<SignupVerify />} />
     <Route
@@ -59,7 +66,7 @@ const RoutesComponent = ({ isAuthenticated, setIsAuthenticated }) => (
         </ProtectedRoute>
       }
     />
-    
+
     <Route
       path="/admin"
       element={
@@ -93,8 +100,8 @@ const RoutesComponent = ({ isAuthenticated, setIsAuthenticated }) => (
         <ProtectedRoute isAuthenticated={isAuthenticated}>
           <MessagesPage />
         </ProtectedRoute>
-      } 
-      />
+      }
+    />
 
     <Route
       path="/notifications"
@@ -103,7 +110,7 @@ const RoutesComponent = ({ isAuthenticated, setIsAuthenticated }) => (
           <NotificationsPage />
         </ProtectedRoute>
       }
-    /> 
+    />
 
     <Route
       path="/create"

@@ -134,7 +134,7 @@ userSchema.methods.generateToken = function () {
 };
 
 // 토큰 찾기
-userSchema.statics.findByToken = function (token) {
+userSchema.statics.findByToken = (token) => {
   const user = this;
 
   return Util.promisify(jwt.verify)(token, process.env.JWT_SECRET)

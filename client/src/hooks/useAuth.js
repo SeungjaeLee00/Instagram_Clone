@@ -9,7 +9,7 @@ const useAuth = () => {
   useEffect(() => {
     const checkAuthStatus = async () => {
       try {
-        const response = await verifyToken(); // 인증 상태 확인
+        const response = await verifyToken();
         // console.log("response", response);
         if (response.isAuth) {
           setIsAuthenticated(true);

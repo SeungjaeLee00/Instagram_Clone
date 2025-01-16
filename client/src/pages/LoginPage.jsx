@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import Kakao from "../components/Common/Kakao";
+
 import "../styles/pages/LoginPage.css";
-import { loginUser } from "../api/authApi"; // API 호출 함수 가져오기
+import { loginUser } from "../api/authApi";
 
 // 이미지 로드
 import instalogo from "../assets/instagram_logo.png";
 import googleplaylogo from "../assets/google-play.png";
 import microsoftlogo from "../assets/microsoft.png";
+import kakaoImg from "../assets/kakao_login_medium_wide.png";
 
 const Login = ({ setIsAuthenticated }) => {
   const [emailOrUsername, setemailOrUsername] = useState("");
@@ -36,7 +39,6 @@ const Login = ({ setIsAuthenticated }) => {
   const handlePassword = (e) => {
     const value = e.target.value;
     setPassword(value);
-
     setPasswordValid(value.length >= 6);
   };
 
@@ -82,6 +84,15 @@ const Login = ({ setIsAuthenticated }) => {
     }
   };
 
+  // 카카오 로그인
+  const handleKakaoLogin = () => {
+    const KAKAO_CLIENT_ID = "227e5904d4c516c3a5f3cccdaf2c7a52";
+    const REDIRECT_URI = "http://localhost:3000/auth/kakao/callback";
+    const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?client_id=${KAKAO_CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=code`;
+
+    window.location.href = KAKAO_AUTH_URL;
+  };
+
   return (
     <div className="login-page">
       {/* 로그인 부분 */}
@@ -116,10 +127,10 @@ const Login = ({ setIsAuthenticated }) => {
             className="login-submitButton"
             onClick={onclickConfirmButton}
             disabled={NotAllow}
-            // onKeyDown={handleKeyDown}
           >
             로그인
           </button>
+          <img src={kakaoImg} onClick={handleKakaoLogin} />
 
           <div className="divider">또는</div>
 

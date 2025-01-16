@@ -20,6 +20,7 @@ const likeRoutes = require("./routes/like/index");
 const adminRoutes = require("./routes/admin/index");
 const followRoutes = require("./routes/follow/index");
 const notificationRoutes = require("./routes/notification/index");
+const kakaoRoutes = require("./routes/auth/kakao");
 
 const app = express();
 const server = http.createServer(app); // HTTP 서버 생성
@@ -49,6 +50,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // 라우트 등록
 app.use("/auth", authRoutes);
+app.use("/auth/kakao", kakaoRoutes);
 app.use("/profile", profileRoutes);
 app.use("/post", postRoutes);
 app.use("/comment", commentRoutes);

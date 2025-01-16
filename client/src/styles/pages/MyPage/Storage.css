@@ -43,7 +43,48 @@
 .storage-content {
   display: flex;
   flex-direction: column;
-  align-items: center;
+}
+
+.storage-posts {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* 3개 열로 정렬 */
+  gap: 10px;
+  padding: 10px;
+}
+
+.post-wrapper {
+  position: relative; /* 삭제 메뉴와 아이콘 위치를 위해 상대 위치 설정 */
+}
+
+img {
+  width: 100%;
+  border-radius: 5px;
+}
+
+.post-menu-icon {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  font-size: 20px;
+  cursor: pointer;
+  color: white;
+  /* background-color: rgba(0, 0, 0, 0.6); */
+  border-radius: 50%;
+  padding: 5px;
+  z-index: 10; /* 이미지 위에 표시되도록 설정 */
+}
+
+.post-menu {
+  position: absolute;
+  top: 3px; /* 이미지 위에 자연스럽게 위치 */
+  right: 10px; /* 이미지 오른쪽 모서리에 가까이 배치 */
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  z-index: 10;
+  display: inline-block; /* 가로 직사각형 형태 */
+  padding: 0; /* 불필요한 흰색 배경 제거 */
 }
 
 .storage-posts {
@@ -53,11 +94,45 @@
   width: 100%; /* 부모 컨테이너에 맞춤 */
 }
 
+.storage-popup {
+  position: absolute;
+  top: 6%;
+  right: 25px;
+  background-color: white;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  padding: 5px;
+  z-index: 10;
+}
+
+.storage-popup button {
+  background: none;
+  border: none;
+  padding: 8px 16px;
+  text-align: left;
+  font-size: 14px;
+  color: #333;
+  cursor: pointer;
+  margin: 5px 0;
+  border-radius: 3px;
+}
+
+.storage-popup button:hover {
+  background-color: #f0f0f0;
+}
+
+.storage-popup button:focus {
+  outline: none;
+}
+
 .storage-post-item {
   position: relative;
   padding-top: 100%;
   overflow: hidden;
 }
+
 .storage-post-item img {
   position: absolute;
   top: 50%;
