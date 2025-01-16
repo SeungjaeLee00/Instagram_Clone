@@ -9,13 +9,15 @@ router.use(bodyParser.json());
 router.use(cookieParser());
 
 router.get("/verify-token", auth, (req, res) => {
-  // 인증이 완료되었으므로, 사용자 정보를 응답으로 보냄
+  const userEmail = req.user.email || null;
+  const username = req.user.username || null;
+
   res.status(200).json({
     isAuth: true,
     user: {
       userId: req.user._id,
-      email: req.user.email,
-      username: req.user.username,
+      email: userEmail,
+      username: username,
     },
   });
 });

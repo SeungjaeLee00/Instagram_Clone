@@ -2,7 +2,6 @@ import axios from "axios";
 
 const API_BASE_URL = "http://localhost:5001/auth";
 
-// 토큰 유효 검사 API -> 쿠키와 카카오 토큰 모두 처리 로직 필요
 export const verifyToken = async () => {
   const response = await axios.get(`${API_BASE_URL}/auth/verify-token`, {
     withCredentials: true,

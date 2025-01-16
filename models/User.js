@@ -6,6 +6,10 @@ const Util = require("util");
 require("dotenv").config();
 
 const userSchema = mongoose.Schema({
+  kakaoId: {
+    type: String,
+    unique: 1, // 중복 방지
+  },
   // 닉네임
   user_id: {
     type: String,
@@ -80,6 +84,40 @@ const userSchema = mongoose.Schema({
     default: true, // 기본값은 활성화된 상태
   },
 });
+
+// 카카오 로그인 시, 해당 ID로 사용자 찾기
+userSchema.statics.findOrCreateByKakaoId = async function (kakaoId, userData) {
+  const kakaoIdStr = kakaoId.toString();
+  // console.log("카카오Id 문자열 변환", kakaoIdStr);
+
+  const user = await this.findOne({ kakaoId: kakaoIdStr });
+  // console.log("모델에서 찾은 user:", user);
+
+  if (user) {
+    return user;
+  } else {
+    console.log("사용자가 존재하지 않음, 새로운 사용자 생성.");
+    // 카카오 ID로 사용자 생성
+    const newUser = new this({
+      kakaoId: kakaoIdStr,
+      user_id: userData.user_id || kakaoIdStr,
+      email: userData.email,
+      name: userData.nickname,
+      profile_image: userData.profile_image || null,
+    });
+
+    return newUser
+      .save()
+      .then((savedUser) => {
+        console.log("저장된 사용자:", savedUser);
+        return savedUser;
+      })
+      .catch((err) => {
+        console.error("사용자 저장 실패:", err);
+        throw new Error("사용자 저장 실패");
+      });
+  }
+};
 
 userSchema.pre("save", function (next) {
   var user = this;
