@@ -13,7 +13,6 @@ const Storage = () => {
   const [posts, setPosts] = useState([]);
   const [selectedPost, setSelectedPost] = useState(null);
   const [showOptions, setShowOptions] = useState(false);
-  const [activePost, setActivePost] = useState(null); // 현재 활성화된 팝업 상태
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -55,9 +54,8 @@ const Storage = () => {
   }, [showOptions]);
 
   const handleImageClick = (postId) => {
-    setSelectedPost(postId);
-    setActivePost(postId);
     setShowOptions(true);
+    setSelectedPost(postId);
   };
 
   const handleOptionClick = async (action) => {
@@ -84,7 +82,7 @@ const Storage = () => {
 
   // 옵션 밖의 공간 클릭 시 옵션을 꺼지게 하는 핸들러
   const handleOutsideClick = (event) => {
-    if (showOptions && !event.target.closest(".options-popup")) {
+    if (showOptions && !event.target.closest(".storage-popup")) {
       setShowOptions(false);
     }
   };
@@ -106,20 +104,19 @@ const Storage = () => {
                   <img
                     src={post.images[0]}
                     alt={`Post ${post._id}`}
-                    // onClick={() => handleImageClick(post._id)}
                   />
                   <div className="post-menu-icon"
                     onClick={() => handleImageClick(post._id)}
                     >
                         ⋮
                     </div>
-                    {activePost === post._id && (
-                        <div className="storage-popup">
-                            <button onClick={() => handleOptionClick("cancelArchive")}>
-                                보관 취소
-                            </button>
-                            <button onClick={() => handleOptionClick("delete")}>삭제</button>
-                        </div>
+                    {showOptions && selectedPost === post._id && (
+                      <div className="storage-popup">
+                          <button onClick={() => handleOptionClick("cancelArchive")}>
+                              보관 취소
+                          </button>
+                          <button onClick={() => handleOptionClick("delete")}>삭제</button>
+                      </div>  
                     )}
                 </div>
               ))}
