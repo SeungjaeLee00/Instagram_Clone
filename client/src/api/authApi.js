@@ -6,7 +6,9 @@ export const verifyToken = async () => {
   const response = await axios.get(`${API_BASE_URL}/verify-token`, {
     withCredentials: true,
     headers: {
-      Authorization: `Bearer ${token}`,
+      Authorization: `Bearer ${
+        document.cookie.split("x_auth=")[1]?.split(";")[0]
+      }`, // 쿠키에서 x_auth 값을 가져와서 Authorization에 추가
     },
   });
   return response.data;

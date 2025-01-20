@@ -6,11 +6,11 @@ const API_BASE_URL = "https://instagram-clone-ztsr.onrender.com";
 export const fetchPosts = async () => {
   const response = await axios.get(`${API_BASE_URL}/post/feed`, {
     withCredentials: true,
-    headers: {
-      Authorization: `Bearer ${
-        document.cookie.split("x_auth=")[1]?.split(";")[0]
-      }`, // 쿠키에서 x_auth 값을 가져와서 Authorization에 추가
-    },
+    // headers: {
+    //   Authorization: `Bearer ${
+    //     document.cookie.split("x_auth=")[1]?.split(";")[0]
+    //   }`, // 쿠키에서 x_auth 값을 가져와서 Authorization에 추가
+    // },
   });
   return response.data.posts;
 };
