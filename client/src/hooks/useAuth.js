@@ -10,7 +10,7 @@ const useAuth = () => {
     const checkAuthStatus = async () => {
       try {
         const response = await verifyToken();
-        console.log("verifyToken response", response);
+        // console.log("verifyToken response", response);
         if (response.isAuth) {
           setIsAuthenticated(true);
           setUser(response.user);
