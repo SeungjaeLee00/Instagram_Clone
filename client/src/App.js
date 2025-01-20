@@ -3,7 +3,6 @@ import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router } from "react-router-dom";
 import Layout from "../src/components/Common/Layout";
 import { verifyToken } from "./api/authApi";
-import { fetchSingleUserProfile } from "./api/userApi";
 import RoutesComponent from "../src/components/Routes/Routes";
 
 import { SocketProvider } from "./hooks/SocketContext";

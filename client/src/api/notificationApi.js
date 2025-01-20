@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_BASE_URL = "https://instagram-clone-vbmo.onrender.com";
+const API_BASE_URL = "https://instagram-clone-ztsr.onrender.com";
 
 // 알림 가져오기 API
 export const fetchNotifications = async () => {

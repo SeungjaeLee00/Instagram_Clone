@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_BASE_URL = "https://instagram-clone-vbmo.onrender.com";
+const API_BASE_URL = "https://instagram-clone-ztsr.onrender.com";
 
 // 댓글 추가 API
 export const addComment = async (postId, newCommentText) => {

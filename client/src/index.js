@@ -4,7 +4,7 @@ import App from "./App";
 import "./index.css";
 import io from "socket.io-client";
 
-const socket = io("https://instagram-clone-vbmo.onrender.com");
+const socket = io("https://instagram-clone-ztsr.onrender.com");
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(

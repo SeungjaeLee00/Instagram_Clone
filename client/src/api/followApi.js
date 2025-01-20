@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_BASE_URL = "https://instagram-clone-vbmo.onrender.com/follow";
+const API_BASE_URL = "https://instagram-clone-ztsr.onrender.com/follow";
 
 // 팔로우 요청 API
 export const followUser = async (followingId) => {

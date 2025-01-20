@@ -10,7 +10,7 @@ export const SocketProvider = ({ children }) => {
   const { isAuthenticated, user } = useAuth();
 
   useEffect(() => {
-    const newSocket = io("https://instagram-clone-vbmo.onrender.com"); // 소켓 서버 주소
+    const newSocket = io("https://instagram-clone-ztsr.onrender.com"); // 소켓 서버 주소
     setSocket(newSocket);
 
     // 알림 처리 함수

@@ -4,7 +4,7 @@ let socket = null;
 
 export const initializeSocket = () => {
   if (!socket) {
-    socket = io("https://instagram-clone-vbmo.onrender.com");
+    socket = io("https://instagram-clone-ztsr.onrender.com");
 
     // 연결 시 로그 확인
     socket.on("connect", () => {

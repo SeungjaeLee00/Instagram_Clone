@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_BASE_URL = "https://instagram-clone-vbmo.onrender.com/dm";
+const API_BASE_URL = "https://instagram-clone-ztsr.onrender.com/dm";
 
 // 내가 속한 채팅방 목록 확인 API
 export const chatroomList = async () => {

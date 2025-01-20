@@ -27,7 +27,7 @@ const MessagesPage = () => {
       return;
     }
     // 소켓 연결 초기화
-    const newSocket = io(`http://localhost:5001`, {
+    const newSocket = io(`https://instagram-clone-ztsr.onrender.com`, {
       query: { user_object_id: user_object_id, chatroomName: chatroomName },
     });
     setSocket(newSocket);

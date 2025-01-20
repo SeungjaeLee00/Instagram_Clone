@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_BASE_URL = "https://instagram-clone-vbmo.onrender.com/auth";
+const API_BASE_URL = "https://instagram-clone-ztsr.onrender.com/auth";
 
 export const verifyToken = async () => {
   const response = await axios.get(`${API_BASE_URL}/auth/verify-token`, {
