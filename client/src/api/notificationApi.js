@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_BASE_URL = "http://localhost:5001";
+const API_BASE_URL = "https://instagram-clone-vbmo.onrender.com";
 
 // 알림 가져오기 API
 export const fetchNotifications = async () => {
@@ -22,9 +22,7 @@ export const deleteNotification = async (notificationId) => {
     return response.data;
   } catch (error) {
     if (error.response) {
-      throw new Error(
-        error.response.data.message || "알림 삭제 중 오류 발생"
-      );
+      throw new Error(error.response.data.message || "알림 삭제 중 오류 발생");
     } else {
       throw new Error("알림 삭제를 실패했습니다.");
     }

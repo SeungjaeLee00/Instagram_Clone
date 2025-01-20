@@ -17,7 +17,7 @@ const Kakao = ({ setIsAuthenticated }) => {
 
       try {
         const response = await axios.post(
-          "http://localhost:5001/auth/kakao/callback",
+          "https://instagram-clone-vbmo.onrender.com/auth/kakao/callback",
           { code },
           { withCredentials: true }
         );

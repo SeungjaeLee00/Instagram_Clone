@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_BASE_URL = "http://localhost:5001";
+const API_BASE_URL = "https://instagram-clone-vbmo.onrender.com";
 
 // 본인 정보 조회 API
 export const getMyProfile = async (userId) => {

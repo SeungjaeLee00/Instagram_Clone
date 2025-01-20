@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_BASE_URL = "http://localhost:5001/search";
+const API_BASE_URL = "https://instagram-clone-vbmo.onrender.com/search";
 
 // 단일 사용자
 export const fetchSingleUserProfile = async (userName) => {

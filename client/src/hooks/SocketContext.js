@@ -10,14 +10,14 @@ export const SocketProvider = ({ children }) => {
   const { isAuthenticated, user } = useAuth();
 
   useEffect(() => {
-    const newSocket = io("http://localhost:5001"); // 소켓 서버 주소
-    setSocket(newSocket);  
+    const newSocket = io("https://instagram-clone-vbmo.onrender.com"); // 소켓 서버 주소
+    setSocket(newSocket);
 
     // 알림 처리 함수
     const handleNotification = (data) => {
       // console.log("user : ", user);
-      
-      if (data.object_id.toString() === user?.userId){
+
+      if (data.object_id.toString() === user?.userId) {
         setNewNotification({
           message: data.Notification,
           timestamp: data.date,
@@ -25,11 +25,11 @@ export const SocketProvider = ({ children }) => {
           profile: data.profile_image,
           other_user_id: data.other_user_id,
           postId: data.location,
-          NotificationType: data.NotificationType
+          NotificationType: data.NotificationType,
         });
         // console.log("Received notification event:", data);
         // console.log("NewNotification : ", newNotification);
-      }    
+      }
     };
 
     // 이벤트 등록
@@ -43,9 +43,11 @@ export const SocketProvider = ({ children }) => {
     };
   }, [newNotification]);
 
-  return <SocketContext.Provider value={{socket, newNotification}}>
-    {children}
-    </SocketContext.Provider>;
+  return (
+    <SocketContext.Provider value={{ socket, newNotification }}>
+      {children}
+    </SocketContext.Provider>
+  );
 };
 
 export const useSocket = () => useContext(SocketContext);
