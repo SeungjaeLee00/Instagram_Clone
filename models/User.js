@@ -88,10 +88,10 @@ const userSchema = mongoose.Schema({
 // 카카오 로그인 시, 해당 ID로 사용자 찾기
 userSchema.statics.findOrCreateByKakaoId = async function (kakaoId, userData) {
   const kakaoIdStr = kakaoId.toString();
-  // console.log("카카오Id 문자열 변환", kakaoIdStr);
+  console.log("카카오Id 문자열 변환", kakaoIdStr);
 
   const user = await this.findOne({ kakaoId: kakaoIdStr });
-  // console.log("모델에서 찾은 user:", user);
+  console.log("모델에서 찾은 user:", user);
 
   if (user) {
     return user;
@@ -172,19 +172,39 @@ userSchema.methods.generateToken = function () {
 };
 
 // 토큰 찾기
-userSchema.statics.findByToken = (token) => {
+// userSchema.statics.findByToken = (token) => {
+//   const user = this;
+
+//   return Util.promisify(jwt.verify)(token, process.env.JWT_SECRET)
+//     .then((decoded) => {
+//       return user.findOne({
+//         _id: decoded._id,
+//         token: token,
+//       });
+//     })
+//     .catch((err) => {
+//       throw new Error("유효하지 않은 토큰입니다.");
+//     });
+// };
+
+userSchema.statics.findByToken = async (token) => {
   const user = this;
 
-  return Util.promisify(jwt.verify)(token, process.env.JWT_SECRET)
-    .then((decoded) => {
-      return user.findOne({
-        _id: decoded._id,
-        token: token,
-      });
-    })
-    .catch((err) => {
-      throw new Error("유효하지 않은 토큰입니다.");
+  try {
+    const decoded = await jwt.verify(token, process.env.JWT_SECRET); // async/await으로 변경
+    const foundUser = await user.findOne({
+      _id: decoded._id,
+      token: token,
     });
+
+    if (!foundUser) {
+      throw new Error("유효하지 않은 토큰입니다.");
+    }
+
+    return foundUser;
+  } catch (err) {
+    throw new Error("유효하지 않은 토큰입니다.");
+  }
 };
 
 const User = mongoose.model("User", userSchema);
