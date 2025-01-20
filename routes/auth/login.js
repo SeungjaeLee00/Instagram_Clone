@@ -52,11 +52,14 @@ router.post("/", (req, res) => {
     .then(({ token, user }) => {
       // token과 user를 함께 받아서 처리
       console.log("발급 완료", res.cookie);
-      return res.cookie("x_auth", token, { httpOnly: true }).status(200).json({
-        loginSuccess: true,
-        userId: user._id,
-        userName: user.user_id,
-      });
+      return res
+        .cookie("x_auth", token, { httpOnly: true, secure: true })
+        .status(200)
+        .json({
+          loginSuccess: true,
+          userId: user._id,
+          userName: user.user_id,
+        });
     })
     .catch((err) => {
       console.log(err);
