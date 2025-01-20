@@ -2,30 +2,11 @@ import axios from "axios";
 
 const API_BASE_URL = "https://instagram-clone-ztsr.onrender.com/auth";
 
-// export const verifyToken = async () => {
-//   const response = await axios.get(`${API_BASE_URL}/verify-token`, {
-//     withCredentials: true,
-//     },
-//   });
-//   return response.data;
-// };
 export const verifyToken = async () => {
-  try {
-    const token = document.cookie.split("x_auth=")[1]?.split(";")[0]; // 쿠키에서 x_auth 값을 가져오기
-    if (!token) {
-      throw new Error("토큰이 존재하지 않습니다.");
-    }
-    const response = await axios.get(`${API_BASE_URL}/verify-token`, {
-      withCredentials: true,
-      headers: {
-        Authorization: `Bearer ${token}`, // x_auth 쿠키 값을 Authorization 헤더에 추가
-      },
-    });
-    return response.data;
-  } catch (error) {
-    console.error("토큰 검증 실패:", error.message);
-    throw new Error("토큰 검증에 실패했습니다.");
-  }
+  const response = await axios.get(`${API_BASE_URL}/verify-token`, {
+    withCredentials: true,
+  });
+  return response.data;
 };
 
 // 회원가입 API
@@ -99,22 +80,6 @@ export const verifyResetCode = async (email, verificationCode) => {
 };
 
 // 로그인 API
-// export const loginUser = async (emailOrUsername, password) => {
-//   try {
-//     const response = await axios.post(
-//       `${API_BASE_URL}/login`,
-//       { emailOrUsername, password },
-//       { withCredentials: true }
-//     );
-//     return response.data;
-//   } catch (error) {
-//     if (error.response) {
-//       throw new Error(error.response.data.message || "알 수 없는 오류");
-//     } else {
-//       throw new Error("로그인 요청에 실패했습니다.");
-//     }
-//   }
-// };
 export const loginUser = async (emailOrUsername, password) => {
   try {
     const response = await axios.post(
@@ -122,16 +87,6 @@ export const loginUser = async (emailOrUsername, password) => {
       { emailOrUsername, password },
       { withCredentials: true }
     );
-
-    // x_auth 쿠키를 Authorization 헤더에 추가
-    const token = document.cookie
-      .split("; ")
-      .find((row) => row.startsWith("x_auth"))
-      ?.split("=")[1];
-    if (token) {
-      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-    }
-
     return response.data;
   } catch (error) {
     if (error.response) {

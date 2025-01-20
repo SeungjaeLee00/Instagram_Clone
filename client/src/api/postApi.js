@@ -3,29 +3,11 @@ import axios from "axios";
 const API_BASE_URL = "https://instagram-clone-ztsr.onrender.com";
 
 // 전체 게시물 가져오기 API
-// export const fetchPosts = async () => {
-//   const response = await axios.get(`${API_BASE_URL}/post/feed`, {
-//     withCredentials: true,
-//   });
-//   return response.data.posts;
-// };
 export const fetchPosts = async () => {
-  try {
-    const token = document.cookie.split("x_auth=")[1]?.split(";")[0]; // 쿠키에서 x_auth 값을 가져오기
-    if (!token) {
-      throw new Error("토큰이 존재하지 않습니다.");
-    }
-    const response = await axios.get(`${API_BASE_URL}/post/feed`, {
-      withCredentials: true,
-      headers: {
-        Authorization: `Bearer ${token}`, // x_auth 쿠키 값을 Authorization에 추가
-      },
-    });
-    return response.data.posts;
-  } catch (error) {
-    console.error("게시물 가져오기 실패:", error.message);
-    throw new Error("게시물 가져오기 실패");
-  }
+  const response = await axios.get(`${API_BASE_URL}/post/feed`, {
+    withCredentials: true,
+  });
+  return response.data.posts;
 };
 
 // 단건 게시물 조회 API
