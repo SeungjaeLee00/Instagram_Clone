@@ -5,6 +5,9 @@ const API_BASE_URL = "https://instagram-clone-ztsr.onrender.com/auth";
 export const verifyToken = async () => {
   const response = await axios.get(`${API_BASE_URL}/verify-token`, {
     withCredentials: true,
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
   });
   return response.data;
 };
