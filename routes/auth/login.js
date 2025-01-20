@@ -51,7 +51,7 @@ router.post("/", (req, res) => {
 
     .then(({ token, user }) => {
       // token과 user를 함께 받아서 처리
-      console.log("발급 완료", token);
+      // console.log("발급 완료", token);
       return res
         .cookie("x_auth", token, {
           httpOnly: true,

@@ -66,6 +66,8 @@ router.post("/callback", async (req, res) => {
     // 쿠키 설정
     res.cookie("x_auth", jwtToken, {
       httpOnly: true,
+      secure: true,
+      sameSite: "strict",
       maxAge: 3600000,
     });
 

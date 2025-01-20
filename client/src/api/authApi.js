@@ -80,6 +80,22 @@ export const verifyResetCode = async (email, verificationCode) => {
 };
 
 // 로그인 API
+// export const loginUser = async (emailOrUsername, password) => {
+//   try {
+//     const response = await axios.post(
+//       `${API_BASE_URL}/login`,
+//       { emailOrUsername, password },
+//       { withCredentials: true }
+//     );
+//     return response.data;
+//   } catch (error) {
+//     if (error.response) {
+//       throw new Error(error.response.data.message || "알 수 없는 오류");
+//     } else {
+//       throw new Error("로그인 요청에 실패했습니다.");
+//     }
+//   }
+// };
 export const loginUser = async (emailOrUsername, password) => {
   try {
     const response = await axios.post(
@@ -87,6 +103,16 @@ export const loginUser = async (emailOrUsername, password) => {
       { emailOrUsername, password },
       { withCredentials: true }
     );
+
+    // x_auth 쿠키를 Authorization 헤더에 추가
+    const token = document.cookie
+      .split("; ")
+      .find((row) => row.startsWith("x_auth"))
+      ?.split("=")[1];
+    if (token) {
+      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+    }
+
     return response.data;
   } catch (error) {
     if (error.response) {
