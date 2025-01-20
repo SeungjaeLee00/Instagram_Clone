@@ -9,6 +9,16 @@ router.use(bodyParser.json());
 router.use(cookieParser());
 
 router.get("/", auth, (req, res) => {
+  console.log("req.cookie", req.cookies);
+  const token = req.cookies.x_auth;
+
+  if (!token) {
+    return res.status(401).json({
+      isAuth: false,
+      message: "토큰이 없습니다.",
+    });
+  }
+
   const userEmail = req.user.email || null;
   const username = req.user.username || null;
 
