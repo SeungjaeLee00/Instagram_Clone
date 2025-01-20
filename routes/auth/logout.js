@@ -9,6 +9,7 @@ router.use(cookieParser());
 
 // 로그아웃
 router.get("/", auth, (req, res) => {
+  console.log("req", req);
   User.findOneAndUpdate({ _id: req.user._id }, { token: "" })
     .then(() => {
       return res.status(200).json({
