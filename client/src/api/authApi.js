@@ -2,16 +2,30 @@ import axios from "axios";
 
 const API_BASE_URL = "https://instagram-clone-ztsr.onrender.com/auth";
 
+// export const verifyToken = async () => {
+//   const response = await axios.get(`${API_BASE_URL}/verify-token`, {
+//     withCredentials: true,
+//     },
+//   });
+//   return response.data;
+// };
 export const verifyToken = async () => {
-  const response = await axios.get(`${API_BASE_URL}/verify-token`, {
-    withCredentials: true,
-    headers: {
-      Authorization: `Bearer ${
-        document.cookie.split("x_auth=")[1]?.split(";")[0]
-      }`, // 쿠키에서 x_auth 값을 가져와서 Authorization에 추가
-    },
-  });
-  return response.data;
+  try {
+    const token = document.cookie.split("x_auth=")[1]?.split(";")[0]; // 쿠키에서 x_auth 값을 가져오기
+    if (!token) {
+      throw new Error("토큰이 존재하지 않습니다.");
+    }
+    const response = await axios.get(`${API_BASE_URL}/verify-token`, {
+      withCredentials: true,
+      headers: {
+        Authorization: `Bearer ${token}`, // x_auth 쿠키 값을 Authorization 헤더에 추가
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("토큰 검증 실패:", error.message);
+    throw new Error("토큰 검증에 실패했습니다.");
+  }
 };
 
 // 회원가입 API
