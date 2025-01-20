@@ -18,6 +18,6 @@ router.use("/withdraw", withCredentialsRoute);
 router.use("/reset-password", resetPasswordRoute);
 router.use("/request-reset-password", resetPasswordRequestRoute);
 router.use("/verify-reset-code", verifyCodeRoute);
-router.use("/auth", verifyTokenRoute);
+router.use("/verify-token", verifyTokenRoute);
 
 module.exports = router;

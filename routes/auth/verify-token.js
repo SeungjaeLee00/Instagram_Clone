@@ -8,7 +8,7 @@ router.use(bodyParser.urlencoded({ extended: true }));
 router.use(bodyParser.json());
 router.use(cookieParser());
 
-router.get("/verify-token", auth, (req, res) => {
+router.get("/", auth, (req, res) => {
   const userEmail = req.user.email || null;
   const username = req.user.username || null;
 
