@@ -12,7 +12,7 @@ const transporter = nodemailer.createTransport({
 // 이메일 전송 함수
 const sendVerificationEmail = async (email, verificationCode) => {
   try {
-    await transporter.sendMail({
+    const info = await transporter.sendMail({
       from: `"SSinstagram" <${process.env.GMAIL_USER}>`,
       to: email,
       subject: "SSinstagram 회원가입 이메일 인증 코드",
