@@ -123,6 +123,7 @@ const RequestResetPassword = () => {
               border: "none",
               padding: 0,
               cursor: "pointer",
+              color: "#385185",
             }}
           >
             새 계정 만들기

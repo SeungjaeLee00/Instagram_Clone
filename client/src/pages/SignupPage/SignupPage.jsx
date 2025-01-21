@@ -231,6 +231,7 @@ const Signup = () => {
               border: "none",
               padding: 0,
               cursor: "pointer",
+              color: "#385185",
             }}
           >
             로그인
