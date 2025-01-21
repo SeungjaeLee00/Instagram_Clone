@@ -31,7 +31,7 @@ const MyPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const [alert, setAlert] = useState({ message: "", type: "" });
-  const [pageLoading, setPageLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   const navigate = useNavigate();
@@ -57,19 +57,16 @@ const MyPage = () => {
           setFollowing(followingList.following || []);
           setIntroduce(profile.introduce || "");
           setName(profile.user_name || "");
-
-          setPageLoading(false);
         } catch (error) {
           console.error("데이터 로드 실패:", error);
           setError("데이터를 불러오는 중 오류가 발생했습니다.");
         } finally {
-          // setPageLoading(false);
-          // alert("로딩 테스트");
+          setLoading(false);
         }
       };
       fetchData();
     } else {
-      setPageLoading(false);
+      setLoading(false);
     }
   }, [isAuthenticated, user]);
 
@@ -307,7 +304,7 @@ const MyPage = () => {
     setMenuOpen(false); // 메뉴 닫기
   };
 
-  // if (pageLoading) return <div> Loading... </div>;
+  if (loading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
 
   // console.log("마이페이지", posts);
@@ -389,9 +386,7 @@ const MyPage = () => {
       </div>
       <div className="posts-section">
         <h2>게시물</h2>
-        {pageLoading ? (
-          <p>게시물이 로딩 중입니다..</p>
-        ) : posts.length > 0 ? (
+        {posts.length > 0 ? (
           <div className="posts-grid">
             {posts.map((post) => (
               <div key={post._id} className="post-item">
@@ -417,32 +412,6 @@ const MyPage = () => {
             <p>첫 번째 게시물을 올려보세요 🤓</p>
           </div>
         )}
-        {/* {posts.length > 0 ? (
-          <div className="posts-grid">
-            {posts.map((post) => (
-              <div key={post._id} className="post-item">
-                <img
-                  src={post.images[0]}
-                  alt={`Post ${post._id}`}
-                  onClick={() => openModal(post)}
-                />
-                {post.images.length > 1 && (
-                  <div className="many-images-overlay">
-                    <img
-                      src={manyImg}
-                      alt="Multiple Images"
-                      className="many-images-icon"
-                    />
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-        ) : (
-          <div className="no-posts-message">
-            <p>첫 번째 게시물을 올려보세요 🤓</p>
-          </div>
-        )} */}
       </div>
       {isModalOpen && selectedPost && (
         <PostDetailModal

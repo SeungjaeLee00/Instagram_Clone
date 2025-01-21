@@ -55,8 +55,8 @@ router.post("/", (req, res) => {
         .cookie("x_auth", token, {
           httpOnly: true,
           secure: true,
-          // sameSite: "None",
-          sameSite: "Lax",
+          sameSite: "None",
+          // sameSite: "Lax",
         })
         .status(200)
         .json({
