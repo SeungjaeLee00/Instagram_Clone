@@ -65,6 +65,7 @@ router.post("/callback", async (req, res) => {
 
     // 쿠키 설정
     res.cookie("x_auth", jwtToken, {
+      domain: "https://instagram-clone-ztsr.onrender.com",
       httpOnly: true,
       secure: true,
       sameSite: "None",
