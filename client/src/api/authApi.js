@@ -13,7 +13,7 @@ export const verifyToken = async () => {
 export const signupUser = async (email, password, name, user_id) => {
   try {
     const response = await axios.post(
-      `${API_BASE_URL}/sign-up`,
+      `${API_BASE_URL}/sign-up/new`,
       { email, password, name, user_id },
       { withCredentials: true }
     );

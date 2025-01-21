@@ -40,7 +40,7 @@ const RoutesComponent = ({ isAuthenticated, setIsAuthenticated }) => (
       element={<Kakao setIsAuthenticated={setIsAuthenticated} />}
     />
 
-    <Route path="/auth/sign-up" element={<Signup />} />
+    <Route path="/auth/sign-up/new" element={<Signup />} />
     <Route path="/auth/sign-up/verify-email" element={<SignupVerify />} />
     <Route
       path="/auth/request-reset-password"
