@@ -38,7 +38,7 @@ mongoose
 // CORS 설정
 app.use(
   cors({
-    origin: "https://instagram-clone-client-lr01.onrender.com",
+    origin: "https://instagram-clone-client-lr01.onrender.com/",
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
     credentials: true, // 인증 정보와 쿠키 포함 허용
   })

@@ -32,7 +32,6 @@
     "util": "^0.12.5",
     "yargs-parser": "^21.1.1"
   },
-  "proxy": "https://instagram-clone-client-lr01.onrender.com",
   "devDependencies": {
     "concurrently": "^9.1.2",
     "nodemon": "^3.1.7"
