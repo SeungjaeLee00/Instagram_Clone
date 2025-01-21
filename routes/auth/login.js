@@ -53,7 +53,7 @@ router.post("/", (req, res) => {
       // token과 user를 함께 받아서 처리
       return res
         .cookie("x_auth", token, {
-          domain: "https://instagram-clone-ztsr.onrender.com",
+          domain: "instagram-clone-ztsr.onrender.com",
           httpOnly: true,
           secure: true,
           sameSite: "None",
