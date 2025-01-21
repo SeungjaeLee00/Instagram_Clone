@@ -53,14 +53,14 @@ router.post("/callback", async (req, res) => {
     const email = kakaoUser?.kakao_account?.email || null;
     const nickname = kakaoUser?.properties?.nickname || "Unknown";
 
-    // JWT 토큰 생성
     const user = {
       kakaoId: kakaoUser.id,
       email,
       nickname,
     };
 
-    const jwtToken = jwt.sign(user, JWT_SECRET, { expiresIn: "1h" });
+    // JWT 토큰 생성
+    const jwtToken = jwt.sign(user, JWT_SECRET, { expiresIn: "2h" });
     // console.log("jwtToken", jwtToken);
 
     // 쿠키 설정

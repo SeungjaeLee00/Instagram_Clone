@@ -36,7 +36,6 @@ mongoose
   .catch((err) => console.log(err));
 
 const baseURL = "https://instagram-clone-client-lr01.onrender.com";
-// CORS 설정
 app.use(
   cors({
     origin: baseURL,
