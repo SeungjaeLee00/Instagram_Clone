@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import Kakao from "../components/Common/Kakao";
-
+import CustomAlert from "../components/CustomAlert";
 import "../styles/pages/LoginPage.css";
 import { loginUser } from "../api/authApi";
 
@@ -20,6 +19,8 @@ const Login = ({ setIsAuthenticated }) => {
 
   // 버튼 활성화 여부
   const [NotAllow, setNotAllow] = useState(false);
+
+  const [alert, setAlert] = useState({ message: "", type: "" });
 
   const navigate = useNavigate();
 
@@ -51,13 +52,19 @@ const Login = ({ setIsAuthenticated }) => {
       );
       if (loginSuccess) {
         setIsAuthenticated(true); // 인증 상태 설정
-        alert("로그인 성공");
+        // alert("로그인 성공");
+        setAlert({ message: "로그인 성공", type: "success" });
         navigate("/"); // 메인 페이지로 이동
       } else {
-        alert("로그인 실패: 유효한 토큰이 없습니다.");
+        // alert("로그인 실패: 유효한 토큰이 없습니다.");
+        setAlert({
+          message: "로그인 실패: 유효한 토큰이 없습니다.",
+          type: "error",
+        });
       }
     } catch (error) {
-      alert(`로그인 실패: ${error.message}`);
+      // alert(`로그인 실패: ${error.message}`);
+      setAlert({ message: `로그인 실패: ${error.message}`, type: "error" });
       console.error("로그인 실패:", error);
     }
   };
@@ -87,7 +94,8 @@ const Login = ({ setIsAuthenticated }) => {
   // 카카오 로그인
   const handleKakaoLogin = () => {
     const KAKAO_CLIENT_ID = "227e5904d4c516c3a5f3cccdaf2c7a52";
-    const REDIRECT_URI = "http://localhost:3000/auth/kakao/callback";
+    const REDIRECT_URI =
+      "https://instagram-clone-client-lr01.onrender.com/auth/kakao/callback";
     const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?client_id=${KAKAO_CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=code`;
 
     window.location.href = KAKAO_AUTH_URL;
@@ -95,6 +103,11 @@ const Login = ({ setIsAuthenticated }) => {
 
   return (
     <div className="login-page">
+      <CustomAlert
+        message={alert.message}
+        type={alert.type}
+        onClose={() => setAlert({ message: "", type: "" })}
+      />
       {/* 로그인 부분 */}
       <div className="login-content">
         <img
