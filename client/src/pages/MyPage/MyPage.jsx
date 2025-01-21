@@ -61,13 +61,13 @@ const MyPage = () => {
           console.error("데이터 로드 실패:", error);
           setError("데이터를 불러오는 중 오류가 발생했습니다.");
         } finally {
-          setLoading(false);
+          setPageLoading(false);
           // alert("로딩 테스트");
         }
       };
       fetchData();
     } else {
-      setLoading(false);
+      setPageLoading(false);
     }
   }, [isAuthenticated, user]);
 
@@ -305,7 +305,7 @@ const MyPage = () => {
     setMenuOpen(false); // 메뉴 닫기
   };
 
-  // if (pageLoading) return <div>Loading...</div>;
+  // if (pageLoading) return <div> Loading... </div>;
   if (error) return <div>{error}</div>;
 
   // console.log("마이페이지", posts);
