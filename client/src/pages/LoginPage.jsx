@@ -147,7 +147,18 @@ const Login = ({ setIsAuthenticated }) => {
           >
             로그인
           </button>
-          <img src={kakaoImg} onClick={handleKakaoLogin} />
+          {/* <img src={kakaoImg} onClick={handleKakaoLogin} /> */}
+          <button
+            onClick={handleKakaoLogin}
+            style={{
+              background: "none",
+              border: "none",
+              padding: 0,
+              cursor: "pointer",
+            }}
+          >
+            <img src={kakaoImg} alt="Kakao Login" />
+          </button>
 
           <div className="divider">또는</div>
 

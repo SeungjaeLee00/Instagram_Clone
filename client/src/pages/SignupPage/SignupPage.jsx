@@ -119,6 +119,10 @@ const Signup = () => {
     }
   }, [emailValid, passwordValid, nameValid, userIdValid]);
 
+  const handleLogin = () => {
+    navigate("/auth/login");
+  };
+
   return (
     <div className="signup-page">
       <CustomAlert
@@ -219,7 +223,7 @@ const Signup = () => {
 
       <div className="moveToLogin">
         <div className="moveToLogin-content">
-          계정이 있으신가요? <a href="/auth/login">로그인</a>
+          계정이 있으신가요? <button onClick={handleLogin}>로그인</button>
         </div>
       </div>
 
