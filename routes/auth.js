@@ -39,10 +39,9 @@ const verifyKakaoToken = async (token) => {
 
 // 인증 미들웨어
 let auth = async (req, res, next) => {
-  // console.log("헤더 확인", req.headers);
-  console.log("req 확인", req);
-  console.log("쿠키 확인", req.cookies);
   // console.log("req 확인", req);
+  // console.log("헤더 확인", req.headers);
+  // console.log("쿠키 확인", req.cookies);
 
   const jwtToken = req.cookies.x_auth;
   const kakaoToken = req.headers.authorization?.split(" ")[1];
