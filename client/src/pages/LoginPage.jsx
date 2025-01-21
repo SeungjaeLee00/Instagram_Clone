@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-// import Kakao from "../components/Common/Kakao";
+import Kakao from "../components/Common/Kakao";
 
 import "../styles/pages/LoginPage.css";
 import { loginUser } from "../api/authApi";
