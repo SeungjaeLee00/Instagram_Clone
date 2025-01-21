@@ -31,7 +31,7 @@ const MyPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const [alert, setAlert] = useState({ message: "", type: "" });
-  const [loading, setLoading] = useState(true);
+  const [pageLoading, setPageLoading] = useState(true);
   const [error, setError] = useState(null);
 
   const navigate = useNavigate();
@@ -61,8 +61,8 @@ const MyPage = () => {
           console.error("데이터 로드 실패:", error);
           setError("데이터를 불러오는 중 오류가 발생했습니다.");
         } finally {
-          // setLoading(false);
-          alert("로딩 테스트");
+          setLoading(false);
+          // alert("로딩 테스트");
         }
       };
       fetchData();
@@ -305,7 +305,7 @@ const MyPage = () => {
     setMenuOpen(false); // 메뉴 닫기
   };
 
-  if (loading) return <div>Loading...</div>;
+  // if (pageLoading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
 
   // console.log("마이페이지", posts);
@@ -387,7 +387,7 @@ const MyPage = () => {
       </div>
       <div className="posts-section">
         <h2>게시물</h2>
-        {loading ? (
+        {pageLoading ? (
           <p>게시물이 로딩 중입니다..</p>
         ) : posts.length > 0 ? (
           <div className="posts-grid">
