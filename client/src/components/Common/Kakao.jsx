@@ -1,8 +1,10 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import CustomAlert from "../CustomAlert";
 
 const Kakao = ({ setIsAuthenticated }) => {
+  const [alert, setAlert] = useState({ message: "", type: "" });
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -24,13 +26,14 @@ const Kakao = ({ setIsAuthenticated }) => {
         );
 
         const jwtToken = response.data.jwtToken;
-        console.log("Kakao 로그인 성공", jwtToken);
+        // console.log("Kakao 로그인 성공", jwtToken);
 
         // 쿠키에서 토큰 해독 및 사용자 정보 획득
         if (jwtToken) {
           axios.defaults.headers.common["authorization"] = `Bearer ${jwtToken}`;
 
-          alert("로그인 성공");
+          // alert("로그인 성공");
+          setAlert({ message: "로그인 성공", type: "success" });
           setIsAuthenticated(true);
           navigate("/");
         } else {
@@ -38,6 +41,10 @@ const Kakao = ({ setIsAuthenticated }) => {
         }
       } catch (err) {
         // alert("로그인 실패");
+        setAlert({
+          message: "로그인 실패",
+          type: "error",
+        });
         console.error("Kakao 인증 실패:", err.message);
         navigate("/auth/login");
       }
@@ -45,6 +52,13 @@ const Kakao = ({ setIsAuthenticated }) => {
 
     handleKakaoLoginCallback();
   }, [setIsAuthenticated]);
+  return (
+    <CustomAlert
+      message={alert.message}
+      type={alert.type}
+      onClose={() => setAlert({ message: "", type: "" })}
+    />
+  );
 };
 
 export default Kakao;
