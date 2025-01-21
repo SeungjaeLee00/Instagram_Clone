@@ -99,8 +99,11 @@ const Login = ({ setIsAuthenticated }) => {
   };
 
   const handleForgotPassword = () => {
-    // "/auth/request-reset-password" 경로로 이동
     navigate("/auth/request-reset-password");
+  };
+
+  const handleSignUp = () => {
+    navigate("/auth/sign-up");
   };
 
   return (
@@ -148,9 +151,6 @@ const Login = ({ setIsAuthenticated }) => {
 
           <div className="divider">또는</div>
 
-          {/* <a href="/auth/request-reset-password" className="forgot-password">
-            비밀번호를 잊으셨나요?
-          </a> */}
           <button onClick={handleForgotPassword} className="forgot-password">
             비밀번호를 잊으셨나요?
           </button>
@@ -158,10 +158,9 @@ const Login = ({ setIsAuthenticated }) => {
       </div>
       <div className="moveToSignup">
         <div className="moveToSignup-content">
-          계정이 없으신가요? <a href="/auth/sign-up">가입하기</a>
+          계정이 없으신가요? <button onClick={handleSignUp}>가입하기</button>
         </div>
       </div>
-      8
       <div className="app-download-section">
         앱을 다운로드하세요.
         <div className="app-links">
