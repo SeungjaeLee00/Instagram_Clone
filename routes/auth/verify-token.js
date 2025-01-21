@@ -15,7 +15,7 @@ router.get("/", auth, (req, res) => {
   if (!token) {
     return res.status(401).json({
       isAuth: false,
-      message: "토큰이 없습니다.",
+      message: "확인 가능한 토큰이 없습니다.",
     });
   }
 
