@@ -23,7 +23,7 @@ const Kakao = ({ setIsAuthenticated }) => {
         );
 
         const jwtToken = response.data.jwtToken;
-        console.log("Kakao 로그인 성공", jwtToken);
+        // console.log("Kakao 로그인 성공", jwtToken);
 
         // 쿠키에서 토큰 해독 및 사용자 정보 획득
         if (jwtToken) {

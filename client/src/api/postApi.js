@@ -113,7 +113,7 @@ export const editPost = async (postId, text, imagesToDelete) => {
   // 삭제할 이미지가 있을 경우에만 추가
   if (imagesToDelete && imagesToDelete.length > 0) {
     formData.append("imagesToDelete", JSON.stringify(imagesToDelete));
-    console.log("imagesToDelete to send:", JSON.stringify(imagesToDelete));
+    // console.log("imagesToDelete to send:", JSON.stringify(imagesToDelete));
     for (let pair of formData.entries()) {
       console.log(pair[0], pair[1]);
     }

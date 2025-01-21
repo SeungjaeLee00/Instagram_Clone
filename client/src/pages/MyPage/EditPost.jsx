@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { verifyToken } from "../../api/authApi";
 import { editPost } from "../../api/postApi";
 import useAuth from "../../hooks/useAuth";
+import CustomAlert from "../../components/CustomAlert";
 
 import "../../styles/pages/MyPage/EditPost.css";
 import trashImg from "../../assets/trash.png";
@@ -15,6 +16,8 @@ const EditPost = () => {
   const [newText, setNewText] = useState("");
   const [imagesToDelete, setImagesToDelete] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
+
+  const [alert, setAlert] = useState({ message: "", type: "" });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -36,7 +39,11 @@ const EditPost = () => {
         }
       } catch (err) {
         console.error("인증 또는 데이터 로드 실패:", err.message);
-        setError("로그인이 필요합니다.");
+        // setError("로그인이 필요합니다.");
+        setAlert({
+          message: "로그인이 필요합니다.",
+          type: "error",
+        });
         navigate("/auth/login");
       } finally {
         setLoading(false);
@@ -89,11 +96,19 @@ const EditPost = () => {
     setLoading(true);
     try {
       await editPost(selectedPost._id, newText, imagesToDelete);
-      alert("게시물이 성공적으로 수정되었습니다!");
+      // alert("게시물이 성공적으로 수정되었습니다!");
+      setAlert({
+        message: "게시물이 성공적으로 수정되었습니다!",
+        type: "success",
+      });
       navigate("/mypage/profile");
     } catch (error) {
       console.error("게시물 수정 오류:", error);
-      alert("게시물 수정에 실패했습니다.");
+      // alert("게시물 수정에 실패했습니다.");
+      setAlert({
+        message: "게시물 수정에 실패했습니다.",
+        type: "error",
+      });
     } finally {
       setLoading(false);
     }
@@ -113,6 +128,11 @@ const EditPost = () => {
 
   return (
     <div className="edit-post">
+      <CustomAlert
+        message={alert.message}
+        type={alert.type}
+        onClose={() => setAlert({ message: "", type: "" })}
+      />
       {loading ? (
         <p>로딩 중...</p>
       ) : error ? (

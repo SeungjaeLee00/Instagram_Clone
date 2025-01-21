@@ -17,7 +17,6 @@ const Sidebar = () => {
     { id: 5, path: "/create", label: "만들기", icon: "➕" },
     { id: 6, path: "/mypage/profile", label: "프로필", icon: "👤" },
     { id: 7, path: "/storage", label: "보관함", icon: "🫙" },
-    // { id: 8, path: "/admin", label: "관리자 페이지(임시)", icon: "🧪" },
   ];
 
   useEffect(() => {
@@ -41,7 +40,6 @@ const Sidebar = () => {
     // 검색, 메시지, 알림 클릭 시 로고 변경 및 사이드바 축소
     if (
       location.pathname === "/search" ||
-      // location.pathname === "/messages" ||
       location.pathname === "/dm/chatroom" ||
       location.pathname === "/notifications"
     ) {

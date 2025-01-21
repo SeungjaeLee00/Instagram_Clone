@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { verifySignupEmail } from "../../api/authApi"; // API 호출 함수
+import { verifySignupEmail } from "../../api/authApi";
+
+import CustomAlert from "../../components/CustomAlert";
 import instalogo from "../../assets/instagram_logo.png";
 import "../../styles/pages/SignupPage/Signup_verify.css";
 
@@ -8,6 +10,7 @@ const Signup_verify = () => {
   const [verificationCode, setverificationCode] = useState("");
   const [verificationCodeValid, setverificationCodeValid] = useState(false);
 
+  const [alert, setAlert] = useState({ message: "", type: "" });
   const location = useLocation();
   const email = location.state?.email || "";
 
@@ -32,13 +35,21 @@ const Signup_verify = () => {
     try {
       const data = await verifySignupEmail(email, verificationCode); // API 호출
       if (data.success) {
-        alert("인증이 완료되었습니다. 로그인 창에서 로그인해주세요.");
+        // alert("인증이 완료되었습니다. 로그인 창에서 로그인해주세요.");
+        setAlert({
+          message: "인증이 완료되었습니다. 로그인 창에서 로그인해주세요.",
+          type: "success",
+        });
         navigate("/auth/login");
       } else {
         alert(data.message);
       }
     } catch (error) {
-      alert(error);
+      // alert(error);
+      setAlert({
+        message: "회원가입에 실패했습니다",
+        type: "error",
+      });
       console.error("가입 실패:", email);
     }
   };
@@ -58,6 +69,11 @@ const Signup_verify = () => {
 
   return (
     <div className="cert-page">
+      <CustomAlert
+        message={alert.message}
+        type={alert.type}
+        onClose={() => setAlert({ message: "", type: "" })}
+      />
       <div className="cert-content">
         <img className="lock" src={instalogo} alt="instalogo"></img>
 

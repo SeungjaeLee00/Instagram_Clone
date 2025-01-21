@@ -51,19 +51,16 @@ const Login = ({ setIsAuthenticated }) => {
         password
       );
       if (loginSuccess) {
-        setIsAuthenticated(true); // 인증 상태 설정
-        // alert("로그인 성공");
+        setIsAuthenticated(true);
         setAlert({ message: "로그인 성공", type: "success" });
-        navigate("/"); // 메인 페이지로 이동
+        navigate("/");
       } else {
-        // alert("로그인 실패: 유효한 토큰이 없습니다.");
         setAlert({
           message: "로그인 실패: 유효한 토큰이 없습니다.",
           type: "error",
         });
       }
     } catch (error) {
-      // alert(`로그인 실패: ${error.message}`);
       setAlert({ message: `로그인 실패: ${error.message}`, type: "error" });
       console.error("로그인 실패:", error);
     }
@@ -108,7 +105,6 @@ const Login = ({ setIsAuthenticated }) => {
         type={alert.type}
         onClose={() => setAlert({ message: "", type: "" })}
       />
-      {/* 로그인 부분 */}
       <div className="login-content">
         <img
           className="login-instalogo"

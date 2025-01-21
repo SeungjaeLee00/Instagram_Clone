@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { chatroomList, deleteChatroom } from "../../api/messageApi";
 import CreateDmModal from "../../components/Modals/CreateDmModal";
+import CustomAlert from "../../components/CustomAlert";
 
 import "../../styles/pages/MessagesPage/ChatroomPage.css";
 import newChat from "../../assets/newChat.png";
@@ -15,6 +16,7 @@ const Chatroom = () => {
   const [otherUserProfile, setOtherUserProfile] = useState(""); // profile image
   const [userName, setUserName] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [alert, setAlert] = useState({ message: "", type: "" });
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
@@ -58,16 +60,26 @@ const Chatroom = () => {
         setChatrooms((prev) =>
           prev.filter((chatroom) => chatroom.chatroomId !== chatroomId)
         );
-        alert("채팅방을 나갔습니다.");
+        // alert("채팅방을 나갔습니다.");
+        setAlert({ message: "채팅방을 나갔습니다.", type: "success" });
       } catch (err) {
         setError(err.message);
-        alert("채팅방 나가기에 실패했습니다.");
+        // alert("채팅방 나가기에 실패했습니다.");
+        setAlert({
+          message: "채팅방 나가기에 실패했습니다.",
+          type: "error",
+        });
       }
     }
   };
 
   return (
     <div className="chatroom-page">
+      <CustomAlert
+        message={alert.message}
+        type={alert.type}
+        onClose={() => setAlert({ message: "", type: "" })}
+      />
       <div className="chatroom-content">
         <h2 style={{ textAlign: "Left" }}>
           {userName}

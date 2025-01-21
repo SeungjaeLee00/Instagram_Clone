@@ -15,7 +15,7 @@ export const followUser = async (followingId) => {
         withCredentials: true,
       }
     );
-    console.log("res.data: ", response.data);
+    // console.log("res.data: ", response.data);
     return response.data;
   } catch (error) {
     console.error("팔로우 요청 실패:", error);

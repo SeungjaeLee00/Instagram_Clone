@@ -97,7 +97,7 @@ const UserPage = () => {
             : post
         )
       );
-      console.log("남페이지에서 게시물 좋아요");
+      // console.log("남페이지에서 게시물 좋아요");
     } catch (error) {
       console.error("좋아요 처리 중 오류가 발생했습니다", error);
     }
@@ -143,7 +143,7 @@ const UserPage = () => {
   const handleLikeComment = async (commentId) => {
     try {
       const response = await addCommentLike(commentId);
-      console.log("myPage에서 댓글 좋아요:", response);
+      // console.log("myPage에서 댓글 좋아요:", response);
       setPosts((prevComments) =>
         prevComments.map((comment) =>
           comment._id === commentId
@@ -181,7 +181,7 @@ const UserPage = () => {
       const dmTo = userData.userName; // 대상 사용자 이름
       if (dmTo && isAuthenticated) {
         const response = await createDM(dmTo);
-        console.log("dmClick", response);
+        // console.log("dmClick", response);
 
         const { chatroomId, chatroomName, user_object_id } = response;
 
@@ -222,7 +222,7 @@ const UserPage = () => {
         likesCount: (comment.likes || []).length,
       }));
 
-      console.log("유저페이지에서 확인하는 comments", commentsWithLikesCount);
+      // console.log("유저페이지에서 확인하는 comments", commentsWithLikesCount);
 
       setSelectedPost({
         ...post,

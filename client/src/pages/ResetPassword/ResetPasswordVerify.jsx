@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { verifyResetCode } from "../../api/authApi"; // API 호출 함수
+import CustomAlert from "../../components/CustomAlert";
 import lock from "../../assets/lock.png";
 import "../../styles/pages/ResetPasswordPage/ResetPasswordVerify.css";
 
@@ -8,6 +9,7 @@ const ResetPWVerify = () => {
   const [verificationCode, setverificationCode] = useState("");
   const [verificationCodeValid, setverificationCodeValid] = useState(false);
 
+  const [alert, setAlert] = useState({ message: "", type: "" });
   const location = useLocation();
   const email = location.state?.email || "";
 
@@ -32,13 +34,21 @@ const ResetPWVerify = () => {
     try {
       const data = await verifyResetCode(email, verificationCode); // API 호출
       if (data.success) {
-        alert("인증이 완료되었습니다. 비밀번호를 재설정해주세요.");
+        // alert("인증이 완료되었습니다. 비밀번호를 재설정해주세요.");
+        setAlert({
+          message: "인증이 완료되었습니다. 비밀번호를 재설정해주세요.",
+          type: "success",
+        });
         navigate("/auth/reset-password", { state: { email } });
       } else {
         alert(data.message);
       }
     } catch (error) {
-      alert(error);
+      // alert(error);
+      setAlert({
+        message: "인증에 실패했습니다",
+        type: "error",
+      });
       console.error("인증 실패:", { email, verificationCode });
     }
   };
@@ -58,6 +68,11 @@ const ResetPWVerify = () => {
 
   return (
     <div className="cert-page">
+      <CustomAlert
+        message={alert.message}
+        type={alert.type}
+        onClose={() => setAlert({ message: "", type: "" })}
+      />
       <div className="cert-content">
         <img className="lock" src={lock} alt="lock"></img>
 

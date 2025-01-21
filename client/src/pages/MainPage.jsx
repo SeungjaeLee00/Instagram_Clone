@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "../styles/pages/MainPage.css";
 import PostCard from "../components/PostCard";
+import CustomAlert from "../components/CustomAlert";
 import { fetchPosts, deletePost, addLike } from "../api/postApi";
 import { addComment } from "../api/commentApi";
 import useAuth from "../hooks/useAuth";
@@ -8,6 +9,8 @@ import useAuth from "../hooks/useAuth";
 const MainPage = () => {
   const { isAuthenticated, user } = useAuth();
   const [posts, setPosts] = useState([]);
+
+  const [alert, setAlert] = useState({ message: "", type: "" });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -59,7 +62,7 @@ const MainPage = () => {
             : post
         )
       );
-      console.log("메인페이지에서 게시물 좋아요");
+      // console.log("메인페이지에서 게시물 좋아요");
     } catch (error) {
       console.error("좋아요 처리 중 오류가 발생했습니다", error);
     }
@@ -69,16 +72,27 @@ const MainPage = () => {
   const handleDeletePost = async (postId, userId) => {
     try {
       if (!userId) {
-        alert("사용자 정보를 찾을 수 없습니다.");
+        // alert("사용자 정보를 찾을 수 없습니다.");
+        setAlert({
+          message: "사용자 정보를 찾을 수 없습니다.",
+          type: "error",
+        });
         return;
       }
       await deletePost(postId, userId);
       setPosts((prevPosts) => prevPosts.filter((post) => post._id !== postId));
-      alert("게시물이 삭제되었습니다.");
+      // alert("게시물이 삭제되었습니다.");
+      setAlert({ message: "게시물이 삭제되었습니다.", type: "success" });
     } catch (error) {
-      alert(
-        "게시물 삭제 실패: " + (error.response?.data.message || error.message)
-      );
+      // alert(
+      //   "게시물 삭제 실패: " + (error.response?.data.message || error.message)
+      // );
+      setAlert({
+        message: `게시물 삭제에 실패했습니다: ${
+          error.response?.data.message || error.message
+        }`,
+        type: "error",
+      });
     }
   };
 
@@ -86,7 +100,7 @@ const MainPage = () => {
   const handleAddComment = async (postId, newCommentText) => {
     try {
       const response = await addComment(postId, newCommentText);
-      console.log("메인페이지에서 댓글 달기", response);
+      // console.log("메인페이지에서 댓글 달기", response);
       const { comment } = response;
 
       setPosts((prevPosts) => {
@@ -101,7 +115,7 @@ const MainPage = () => {
               }
             : post
         );
-        console.log("업데이트된 posts 상태:", updatedPosts);
+        // console.log("업데이트된 posts 상태:", updatedPosts);
         return updatedPosts;
       });
 
@@ -117,6 +131,11 @@ const MainPage = () => {
 
   return (
     <div className="main-page">
+      <CustomAlert
+        message={alert.message}
+        type={alert.type}
+        onClose={() => setAlert({ message: "", type: "" })}
+      />
       {isAuthenticated ? (
         <div className="feed-container">
           {posts.length === 0 ? (

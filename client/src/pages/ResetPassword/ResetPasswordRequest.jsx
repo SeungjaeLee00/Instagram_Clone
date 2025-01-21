@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { requestResetPassword } from "../../api/authApi"; // API 호출 함수
+import { requestResetPassword } from "../../api/authApi";
+import CustomAlert from "../../components/CustomAlert";
+
 import lock from "../../assets/lock.png";
 import "../../styles/pages/ResetPasswordPage/ResetPasswordRequest.css";
 
@@ -9,6 +11,7 @@ const RequestResetPassword = () => {
   const [emailValid, setEmailValid] = useState(false);
   const [NotAllow, setNotAllow] = useState(false);
 
+  const [alert, setAlert] = useState({ message: "", type: "" });
   const navigate = useNavigate();
 
   // email 값 입력 판단
@@ -32,13 +35,18 @@ const RequestResetPassword = () => {
     try {
       const data = await requestResetPassword(email); // API 호출
       if (data.success) {
-        alert("인증 이메일이 발송되었습니다.");
+        // alert("인증 이메일이 발송되었습니다.");
+        setAlert({ message: "인증 이메일이 발송되었습니다.", type: "success" });
         navigate("/auth/verify-reset-code", { state: { email } });
       } else {
         alert(data.message);
       }
     } catch (error) {
-      alert(error);
+      // alert(error);
+      setAlert({
+        message: "인증 이메일 전송을 실패했습니다",
+        type: "error",
+      });
       console.error("전송 실패:", error);
     }
   };
@@ -59,6 +67,11 @@ const RequestResetPassword = () => {
 
   return (
     <div className="resetPW-page">
+      <CustomAlert
+        message={alert.message}
+        type={alert.type}
+        onClose={() => setAlert({ message: "", type: "" })}
+      />
       <div className="resetPW-content">
         <img className="lock" alt="lock" src={lock} />
 

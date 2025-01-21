@@ -32,7 +32,7 @@ export const createDM = async (chatId, title) => {
     // console.log("채팅방 생성 response:", response.data);
     return response.data;
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     throw error;
   }
 };

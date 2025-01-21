@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { signupUser } from "../../api/authApi";
+
+import CustomAlert from "../../components/CustomAlert";
 import "../../styles/pages/SignupPage/SignupPage.css";
 
 // 이미지 로드
@@ -21,6 +23,8 @@ const Signup = () => {
 
   // 버튼 활성화 여부
   const [NotAllow, setNotAllow] = useState(false);
+
+  const [alert, setAlert] = useState({ message: "", type: "" });
 
   const navigate = useNavigate();
 
@@ -83,15 +87,20 @@ const Signup = () => {
   const onclickConfirmButton = async () => {
     try {
       const data = await signupUser(email, password, name, user_id); // API 호출
-      console.log("가입 버튼 클릭 data", data);
+      // console.log("가입 버튼 클릭 data", data);
       if (data.success) {
-        alert("인증 이메일이 발송되었습니다.");
+        // alert("인증 이메일이 발송되었습니다.");
+        setAlert({ message: "인증 이메일이 발송되었습니다.", type: "success" });
         navigate("/auth/sign-up/verify-email", { state: { email } });
       } else {
         alert(data.message);
       }
     } catch (error) {
-      alert(error);
+      // alert(error);
+      setAlert({
+        message: "인증 이메일 발송에 실패했습니다",
+        type: "error",
+      });
       console.error("가입 실패:", error);
     }
   };
@@ -100,12 +109,6 @@ const Signup = () => {
   const handleLogoClick = () => {
     navigate("/auth/login");
   };
-
-  // const handleKeyDown = (e) => {
-  //   if (e.key === "Enter" && !NotAllow) {
-  //     onclickConfirmButton();
-  //   }
-  // };
 
   // 가입 버튼 활성화
   useEffect(() => {
@@ -118,6 +121,11 @@ const Signup = () => {
 
   return (
     <div className="signup-page">
+      <CustomAlert
+        message={alert.message}
+        type={alert.type}
+        onClose={() => setAlert({ message: "", type: "" })}
+      />
       <div className="signup-content">
         <img
           className="signup-instalogo"

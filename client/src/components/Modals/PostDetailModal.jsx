@@ -4,6 +4,7 @@ import { timeAgo } from "../../utils/timeAgo";
 import useAuth from "../../hooks/useAuth";
 import { deleteSelectComment, getComments } from "../../api/commentApi";
 import { archivePost } from "../../api/postApi";
+import CustomAlert from "../CustomAlert";
 
 import "../../styles/components/PostDetailModal.css";
 import default_profile from "../../assets/default_profile.png";
@@ -35,6 +36,8 @@ const PostDetailModal = ({
   const [isExpanded, setIsExpanded] = useState(false);
   const [selectedPost, setSelectedPost] = useState(null);
   const [currentIndex, setCurrentIndex] = useState(0);
+
+  const [alert, setAlert] = useState({ message: "", type: "" });
 
   useEffect(() => {
     if (user) {
@@ -68,7 +71,7 @@ const PostDetailModal = ({
     setPostLikesCount((prev) => (newPostLiked ? prev + 1 : prev - 1));
     try {
       await postLike(post._id);
-      console.log("모달디테일에서 게시물 좋아요");
+      // console.log("모달디테일에서 게시물 좋아요");
     } catch (error) {
       console.error("좋아요 처리 중 오류:", error);
       setPostLiked(!newPostLiked);
@@ -86,10 +89,18 @@ const PostDetailModal = ({
         setSelectedPost(post);
         navigate("/edit-post", { state: { post } });
       } else {
-        alert("이 게시물은 수정할 권한이 없습니다.");
+        // alert("이 게시물은 수정할 권한이 없습니다.");
+        setAlert({
+          message: "이 게시물은 수정할 권한이 없습니다.",
+          type: "error",
+        });
       }
     } else {
-      alert("로그인이 필요합니다.");
+      // alert("로그인이 필요합니다.");
+      setAlert({
+        message: "로그인이 필요합니다.",
+        type: "error",
+      });
       navigate("/auth/login");
     }
   };
@@ -110,7 +121,7 @@ const PostDetailModal = ({
 
         const archive = !isArchived;
         const response = await archivePost(post._id, loginUserId, archive);
-        console.log(response.message);
+        // console.log(response.message);
 
         if (response.message.includes("보관 완료되었습니다.")) {
           setIsArchived(true);
@@ -201,7 +212,11 @@ const PostDetailModal = ({
       return;
     }
     if (commentToDelete.user._id !== loginUserId) {
-      alert("본인의 댓글만 삭제할 수 있습니다.");
+      // alert("본인의 댓글만 삭제할 수 있습니다.");
+      setAlert({
+        message: "본인의 댓글만 삭제할 수 있습니다.",
+        type: "error",
+      });
       return;
     }
     try {
@@ -214,11 +229,19 @@ const PostDetailModal = ({
         );
       } else {
         // console.error("댓글 삭제 실패:", response.data.message);
-        alert("댓글 삭제에 실패했습니다.");
+        // alert("댓글 삭제에 실패했습니다.");
+        setAlert({
+          message: "댓글 삭제에 실패했습니다.",
+          type: "error",
+        });
       }
     } catch (error) {
       // console.error("댓글 삭제 중 오류 발생:", error);
-      alert("댓글 삭제에 실패했습니다.");
+      // alert("댓글 삭제에 실패했습니다.");
+      setAlert({
+        message: "댓글 삭제에 실패했습니다.",
+        type: "error",
+      });
     }
   };
 
@@ -266,6 +289,11 @@ const PostDetailModal = ({
 
   return (
     <div className="modal-overlay" onClick={onClose}>
+      <CustomAlert
+        message={alert.message}
+        type={alert.type}
+        onClose={() => setAlert({ message: "", type: "" })}
+      />
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
         <div className="modal-body">
           <div className="imageDetail-section" style={{ position: "relative" }}>

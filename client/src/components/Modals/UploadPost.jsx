@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { uploadPost } from "../../api/postApi";
+import CustomAlert from "../CustomAlert";
 import "../../styles/components/UploadPost.css";
 
 const UploadPost = ({ isOpen, onClose }) => {
@@ -9,6 +10,8 @@ const UploadPost = ({ isOpen, onClose }) => {
   const [text, setText] = useState("");
   const [isUploading, setIsUploading] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0); // 다중 이미지는 이미지 슬라이드로 처리
+
+  const [alert, setAlert] = useState({ message: "", type: "" });
 
   const handleImageChange = (e) => {
     const files = Array.from(e.target.files); // 여러 파일을 배열로 변환
@@ -31,21 +34,28 @@ const UploadPost = ({ isOpen, onClose }) => {
     e.preventDefault();
 
     if (images.length === 0) {
-      alert("이미지는 1장 이상 선택해야 합니다.");
+      // alert("이미지는 1장 이상 선택해야 합니다.");
+      setAlert({
+        message: "이미지는 1장 이상 선택해야 합니다.",
+        type: "error",
+      });
       return;
     }
 
     setIsUploading(true);
 
     try {
-      const data = await uploadPost(images, text); // 여러 이미지를 업로드
-      alert(data.message);
-      console.log("업로드된 게시물:", data.post);
-      // console.log("")
+      await uploadPost(images, text); // 여러 이미지를 업로드
+      // alert(data.message);
+      // console.log("업로드된 게시물:", data.post);
       onClose();
       navigate("/mypage/profile");
     } catch (error) {
-      alert("게시물 업로드에 실패했습니다.");
+      // alert("게시물 업로드에 실패했습니다.");
+      setAlert({
+        message: "게시물 업로드에 실패했습니다.",
+        type: "error",
+      });
     } finally {
       setIsUploading(false);
     }
@@ -63,6 +73,11 @@ const UploadPost = ({ isOpen, onClose }) => {
 
   return (
     <div className="uploadPost-modal">
+      <CustomAlert
+        message={alert.message}
+        type={alert.type}
+        onClose={() => setAlert({ message: "", type: "" })}
+      />
       <div className="uploadPost-modal-content">
         <button className="uploadPost-close-btn" onClick={onClose}>
           X

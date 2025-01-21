@@ -9,6 +9,7 @@ import { getMyPosts } from "../../api/mypageApi";
 import { addComment, addCommentLike, getComments } from "../../api/commentApi";
 import { deletePost, addLike, fetchPostById } from "../../api/postApi";
 import PostDetailModal from "../../components/Modals/PostDetailModal";
+import CustomAlert from "../../components/CustomAlert";
 
 import useAuth from "../../hooks/useAuth";
 import trash from "../../assets/trash.png";
@@ -24,6 +25,7 @@ const Notification = () => {
   const [selectedPost, setSelectedPost] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  const [alert, setAlert] = useState({ message: "", type: "" });
   const [error, setError] = useState(null);
 
   const navigate = useNavigate();
@@ -78,9 +80,14 @@ const Notification = () => {
           (notification) => notification.id !== notificationId
         )
       );
-      alert("알림을 삭제하였습니다.");
+      // alert("알림을 삭제하였습니다.");
+      setAlert({ message: "알림을 삭제하였습니다.", type: "success" });
     } catch (err) {
-      alert("알림 삭제에 실패했습니다.");
+      // alert("알림 삭제에 실패했습니다.");
+      setAlert({
+        message: "알림 삭제에 실패했습니다.",
+        type: "error",
+      });
     }
   };
 
@@ -117,7 +124,11 @@ const Notification = () => {
 
           openModal(postData.post);
         } else {
-          alert("관련된 게시물을 찾을 수 없습니다.");
+          // alert("관련된 게시물을 찾을 수 없습니다.");
+          setAlert({
+            message: "관련된 게시물을 찾을 수 없습니다.",
+            type: "error",
+          });
         }
       } catch (error) {
         console.error("데이터 로드 실패:", error);
@@ -134,7 +145,7 @@ const Notification = () => {
         likesCount: (comment.likes || []).length,
       }));
 
-      console.log("노티페이지에서 확인하는 comments", commentsWithLikesCount);
+      // console.log("노티페이지에서 확인하는 comments", commentsWithLikesCount);
 
       setSelectedPost({
         ...post,
@@ -167,7 +178,7 @@ const Notification = () => {
             : post
         )
       );
-      console.log("노티페이지에서 게시물 좋아요");
+      // console.log("노티페이지에서 게시물 좋아요");
     } catch (error) {
       console.error("좋아요 처리 중 오류가 발생했습니다", error);
     }
@@ -179,7 +190,11 @@ const Notification = () => {
       try {
         const userId = user?.userId;
         if (!userId) {
-          alert("사용자 정보를 찾을 수 없습니다.");
+          // alert("사용자 정보를 찾을 수 없습니다.");
+          setAlert({
+            message: "사용자 정보를 찾을 수 없습니다.",
+            type: "error",
+          });
           return;
         }
 
@@ -187,11 +202,16 @@ const Notification = () => {
         setPosts((prevPosts) =>
           prevPosts.filter((post) => post._id !== postId)
         );
-        alert("게시물이 삭제되었습니다.");
+        // alert("게시물이 삭제되었습니다.");
+        setAlert({ message: "게시물이 삭제되었습니다.", type: "success" });
         closeModal();
       } catch (error) {
         console.error("게시물 삭제 실패:", error);
-        alert("게시물 삭제에 실패했습니다. 다시 시도해주세요.");
+        // alert("게시물 삭제에 실패했습니다. 다시 시도해주세요.");
+        setAlert({
+          message: "게시물 삭제에 실패했습니다. 다시 시도해주세요.",
+          type: "error",
+        });
       }
     }
   };
@@ -200,7 +220,7 @@ const Notification = () => {
   const handleAddComment = async (postId, newCommentText) => {
     try {
       const response = await addComment(postId, newCommentText);
-      console.log("알림페이지에서 댓글 달기:", response);
+      // console.log("알림페이지에서 댓글 달기:", response);
       const { comment } = response;
       setPosts((prevPosts) =>
         prevPosts.map((post) =>
@@ -253,6 +273,11 @@ const Notification = () => {
 
   return (
     <div className="notifications-page">
+      <CustomAlert
+        message={alert.message}
+        type={alert.type}
+        onClose={() => setAlert({ message: "", type: "" })}
+      />
       <div className="notifications-content">
         <h3>알림</h3>
         {notifications.length === 0 ? (

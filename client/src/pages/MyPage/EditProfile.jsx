@@ -4,6 +4,7 @@ import { getMyProfile, editUserProfile } from "../../api/mypageApi";
 import { verifyToken } from "../../api/authApi";
 
 import useAuth from "../../hooks/useAuth";
+import CustomAlert from "../../components/CustomAlert";
 import "../../styles/pages/MyPage/EditProfile.css";
 
 const EditProfile = () => {
@@ -13,6 +14,8 @@ const EditProfile = () => {
   const [newName, setNewName] = useState("");
   const [newId, setNewId] = useState("");
   const [file, setFile] = useState(null);
+
+  const [alert, setAlert] = useState({ message: "", type: "" });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
@@ -71,11 +74,19 @@ const EditProfile = () => {
     setLoading(true);
     try {
       await editUserProfile(file, newIntroduce, newName, newId);
-      alert("프로필이 성공적으로 수정되었습니다!");
+      // alert("프로필이 성공적으로 수정되었습니다!");
+      setAlert({
+        message: "프로필이 성공적으로 수정되었습니다!",
+        type: "success",
+      });
       navigate("/mypage/profile");
     } catch (error) {
       console.error("Error updating profile:", error);
-      alert("프로필 수정에 실패했습니다.");
+      // alert("프로필 수정에 실패했습니다.");
+      setAlert({
+        message: "프로필 수정에 실패했습니다.",
+        type: "error",
+      });
     } finally {
       setLoading(false);
     }
@@ -87,6 +98,11 @@ const EditProfile = () => {
 
   return (
     <>
+      <CustomAlert
+        message={alert.message}
+        type={alert.type}
+        onClose={() => setAlert({ message: "", type: "" })}
+      />
       <button className="edit-backClick-btn" onClick={handleBackClick}>
         &lt; 뒤로 가기
       </button>

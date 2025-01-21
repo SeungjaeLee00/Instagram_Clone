@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { resetPassword } from "../../api/authApi"; // API 호출 함수
+import { resetPassword } from "../../api/authApi";
+import CustomAlert from "../../components/CustomAlert";
+
 import lock from "../../assets/lock.png";
 import "../../styles/pages/ResetPasswordPage/ResetPassword.css";
 
@@ -10,6 +12,7 @@ const ResetPW = () => {
   const [isPasswordValid, setIsPasswordValid] = useState(false); // 비밀번호 유효성
   const [isMatch, setIsMatch] = useState(false); // 비밀번호와 비밀번호 확인 일치하는지 확인
 
+  const [alert, setAlert] = useState({ message: "", type: "" });
   const location = useLocation();
   const email = location.state?.email || "";
 
@@ -34,16 +37,28 @@ const ResetPW = () => {
   const onclickConfirmButton = async () => {
     if (isMatch) {
       try {
-        const data = await resetPassword(email, newPassword); // API 호출
+        const data = await resetPassword(email, newPassword);
         if (data.success) {
-          alert("비밀번호 변경이 완료되었습니다.");
+          // alert("비밀번호 변경이 완료되었습니다.");
+          setAlert({
+            message: "비밀번호 변경이 완료되었습니다.",
+            type: "success",
+          });
           navigate("/auth/login");
         }
       } catch (error) {
-        alert(error);
+        // alert(error);
+        setAlert({
+          message: "비밀번호 변경을 실패했습니다",
+          type: "error",
+        });
       }
     } else {
-      alert("비밀번호가 일치하지 않습니다.");
+      // alert("비밀번호가 일치하지 않습니다.");
+      setAlert({
+        message: "비밀번호가 일치하지 않습니다.",
+        type: "error",
+      });
     }
   };
 
@@ -59,6 +74,11 @@ const ResetPW = () => {
 
   return (
     <div className="reset-password-page">
+      <CustomAlert
+        message={alert.message}
+        type={alert.type}
+        onClose={() => setAlert({ message: "", type: "" })}
+      />
       <div className="reset-password-content">
         <img className="lock" src={lock} alt="lock"></img>
 

@@ -8,6 +8,7 @@ import { addComment, addCommentLike, getComments } from "../../api/commentApi";
 
 import useAuth from "../../hooks/useAuth";
 import PostDetailModal from "../../components/Modals/PostDetailModal";
+import CustomAlert from "../../components/CustomAlert";
 
 import default_profile from "../../assets/default_profile.png";
 import settingIcon from "../../assets/setting.png";
@@ -28,6 +29,7 @@ const MyPage = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  const [alert, setAlert] = useState({ message: "", type: "" });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -71,7 +73,11 @@ const MyPage = () => {
     if (isAuthenticated) {
       navigate("/edit-profile");
     } else {
-      alert("로그인이 필요합니다.");
+      // alert("로그인이 필요합니다.");
+      setAlert({
+        message: "로그인이 필요합니다.",
+        type: "error",
+      });
       navigate("/auth/login");
     }
   };
@@ -123,7 +129,11 @@ const MyPage = () => {
       try {
         const userId = user?.userId;
         if (!userId) {
-          alert("사용자 정보를 찾을 수 없습니다.");
+          // alert("사용자 정보를 찾을 수 없습니다.");
+          setAlert({
+            message: "사용자 정보를 찾을 수 없습니다.",
+            type: "error",
+          });
           return;
         }
 
@@ -131,11 +141,16 @@ const MyPage = () => {
         setPosts((prevPosts) =>
           prevPosts.filter((post) => post._id !== postId)
         );
-        alert("게시물이 삭제되었습니다.");
+        // alert("게시물이 삭제되었습니다.");
+        setAlert({ message: "게시물이 삭제되었습니다.", type: "success" });
         closeModal();
       } catch (error) {
-        console.error("게시물 삭제 실패:", error);
-        alert("게시물 삭제에 실패했습니다. 다시 시도해주세요.");
+        // console.error("게시물 삭제 실패:", error);
+        // alert("게시물 삭제에 실패했습니다. 다시 시도해주세요.");
+        setAlert({
+          message: "게시물 삭제에 실패했습니다. 다시 시도해주세요.",
+          type: "error",
+        });
       }
     }
   };
@@ -155,7 +170,7 @@ const MyPage = () => {
             : post
         )
       );
-      console.log("마이페이지에서 게시물 좋아요");
+      // console.log("마이페이지에서 게시물 좋아요");
     } catch (error) {
       console.error("좋아요 처리 중 오류가 발생했습니다", error);
     }
@@ -165,7 +180,7 @@ const MyPage = () => {
   const handleAddComment = async (postId, newCommentText) => {
     try {
       const response = await addComment(postId, newCommentText);
-      console.log("myPage에서 댓글 달기:", response);
+      // console.log("myPage에서 댓글 달기:", response);
       const { comment } = response;
       setPosts((prevPosts) =>
         prevPosts.map((post) =>
@@ -201,7 +216,7 @@ const MyPage = () => {
   const handleLikeComment = async (commentId) => {
     try {
       const response = await addCommentLike(commentId);
-      console.log("myPage에서 댓글 좋아요:", response);
+      // console.log("myPage에서 댓글 좋아요:", response);
       setPosts((prevComments) =>
         prevComments.map((comment) =>
           comment._id === commentId
@@ -223,14 +238,23 @@ const MyPage = () => {
     try {
       const response = await logoutUser();
       if (response.logoutSuccess) {
-        alert("로그아웃 되었습니다.");
+        // alert("로그아웃 되었습니다.");
+        setAlert({ message: "로그아웃 되었습니다.", type: "success" });
         navigate("/auth/login");
       } else {
-        alert("로그아웃에 실패했습니다. 다시 시도해주세요.");
+        // alert("로그아웃에 실패했습니다. 다시 시도해주세요.");
+        setAlert({
+          message: "로그아웃에 실패했습니다. 다시 시도해주세요.",
+          type: "error",
+        });
       }
     } catch (error) {
       console.error("로그아웃 실패:", error);
-      alert("로그아웃 중 오류가 발생했습니다. 다시 시도해주세요.");
+      // alert("로그아웃 중 오류가 발생했습니다. 다시 시도해주세요.");
+      setAlert({
+        message: "로그아웃 중 오류가 발생했습니다. 다시 시도해주세요.",
+        type: "error",
+      });
     }
   };
 
@@ -239,11 +263,16 @@ const MyPage = () => {
     if (window.confirm("정말로 회원 탈퇴를 진행하시겠습니까?")) {
       try {
         await withdrawUser();
-        alert("회원 탈퇴가 완료되었습니다.");
+        // alert("회원 탈퇴가 완료되었습니다.");
+        setAlert({ message: "회원 탈퇴가 완료되었습니다.", type: "success" });
         navigate("/auth/login");
       } catch (error) {
         console.error("회원 탈퇴 실패:", error);
-        alert("회원 탈퇴 중 오류가 발생했습니다. 다시 시도해주세요.");
+        // alert("회원 탈퇴 중 오류가 발생했습니다. 다시 시도해주세요.");
+        setAlert({
+          message: "회원 탈퇴 중 오류가 발생했습니다. 다시 시도해주세요.",
+          type: "error",
+        });
       }
     }
   };
@@ -270,6 +299,11 @@ const MyPage = () => {
   // console.log("마이페이지", posts);
   return (
     <div className="my-page">
+      <CustomAlert
+        message={alert.message}
+        type={alert.type}
+        onClose={() => setAlert({ message: "", type: "" })}
+      />
       <div className="profile-header">
         <div className="profile-image">
           <img

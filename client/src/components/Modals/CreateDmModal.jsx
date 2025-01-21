@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { createDM } from "../../api/messageApi";
 import { fetchMultiUsersProfile } from "../../api/userApi";
+import CustomAlert from "../CustomAlert";
 
 import "../../styles/components/CreateDmModal.css";
 
@@ -9,6 +10,8 @@ const CreateDmModal = ({ onClose }) => {
   const [userName, setUserName] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
+
+  const [alert, setAlert] = useState({ message: "", type: "" });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
@@ -60,7 +63,11 @@ const CreateDmModal = ({ onClose }) => {
   // 채팅방 생성 함수
   const handleCreateDM = async () => {
     if (!selectedUser) {
-      alert("사용자를 선택해주세요.");
+      // alert("사용자를 선택해주세요.");
+      setAlert({
+        message: "사용자를 선택해주세요.",
+        type: "error",
+      });
       return;
     }
 
@@ -74,15 +81,28 @@ const CreateDmModal = ({ onClose }) => {
         });
         onClose();
       } else {
-        alert("DM 생성에 실패했습니다.");
+        // alert("DM 생성에 실패했습니다.");
+        setAlert({
+          message: "DM 생성에 실패했습니다.",
+          type: "error",
+        });
       }
     } catch (error) {
-      alert("DM 생성 중 오류가 발생했습니다.");
+      // alert("DM 생성 중 오류가 발생했습니다.");
+      setAlert({
+        message: "DM 생성 중 오류가 발생했습니다.",
+        type: "error",
+      });
     }
   };
 
   return (
     <div className="chat-modal-overlay">
+      <CustomAlert
+        message={alert.message}
+        type={alert.type}
+        onClose={() => setAlert({ message: "", type: "" })}
+      />
       <div className="chat-modal-content">
         <div className="chat-modal-header">
           <h3>새로운 메시지</h3>

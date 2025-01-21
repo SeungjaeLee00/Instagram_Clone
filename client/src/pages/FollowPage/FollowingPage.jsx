@@ -13,7 +13,7 @@ const FollowingPage = () => {
 
   // null 값 제거
   const validFollowerings = following.filter((following) => following !== null);
-  console.log("validFollowerings", validFollowerings);
+  // console.log("validFollowerings", validFollowerings);
 
   const handleBackClick = () => {
     navigate(-1);
