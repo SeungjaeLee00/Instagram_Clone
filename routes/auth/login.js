@@ -20,10 +20,9 @@ router.post("/", (req, res) => {
     .then(async (user) => {
       // user가 null인지 먼저 확인
       if (!user) {
-        // throw new Error(
-        //   "제공된 이메일 또는 아이디에 해당하는 유저가 없습니다."
-        // );
-        alert("제공된 이메일 또는 아이디에 해당하는 유저가 없습니다.");
+        throw new Error(
+          "제공된 이메일 또는 아이디에 해당하는 유저가 없습니다."
+        );
       }
 
       if (user.role === "admin") {
