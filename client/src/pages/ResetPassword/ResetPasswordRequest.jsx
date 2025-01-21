@@ -56,6 +56,10 @@ const RequestResetPassword = () => {
     navigate("/auth/login");
   };
 
+  const handleSignUp = () => {
+    navigate("/auth/sign-up");
+  };
+
   // 인증번호 전송 버튼 활성화
   useEffect(() => {
     if (emailValid) {
@@ -112,7 +116,17 @@ const RequestResetPassword = () => {
         </div>
 
         <div className="resetPWToSignup">
-          <a href="/auth/sign-up">새 계정 만들기</a>
+          <button
+            onClick={handleSignUp}
+            style={{
+              background: "none",
+              border: "none",
+              padding: 0,
+              cursor: "pointer",
+            }}
+          >
+            새 계정 만들기
+          </button>
         </div>
       </div>
       <div className="return-to-login">

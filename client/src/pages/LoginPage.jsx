@@ -162,14 +162,34 @@ const Login = ({ setIsAuthenticated }) => {
 
           <div className="divider">또는</div>
 
-          <button onClick={handleForgotPassword} className="forgot-password">
+          <button
+            onClick={handleForgotPassword}
+            className="forgot-password"
+            style={{
+              background: "none",
+              border: "none",
+              padding: 0,
+              cursor: "pointer",
+            }}
+          >
             비밀번호를 잊으셨나요?
           </button>
         </div>
       </div>
       <div className="moveToSignup">
         <div className="moveToSignup-content">
-          계정이 없으신가요? <button onClick={handleSignUp}>가입하기</button>
+          계정이 없으신가요?{" "}
+          <button
+            onClick={handleSignUp}
+            style={{
+              background: "none",
+              border: "none",
+              padding: 0,
+              cursor: "pointer",
+            }}
+          >
+            가입하기
+          </button>
         </div>
       </div>
       <div className="app-download-section">

@@ -223,7 +223,18 @@ const Signup = () => {
 
       <div className="moveToLogin">
         <div className="moveToLogin-content">
-          계정이 있으신가요? <button onClick={handleLogin}>로그인</button>
+          계정이 있으신가요?{" "}
+          <button
+            onClick={handleLogin}
+            style={{
+              background: "none",
+              border: "none",
+              padding: 0,
+              cursor: "pointer",
+            }}
+          >
+            로그인
+          </button>
         </div>
       </div>
 
