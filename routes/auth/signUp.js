@@ -8,7 +8,7 @@ const { sendVerificationEmail } = require("../../utils/sendEmail");
 router.use(express.json());
 
 // 회원가입 처리 및 이메일 인증 코드 발송
-router.post("/new", async (req, res) => {
+router.post("/", async (req, res) => {
   // const { email } = req.body;
   const { email, user_id } = req.body;
 

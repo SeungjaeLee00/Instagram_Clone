@@ -12,7 +12,7 @@ const transporter = nodemailer.createTransport({
 const sendPasswordResetEmail = async (email, verificationCode) => {
   try {
     await transporter.sendMail({
-      from: `"(임시)인스타그램" <${process.env.GMAIL_USER}>`,
+      from: `"SSinstagram" <${process.env.GMAIL_USER}>`,
       to: email,
       subject: "비밀번호 재설정 인증 코드",
       text: `비밀번호 재설정을 위한 인증코드: ${verificationCode}`,
