@@ -57,11 +57,13 @@ const MyPage = () => {
           setFollowing(followingList.following || []);
           setIntroduce(profile.introduce || "");
           setName(profile.user_name || "");
+
+          setPageLoading(false);
         } catch (error) {
           console.error("데이터 로드 실패:", error);
           setError("데이터를 불러오는 중 오류가 발생했습니다.");
         } finally {
-          setPageLoading(false);
+          // setPageLoading(false);
           // alert("로딩 테스트");
         }
       };
