@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { chatroomList, deleteChatroom } from "../../api/messageApi";
 import CreateDmModal from "../../components/Modals/CreateDmModal";
 import CustomAlert from "../../components/CustomAlert";
+import CustomConfirm from "../../components/CustomConfirm";
 
 import "../../styles/pages/MessagesPage/ChatroomPage.css";
 import newChat from "../../assets/newChat.png";
@@ -54,7 +55,11 @@ const Chatroom = () => {
   // 채팅방 나가기
   const handleLeaveChatroom = async (chatroomId) => {
     // console.log("삭제할 채팅방 ID:", chatroomId);
-    if (window.confirm("채팅방을 나가시겠습니까?")) {
+    // if (window.confirm("채팅방을 나가시겠습니까?")) {
+    const confirmed = await CustomConfirm({
+      message: "채팅방을 나가시겠습니까?",
+    });
+    if (confirmed) {
       try {
         await deleteChatroom(chatroomId);
         setChatrooms((prev) =>

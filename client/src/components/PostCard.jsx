@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import PostDetailModal from "./Modals/PostDetailModal";
 import CustomAlert from "./CustomAlert";
+import CustomConfirm from "./CustomConfirm";
 import { timeAgo } from "../utils/timeAgo";
 import useAuth from "../hooks/useAuth";
 import { createDM } from "../api/messageApi";
@@ -83,18 +84,45 @@ const PostCard = ({ post, addComment, postDelete, postLike }) => {
   };
 
   // 게시물 삭제
-  const handleDelete = () => {
-    if (window.confirm("게시물을 삭제하시겠습니까?")) {
-      const postUserId = post.user_id?._id;
-      if (!postUserId) {
-        // alert("사용자 정보가 없습니다.");
-        setAlert({
-          message: "사용자 정보가 없습니다.",
-          type: "error",
-        });
-        return;
+  // const handleDelete = () => {
+  //   if (window.confirm("게시물을 삭제하시겠습니까?")) {
+  //     const postUserId = post.user_id?._id;
+  //     if (!postUserId) {
+  //       // alert("사용자 정보가 없습니다.");
+  //       setAlert({
+  //         message: "사용자 정보가 없습니다.",
+  //         type: "error",
+  //       });
+  //       return;
+  //     }
+  //     postDelete(post._id, postUserId);
+  //   }
+  // };
+
+  // 게시물 삭제
+  const handleDelete = async () => {
+    try {
+      const confirmed = await CustomConfirm({
+        message: "게시물을 삭제하시겠습니까?",
+      });
+
+      if (confirmed) {
+        const postUserId = post.user_id?._id;
+        if (!postUserId) {
+          setAlert({
+            message: "사용자 정보가 없습니다.",
+            type: "error",
+          });
+          return;
+        }
+        postDelete(post._id, postUserId);
       }
-      postDelete(post._id, postUserId);
+    } catch (error) {
+      console.error("삭제 처리 실패:", error);
+      setAlert({
+        message: "삭제 처리 중 오류가 발생했습니다. 다시 시도해주세요.",
+        type: "error",
+      });
     }
   };
 

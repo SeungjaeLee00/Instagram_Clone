@@ -10,6 +10,7 @@ import { addComment, addCommentLike, getComments } from "../../api/commentApi";
 import { deletePost, addLike, fetchPostById } from "../../api/postApi";
 import PostDetailModal from "../../components/Modals/PostDetailModal";
 import CustomAlert from "../../components/CustomAlert";
+import CustomConfirm from "../../components/CustomConfirm";
 
 import useAuth from "../../hooks/useAuth";
 import trash from "../../assets/trash.png";
@@ -186,7 +187,11 @@ const Notification = () => {
 
   // 게시물 삭제
   const handleDeletePost = async (postId) => {
-    if (window.confirm("게시물을 삭제하시겠습니까?")) {
+    const confirmed = await CustomConfirm({
+      message: "게시물을 삭제하시겠습니까?",
+    });
+
+    if (confirmed) {
       try {
         const userId = user?.userId;
         if (!userId) {

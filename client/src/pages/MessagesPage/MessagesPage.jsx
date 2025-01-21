@@ -80,10 +80,23 @@ const MessagesPage = () => {
     }, 500); // 메시지 전송 완료 후 500ms 뒤에 상태 리셋 (필요시 조정)
   };
 
+  // const deleteMessage = (messageId) => {
+  //   if (window.confirm("메세지를 지우겠습니까?")) {
+  //     socket.emit("deleteMessage", { messageId });
+  //   }
+  // };
   const deleteMessage = (messageId) => {
-    if (window.confirm("메세지를 지우겠습니까?")) {
-      socket.emit("deleteMessage", { messageId });
-    }
+    CustomConfirm({
+      message: "메세지를 지우겠습니까?",
+    })
+      .then((confirmed) => {
+        if (confirmed) {
+          socket.emit("deleteMessage", { messageId });
+        }
+      })
+      .catch((error) => {
+        console.error("알림창 처리 실패:", error);
+      });
   };
 
   const isPreviousMessageBySameUser = (index) => {

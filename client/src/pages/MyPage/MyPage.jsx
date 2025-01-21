@@ -9,6 +9,7 @@ import { addComment, addCommentLike, getComments } from "../../api/commentApi";
 import useAuth from "../../hooks/useAuth";
 import PostDetailModal from "../../components/Modals/PostDetailModal";
 import CustomAlert from "../../components/CustomAlert";
+import CustomConfirm from "../../components/CustomConfirm";
 
 import default_profile from "../../assets/default_profile.png";
 import settingIcon from "../../assets/setting.png";
@@ -125,7 +126,12 @@ const MyPage = () => {
 
   // 게시물 삭제
   const handleDeletePost = async (postId) => {
-    if (window.confirm("게시물을 삭제하시겠습니까?")) {
+    // if (window.confirm("게시물을 삭제하시겠습니까?")) {
+    const confirmed = await CustomConfirm({
+      message: "게시물을 삭제하시겠습니까?",
+    });
+
+    if (confirmed) {
       try {
         const userId = user?.userId;
         if (!userId) {
@@ -260,7 +266,12 @@ const MyPage = () => {
 
   // 회원 탈퇴
   const handleDeleteAccount = async () => {
-    if (window.confirm("정말로 회원 탈퇴를 진행하시겠습니까?")) {
+    // if (window.confirm("정말로 회원 탈퇴를 진행하시겠습니까?")) {
+    const confirmed = await CustomConfirm({
+      message: "정말로 회원 탈퇴를 진행하시겠습니까?",
+    });
+
+    if (confirmed) {
       try {
         await withdrawUser();
         // alert("회원 탈퇴가 완료되었습니다.");
