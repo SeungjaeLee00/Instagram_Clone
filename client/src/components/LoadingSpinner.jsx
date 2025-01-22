@@ -1,5 +1,5 @@
 import React from "react";
-import Loader from "react-loader-spinner";
+import { Oval } from "react-loader-spinner";
 
 const LoadingSpinner = () => {
   return (
@@ -11,7 +11,7 @@ const LoadingSpinner = () => {
         height: "100vh",
       }}
     >
-      <Loader type="Oval" color="#00BFFF" height={80} width={80} />
+      <Oval color="#00BFFF" height={80} width={80} visible={loading} />{" "}
     </div>
   );
 };

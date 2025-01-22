@@ -63,7 +63,7 @@ const MyPage = () => {
           console.error("데이터 로드 실패:", error);
           setError("데이터를 불러오는 중 오류가 발생했습니다.");
         } finally {
-          setLoading(false);
+          setLoading(false); // 데이터 로드 완료 후 로딩 상태 false로 변경
         }
       };
       fetchData();
