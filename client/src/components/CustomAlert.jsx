@@ -4,7 +4,7 @@ const CustomAlert = ({ message, type, onClose }) => {
   useEffect(() => {
     const timer = setTimeout(() => {
       onClose();
-    }, 3000);
+    }, 4000);
 
     return () => clearTimeout(timer);
   }, [onClose]);
@@ -20,7 +20,12 @@ const CustomAlert = ({ message, type, onClose }) => {
         transform: "translateX(-50%)",
         padding: "10px 20px",
         color: "#fff",
-        backgroundColor: type === "success" ? "#4caf50" : "#f44336",
+        backgroundColor:
+          type === "success"
+            ? "#4caf50"
+            : type === "warning"
+            ? "#ff9800"
+            : "#f44336",
         borderRadius: "5px",
         boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.2)",
         zIndex: "1000",
