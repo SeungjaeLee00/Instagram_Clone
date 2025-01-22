@@ -10,6 +10,7 @@ import useAuth from "../../hooks/useAuth";
 import PostDetailModal from "../../components/Modals/PostDetailModal";
 import CustomAlert from "../../components/CustomAlert";
 import CustomConfirm from "../../components/CustomConfirm";
+import LoadingSpinner from "../../components/LoadingSpinner";
 
 import default_profile from "../../assets/default_profile.png";
 import settingIcon from "../../assets/setting.png";
@@ -41,6 +42,7 @@ const MyPage = () => {
     if (isAuthenticated) {
       const fetchData = async () => {
         try {
+          setLoading(true);
           const profile = await getMyProfile(user.userId);
           const postList = await getMyPosts();
           const updatedPosts = postList.map((post) => ({
@@ -310,119 +312,123 @@ const MyPage = () => {
   // console.log("마이페이지", posts);
   return (
     <div className="my-page">
-      <CustomAlert
-        message={alert.message}
-        type={alert.type}
-        onClose={() => setAlert({ message: "", type: "" })}
-      />
-      <div className="profile-header">
-        <div className="profile-image">
-          <img
-            src={profileData?.profile_image || default_profile}
-            alt="profile"
+      {loading ? (
+        <LoadingSpinner />
+      ) : (
+        <>
+          <CustomAlert
+            message={alert.message}
+            type={alert.type}
+            onClose={() => setAlert({ message: "", type: "" })}
           />
-        </div>
-        <div className="profile-info">
-          <div className="user-info">
-            <h2>{profileData?.user_id || "사용자 이름"}</h2>
-            <button onClick={goToEditProfile}>프로필 편집</button>
-            <button onClick={goToDmListPage} className="dm-list-button">
-              {" "}
-              DM
-            </button>
-            <div className="settings-icon-container">
+          <div className="profile-header">
+            <div className="profile-image">
               <img
-                src={settingIcon}
-                alt="설정 메뉴"
-                onClick={toggleSettingMenu}
-                className="settings-icon"
+                src={profileData?.profile_image || default_profile}
+                alt="profile"
               />
-
-              {/* 메뉴 표시 */}
-              {menuOpen && (
-                <div className="menu-dropdown">
-                  <ul>
-                    <li
-                      onClick={() => {
-                        closeSettingMenu();
-                        handleLogout();
-                      }}
-                    >
-                      로그아웃
-                    </li>
-                    <li
-                      onClick={() => {
-                        closeSettingMenu();
-                        handleDeleteAccount();
-                      }}
-                    >
-                      회원 탈퇴
-                    </li>
-                  </ul>
+            </div>
+            <div className="profile-info">
+              <div className="user-info">
+                <h2>{profileData?.user_id || "사용자 이름"}</h2>
+                <button onClick={goToEditProfile}>프로필 편집</button>
+                <button onClick={goToDmListPage} className="dm-list-button">
+                  DM
+                </button>
+                <div className="settings-icon-container">
+                  <img
+                    src={settingIcon}
+                    alt="설정 메뉴"
+                    onClick={toggleSettingMenu}
+                    className="settings-icon"
+                  />
+                  {/* 메뉴 표시 */}
+                  {menuOpen && (
+                    <div className="menu-dropdown">
+                      <ul>
+                        <li
+                          onClick={() => {
+                            closeSettingMenu();
+                            handleLogout();
+                          }}
+                        >
+                          로그아웃
+                        </li>
+                        <li
+                          onClick={() => {
+                            closeSettingMenu();
+                            handleDeleteAccount();
+                          }}
+                        >
+                          회원 탈퇴
+                        </li>
+                      </ul>
+                    </div>
+                  )}
                 </div>
-              )}
+              </div>
+              <div className="stats">
+                <span>
+                  게시물 <span className="bold">{posts.length || "0"}</span>
+                </span>
+                <span>
+                  팔로워{" "}
+                  <span className="bold" onClick={goToFollowersPage}>
+                    {followers.length || "0"}
+                  </span>
+                </span>
+                <span>
+                  팔로잉{" "}
+                  <span className="bold" onClick={goToFollowingsPage}>
+                    {following.length || "0"}
+                  </span>
+                </span>
+              </div>
+              <div className="userName">{name || ""}</div>
+              <div className="introduce">{introduce || ""}</div>
             </div>
           </div>
-          <div className="stats">
-            <span>
-              게시물 <span className="bold">{posts.length || "0"}</span>
-            </span>
-            <span>
-              팔로워{" "}
-              <span className="bold" onClick={goToFollowersPage}>
-                {followers.length || "0"}
-              </span>
-            </span>
-            <span>
-              팔로잉{" "}
-              <span className="bold" onClick={goToFollowingsPage}>
-                {following.length || "0"}
-              </span>
-            </span>
-          </div>
-          <div className="userName">{name || ""}</div>
-          <div className="introduce">{introduce || ""}</div>
-        </div>
-      </div>
-      <div className="posts-section">
-        <h2>게시물</h2>
-        {posts.length > 0 ? (
-          <div className="posts-grid">
-            {posts.map((post) => (
-              <div key={post._id} className="post-item">
-                <img
-                  src={post.images[0]}
-                  alt={`Post ${post._id}`}
-                  onClick={() => openModal(post)}
-                />
-                {post.images.length > 1 && (
-                  <div className="many-images-overlay">
+          <div className="posts-section">
+            <h2>게시물</h2>
+            {posts.length > 0 ? (
+              <div className="posts-grid">
+                {posts.map((post) => (
+                  <div key={post._id} className="post-item">
                     <img
-                      src={manyImg}
-                      alt="Multiple Images"
-                      className="many-images-icon"
+                      src={post.images[0]}
+                      alt={`Post ${post._id}`}
+                      onClick={() => openModal(post)}
                     />
+                    {post.images.length > 1 && (
+                      <div className="many-images-overlay">
+                        <img
+                          src={manyImg}
+                          alt="Multiple Images"
+                          className="many-images-icon"
+                        />
+                      </div>
+                    )}
                   </div>
-                )}
+                ))}
               </div>
-            ))}
+            ) : (
+              <div className="no-posts-message">
+                <p>첫 번째 게시물을 올려보세요 🤓</p>
+              </div>
+            )}
           </div>
-        ) : (
-          <div className="no-posts-message">
-            <p>첫 번째 게시물을 올려보세요 🤓</p>
-          </div>
-        )}
-      </div>
-      {isModalOpen && selectedPost && (
-        <PostDetailModal
-          post={selectedPost}
-          isOpen={isModalOpen}
-          onClose={closeModal}
-          postLike={handleLikePost}
-          postDelete={handleDeletePost}
-          addComment={handleAddComment}
-          likeComment={handleLikeComment}
-        />
+          {isModalOpen && selectedPost && (
+            <PostDetailModal
+              post={selectedPost}
+              isOpen={isModalOpen}
+              onClose={closeModal}
+              postLike={handleLikePost}
+              postDelete={handleDeletePost}
+              addComment={handleAddComment}
+              likeComment={handleLikeComment}
+            />
+          )}
+        </>
       )}
     </div>
   );
