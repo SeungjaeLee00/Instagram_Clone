@@ -11,7 +11,7 @@ const LoadingSpinner = () => {
         height: "100vh",
       }}
     >
-      <Oval color="#00BFFF" height={80} width={80} visible={loading} />{" "}
+      <Oval color="#00BFFF" height={80} width={80} visible={true} />{" "}
     </div>
   );
 };
