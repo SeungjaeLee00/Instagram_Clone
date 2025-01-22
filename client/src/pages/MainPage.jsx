@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from "react";
-import "../styles/pages/MainPage.css";
-import PostCard from "../components/PostCard";
-import CustomAlert from "../components/CustomAlert";
 import { fetchPosts, deletePost, addLike } from "../api/postApi";
 import { addComment } from "../api/commentApi";
 import useAuth from "../hooks/useAuth";
+
+import PostCard from "../components/PostCard";
+import CustomAlert from "../components/CustomAlert";
+import LoadingSpinner from "../components/LoadingSpinner";
+
+import "../styles/pages/MainPage.css";
 
 const MainPage = () => {
   const { isAuthenticated, user } = useAuth();
@@ -18,6 +21,7 @@ const MainPage = () => {
     if (isAuthenticated) {
       const fetchUserPosts = async () => {
         try {
+          setLoading(true);
           const postList = await fetchPosts();
           // console.log("postList : ", postList);
           const postsWithLikesCount = postList.map((post) => ({
@@ -125,9 +129,7 @@ const MainPage = () => {
     }
   };
 
-  if (loading) {
-    return <div>게시물을 로딩 중입니다...</div>;
-  }
+  if (loading) return <LoadingSpinner />;
 
   return (
     <div className="main-page">

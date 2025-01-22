@@ -6,15 +6,11 @@ import { fetchSingleUserProfile } from "../api/userApi";
 import { followUser, getUserFollowing } from "../api/followApi";
 import { createDM } from "../api/messageApi";
 import { addLike } from "../api/postApi";
-import {
-  addComment,
-  addCommentLike,
-  deleteSelectComment,
-  getComments,
-} from "../api/commentApi";
+import { addComment, addCommentLike, getComments } from "../api/commentApi";
 
 import useAuth from "../hooks/useAuth";
 import PostDetailModal from "../components/Modals/PostDetailModal";
+import LoadingSpinner from "../components/LoadingSpinner";
 
 import "../styles/pages/UserPage.css";
 import default_profile from "../assets/default_profile.png";
@@ -39,6 +35,7 @@ const UserPage = () => {
     if (user && user.userId) {
       const getUserProfile = async () => {
         try {
+          setIsLoading(true);
           const userProfile = await fetchSingleUserProfile(userName);
           const postList = userProfile.posts;
           const updatedPosts = postList
@@ -241,9 +238,7 @@ const UserPage = () => {
     setSelectedPost(null);
   };
 
-  if (isLoading) {
-    return <div>로딩 중...</div>;
-  }
+  if (isLoading) return <LoadingSpinner />;
 
   if (error) {
     return <div className="error-message">{error}</div>;

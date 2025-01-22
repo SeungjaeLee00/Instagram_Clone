@@ -4,6 +4,7 @@ import { chatroomList, deleteChatroom } from "../../api/messageApi";
 import CreateDmModal from "../../components/Modals/CreateDmModal";
 import CustomAlert from "../../components/CustomAlert";
 import CustomConfirm from "../../components/CustomConfirm";
+import LoadingSpinner from "../../components/LoadingSpinner";
 
 import "../../styles/pages/MessagesPage/ChatroomPage.css";
 import newChat from "../../assets/newChat.png";
@@ -17,13 +18,16 @@ const Chatroom = () => {
   const [otherUserProfile, setOtherUserProfile] = useState(""); // profile image
   const [userName, setUserName] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
   const [alert, setAlert] = useState({ message: "", type: "" });
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchChatrooms = async () => {
       try {
+        setLoading(true);
         const data = await chatroomList();
         // console.log("chatrooms:", data);
 
@@ -34,6 +38,8 @@ const Chatroom = () => {
         setOtherUserProfile(data.user_profile);
       } catch (err) {
         setError(err.message);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -77,6 +83,8 @@ const Chatroom = () => {
       }
     }
   };
+
+  if (loading) return <LoadingSpinner />;
 
   return (
     <div className="chatroom-page">

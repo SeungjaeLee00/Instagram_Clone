@@ -5,6 +5,7 @@ import { getMyArchivedPosts } from "../../api/mypageApi";
 import { archivePost, deletePost } from "../../api/postApi";
 
 import useAuth from "../../hooks/useAuth";
+import LoadingSpinner from "../../components/LoadingSpinner";
 
 import "../../styles/pages/MyPage/Storage.css";
 
@@ -26,8 +27,8 @@ const Storage = () => {
     if (isAuthenticated) {
       const fetchData = async () => {
         try {
+          setLoading(true);
           const postList = await getMyArchivedPosts();
-
           setPosts(postList || []);
         } catch (error) {
           console.error("데이터 로드 실패: ", error);
@@ -86,6 +87,7 @@ const Storage = () => {
       setShowOptions(false);
     }
   };
+  if (loading) return <LoadingSpinner />;
 
   return (
     <div className="storage-page">

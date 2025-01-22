@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { fetchMultiUsersProfile } from "../api/userApi";
 import useAuth from "../hooks/useAuth";
+import LoadingSpinner from "../components/LoadingSpinner";
 import "../styles/pages/SearchPage.css";
 
 const SearchPage = () => {
@@ -9,6 +10,7 @@ const SearchPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [recentSearches, setRecentSearches] = useState([]);
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
@@ -35,6 +37,7 @@ const SearchPage = () => {
       setError("");
 
       try {
+        setLoading(true);
         const result = await fetchMultiUsersProfile(searchQuery);
 
         if (Array.isArray(result)) {
@@ -85,6 +88,7 @@ const SearchPage = () => {
     setRecentSearches(updatedSearches);
   };
 
+  if (loading) return <LoadingSpinner />;
   return (
     <div className="search-page">
       <div className="search-header">검색</div>
