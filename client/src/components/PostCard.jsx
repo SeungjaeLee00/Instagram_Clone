@@ -202,11 +202,9 @@ const PostCard = ({ post, addComment, postDelete, postLike }) => {
     try {
       const dmTo = post.user_id.user_id;
       const dmTo_id = post.user_id._id;
-      const loggedInUser = user.userId; // 로그인 사용자 ID (useAuth에서 가져온 user 정보)
-      console.log("user", user);
-      console.log("post", post);
-      console.log("dmTo_id", dmTo_id);
-      console.log("loggedInUser", loggedInUser);
+      const loggedInUser = user.userId;
+      // console.log("dmTo_id", dmTo_id);
+      // console.log("loggedInUser", loggedInUser);
 
       // 동일 사용자 여부 확인
       if (dmTo_id === loggedInUser) {

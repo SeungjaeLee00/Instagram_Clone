@@ -125,8 +125,16 @@ const PostDetailModal = ({
 
         if (response.message.includes("보관 완료되었습니다.")) {
           setIsArchived(true);
+          setAlert({
+            message: "보관 완료되었습니다.",
+            type: "success",
+          });
         } else if (response.message.includes("보관 취소되었습니다.")) {
           setIsArchived(false);
+          setAlert({
+            message: "보관 취소되었습니다.",
+            type: "success",
+          });
         }
       } catch (error) {
         console.error("보관 처리 중 오류 발생:", error);
