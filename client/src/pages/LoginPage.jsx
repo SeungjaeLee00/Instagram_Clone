@@ -8,7 +8,7 @@ import { loginUser } from "../api/authApi";
 import instalogo from "../assets/instagram_logo.png";
 import googleplaylogo from "../assets/google-play.png";
 import microsoftlogo from "../assets/microsoft.png";
-import kakaoImg from "../assets/kakao_login_medium_wide.png";
+import kakaoImg from "../assets/kakao_login_ko.png";
 
 const Login = ({ setIsAuthenticated }) => {
   const [emailOrUsername, setemailOrUsername] = useState("");
