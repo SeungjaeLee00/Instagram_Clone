@@ -48,6 +48,11 @@ app.use(
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+// Ping 엔드포인트 추가 →  UptimeRobot의 요청을 처리
+app.get("/ping", (req, res) => {
+  res.status(200).send("Pong");
+});
+
 // 라우트 등록
 app.use("/auth", authRoutes);
 app.use("/auth/kakao", kakaoRoutes);
