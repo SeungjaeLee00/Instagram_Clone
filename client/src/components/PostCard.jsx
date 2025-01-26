@@ -202,12 +202,16 @@ const PostCard = ({ post, addComment, postDelete, postLike }) => {
     try {
       const dmTo = post.user_id.user_id; // 게시물 작성자 ID
       const loggedInUser = user.userId; // 로그인 사용자 ID (useAuth에서 가져온 user 정보)
+      console.log("user", user);
       console.log("dmTo", dmTo);
       console.log("loggedInUser", loggedInUser);
 
       // 동일 사용자 여부 확인
       if (dmTo === loggedInUser) {
-        setError("자신과의 채팅방은 생성할 수 없습니다.");
+        setAlert({
+          message: "자신과의 채팅방은 생성할 수 없습니다.",
+          type: "error",
+        });
         return;
       }
 
