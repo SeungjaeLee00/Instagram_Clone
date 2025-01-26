@@ -19,11 +19,11 @@ const Signup = () => {
   const [emailValid, setEmailValid] = useState(false);
   const [passwordValid, setPasswordValid] = useState(false);
 
-  const [confirmPassword, setConfirmPassword] = useState(""); // 새로운 상태 추가
-  const [confirmPasswordValid, setConfirmPasswordValid] = useState(false); // 비밀번호 재확인 유효성
-
   const [nameValid, setNameValid] = useState(false);
   const [userIdValid, setUserIdValid] = useState(false);
+
+  const [confirmPassword, setConfirmPassword] = useState(""); // 새로운 상태 추가
+  const [confirmPasswordValid, setConfirmPasswordValid] = useState(false); // 비밀번호 재확인 유효성
 
   // 버튼 활성화 여부
   const [NotAllow, setNotAllow] = useState(false);

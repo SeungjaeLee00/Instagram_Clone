@@ -84,22 +84,6 @@ const PostCard = ({ post, addComment, postDelete, postLike }) => {
   };
 
   // 게시물 삭제
-  // const handleDelete = () => {
-  //   if (window.confirm("게시물을 삭제하시겠습니까?")) {
-  //     const postUserId = post.user_id?._id;
-  //     if (!postUserId) {
-  //       // alert("사용자 정보가 없습니다.");
-  //       setAlert({
-  //         message: "사용자 정보가 없습니다.",
-  //         type: "error",
-  //       });
-  //       return;
-  //     }
-  //     postDelete(post._id, postUserId);
-  //   }
-  // };
-
-  // 게시물 삭제
   const handleDelete = async () => {
     try {
       const confirmed = await CustomConfirm({
