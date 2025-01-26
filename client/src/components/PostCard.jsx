@@ -146,7 +146,6 @@ const PostCard = ({ post, addComment, postDelete, postLike }) => {
     }
   };
 
-  // 댓글 좋아요
   const handleLikeComment = async (commentId) => {
     try {
       const response = await addCommentLike(commentId);
