@@ -47,7 +47,7 @@ const SearchPage = () => {
           setError("일치하는 유저가 없습니다.");
         }
       } catch (err) {
-        setError("검색 중 오류가 발생했습니다.");
+        setError("아이디를 입려해야 합니다.");
         console.error(err);
       } finally {
         setLoading(false);

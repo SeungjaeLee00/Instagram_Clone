@@ -187,6 +187,7 @@ const Login = ({ setIsAuthenticated }) => {
               padding: 0,
               cursor: "pointer",
               color: "#385185",
+              fontSize: "14px",
             }}
           >
             가입하기

@@ -18,6 +18,10 @@ const Signup = () => {
 
   const [emailValid, setEmailValid] = useState(false);
   const [passwordValid, setPasswordValid] = useState(false);
+
+  const [confirmPassword, setConfirmPassword] = useState(""); // 새로운 상태 추가
+  const [confirmPasswordValid, setConfirmPasswordValid] = useState(false); // 비밀번호 재확인 유효성
+
   const [nameValid, setNameValid] = useState(false);
   const [userIdValid, setUserIdValid] = useState(false);
 
@@ -53,6 +57,18 @@ const Signup = () => {
       setPasswordValid(true);
     } else {
       setPasswordValid(false);
+    }
+  };
+
+  // 비밀번호 재확인 입력 판단
+  const handleConfirmPassword = (e) => {
+    const value = e.target.value;
+    setConfirmPassword(value);
+
+    if (value === password) {
+      setConfirmPasswordValid(true);
+    } else {
+      setConfirmPasswordValid(false);
     }
   };
 
@@ -112,12 +128,18 @@ const Signup = () => {
 
   // 가입 버튼 활성화
   useEffect(() => {
-    if (emailValid && passwordValid && nameValid && userIdValid) {
+    if (
+      emailValid &&
+      passwordValid &&
+      nameValid &&
+      userIdValid &&
+      confirmPasswordValid
+    ) {
       setNotAllow(false);
     } else {
       setNotAllow(true);
     }
-  }, [emailValid, passwordValid, nameValid, userIdValid]);
+  }, [emailValid, passwordValid, nameValid, userIdValid, confirmPasswordValid]);
 
   const handleLogin = () => {
     navigate("/auth/login");
@@ -175,6 +197,19 @@ const Signup = () => {
 
           <input
             className="signup-input"
+            placeholder={"비밀번호 재확인"}
+            value={confirmPassword}
+            onChange={handleConfirmPassword}
+            type="password"
+          />
+          <div className="errorMessageWrap">
+            {!confirmPasswordValid && confirmPassword.length > 0 && (
+              <div> 비밀번호가 일치하지 않습니다. </div>
+            )}
+          </div>
+
+          <input
+            className="signup-input"
             placeholder={"성명"}
             value={name}
             onChange={handleName}
@@ -197,8 +232,11 @@ const Signup = () => {
           <div className="errorMessageWrap">
             {!userIdValid && user_id.length > 0 && (
               <div>
-                {" "}
-                사용자 이름에는 문자, 숫자, 밑줄 및 마침표만 사용할 수 있습니다.{" "}
+                {!/^[a-zA-Z0-9_.]+$/.test(user_id)
+                  ? "사용자 이름에는 알파벳(a-z, A-Z), 숫자, 밑줄 및 마침표만 사용할 수 있습니다."
+                  : user_id.length < 5
+                  ? "최소 5자 이상의 문자를 입력해야 합니다."
+                  : ""}
               </div>
             )}
           </div>
@@ -232,6 +270,7 @@ const Signup = () => {
               padding: 0,
               cursor: "pointer",
               color: "#385185",
+              fontSize: "14px",
             }}
           >
             로그인
