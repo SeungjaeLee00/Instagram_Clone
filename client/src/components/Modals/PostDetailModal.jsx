@@ -118,6 +118,15 @@ const PostDetailModal = ({
       try {
         if (!post._id) return;
         const loginUserId = user.userId;
+        const postuer = post.user_id._id;
+
+        if (postuer !== loginUserId) {
+          setAlert({
+            message: "본인의 게시물만 보관 가능합니다.",
+            type: "error",
+          });
+          return;
+        }
 
         const archive = !isArchived;
         const response = await archivePost(post._id, loginUserId, archive);
