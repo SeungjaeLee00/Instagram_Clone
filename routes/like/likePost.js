@@ -11,6 +11,83 @@ const { emitPostLike } = require("../../server");
 
 const { User } = require("../../models/User"); // user_id불러 오기 위한 정보
 
+/**
+ * @swagger
+ * tags:
+ *   - name: "Likes"
+ *     description: "좋아요 관련 API"
+ * /likes/posts/{postId}/like:
+ *   post:
+ *     description: "게시물에 좋아요를 추가하거나 취소하는 API (로그인된 사용자만)"
+ *     security:
+ *       - bearerAuth: []  # JWT 토큰 인증이 필요함
+ *     parameters:
+ *       - name: postId
+ *         in: path
+ *         required: true
+ *         description: "좋아요를 추가하거나 취소할 게시물의 ID"
+ *         schema:
+ *           type: string
+ *           example: "60e5b0f5b1f16b001c9a8f7a"
+ *     responses:
+ *       200:
+ *         description: "게시물 좋아요 취소 성공"
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "좋아요가 취소되었습니다."
+ *                 likesCount:
+ *                   type: integer
+ *                   example: 0
+ *                 likes:
+ *                   type: array
+ *                   items:
+ *                     type: string
+ *                     example: "user_id_1"
+ *       201:
+ *         description: "게시물 좋아요 추가 성공"
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "좋아요가 추가되었습니다."
+ *                 likesCount:
+ *                   type: integer
+ *                   example: 1
+ *                 likes:
+ *                   type: array
+ *                   items:
+ *                     type: string
+ *                     example: "user_id_1"
+ *       404:
+ *         description: "게시물을 찾을 수 없음"
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "게시물을 찾을 수 없습니다."
+ *       500:
+ *         description: "서버 오류 발생"
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "서버 오류가 발생했습니다."
+ */
+
 // 게시물 좋아요 API
 router.post("/:postId/like", auth, async (req, res) => {
   const { postId } = req.params;
@@ -18,8 +95,8 @@ router.post("/:postId/like", auth, async (req, res) => {
 
   try {
     const post = await Post.findById(postId);
-    const liker = await User.findById(userId).select('user_id');
-    const likerName = liker.user_id; 
+    const liker = await User.findById(userId).select("user_id");
+    const likerName = liker.user_id;
     const PostWriterId = post.user_id;
 
     if (!post) {

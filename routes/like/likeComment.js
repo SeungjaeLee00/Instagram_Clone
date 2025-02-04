@@ -9,6 +9,89 @@ router.use(cookieParser());
 const { Comment } = require("../../models/Comment");
 const { emitCommentLike } = require("../../server");
 
+/**
+ * @swagger
+ * tags:
+ *   - name: "Likes"
+ *     description: "좋아요 관련 API"
+ * /likes/comments/{commentId}/like:
+ *   post:
+ *     description: "댓글에 좋아요를 추가하거나 취소하는 API (로그인된 사용자만)"
+ *     security:
+ *       - bearerAuth: []  # JWT 토큰 인증이 필요함
+ *     parameters:
+ *       - name: commentId
+ *         in: path
+ *         required: true
+ *         description: "좋아요를 추가하거나 취소할 댓글의 ID"
+ *         schema:
+ *           type: string
+ *           example: "60e5b0f5b1f16b001c9a8f7a"
+ *     responses:
+ *       200:
+ *         description: "댓글 좋아요 취소 성공"
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "댓글 좋아요가 취소되었습니다."
+ *                 likesCount:
+ *                   type: integer
+ *                   example: 0
+ *                 liked:
+ *                   type: boolean
+ *                   example: false
+ *                 likes:
+ *                   type: array
+ *                   items:
+ *                     type: string
+ *                     example: "user_id_1"
+ *       201:
+ *         description: "댓글 좋아요 추가 성공"
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "댓글 좋아요가 추가되었습니다."
+ *                 likesCount:
+ *                   type: integer
+ *                   example: 1
+ *                 liked:
+ *                   type: boolean
+ *                   example: true
+ *                 likes:
+ *                   type: array
+ *                   items:
+ *                     type: string
+ *                     example: "user_id_1"
+ *       404:
+ *         description: "댓글을 찾을 수 없음"
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "댓글을 찾을 수 없습니다."
+ *       500:
+ *         description: "서버 오류 발생"
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "서버 오류가 발생했습니다."
+ */
+
 router.post("/:commentId/like", auth, async (req, res) => {
   const { commentId } = req.params;
   const userId = req.user.id;
