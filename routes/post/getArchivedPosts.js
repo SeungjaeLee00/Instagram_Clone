@@ -14,6 +14,8 @@ router.use(cookieParser());
  * /post/my-archived/archivedPost:
  *   get:
  *     description: "사용자가 보관한 게시물을 조회하는 API (로그인된 사용자만)"
+ * tags:
+ *       - "Posts"
  *     security:
  *       - bearerAuth: []  # JWT 토큰 인증이 필요함
  *     responses:

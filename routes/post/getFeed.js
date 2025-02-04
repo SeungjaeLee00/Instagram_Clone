@@ -16,6 +16,8 @@ router.use(cookieParser());
  * /post/feed/:
  *   get:
  *     description: "사용자가 팔로우한 사용자의 최근 게시물을 조회하거나, 팔로우한 사용자의 게시물이 없을 경우 사용자 자신의 최근 게시물을 조회하는 API (로그인된 사용자만)"
+ * tags:
+ *       - "Posts"
  *     security:
  *       - bearerAuth: []  # JWT 토큰 인증이 필요함
  *     responses:

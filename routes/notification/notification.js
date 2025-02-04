@@ -14,6 +14,8 @@ router.use(cookieParser());
  * /notifications/:
  *   get:
  *     description: "사용자에게 해당하는 알림을 가져오는 API (로그인된 사용자만)"
+ * tags:
+ *       - "Notifications"
  *     security:
  *       - bearerAuth: []  # JWT 토큰 인증이 필요함
  *     responses:
@@ -76,12 +78,10 @@ router.get("/", auth, async (req, res) => {
 
     return res.status(200).json(filteredNotifications);
   } catch (error) {
-    return res
-      .status(500)
-      .json({
-        message: "알림을 가져오는 중 오류가 발생했습니다.",
-        error: error.message,
-      });
+    return res.status(500).json({
+      message: "알림을 가져오는 중 오류가 발생했습니다.",
+      error: error.message,
+    });
   }
 });
 

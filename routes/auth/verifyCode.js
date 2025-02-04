@@ -10,6 +10,8 @@ const { User } = require("../../models/User");
  * /auth/verify-reset-code/:
  *   post:
  *     description: "비밀번호 재설정을 위한 인증 코드 검증 API"
+ *      tags:
+ *       - "Auth"
  *     requestBody:
  *       required: true
  *       content:

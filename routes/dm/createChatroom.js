@@ -17,6 +17,8 @@ router.use(cookieParser());
  * /dm/create/{chatId}:
  *   post:
  *     description: "채팅방이 없는 경우 새 채팅방을 생성하는 API (로그인된 사용자만)"
+ * tags:
+ *       - "DM (Direct Message)"
  *     security:
  *       - bearerAuth: []  # JWT 토큰 인증이 필요함
  *     parameters:

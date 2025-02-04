@@ -16,6 +16,8 @@ router.use(cookieParser());
  * /notifications/delete/{notificationId}:
  *   delete:
  *     description: "사용자가 받은 알림을 삭제하는 API (로그인된 사용자만)"
+ * tags:
+ *       - "Notifications"
  *     security:
  *       - bearerAuth: []  # JWT 토큰 인증이 필요함
  *     parameters:

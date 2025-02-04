@@ -11,6 +11,8 @@ const { Post } = require("../../models/Post");
  * /comment/get/{postId}/comments:
  *   get:
  *     description: "게시물에 달린 댓글을 조회하는 API (로그인된 사용자만)"
+ *     tags:
+ *       - "Comments"
  *     security:
  *       - bearerAuth: []  # JWT 토큰 인증이 필요함
  *     parameters:

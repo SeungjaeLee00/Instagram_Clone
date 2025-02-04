@@ -11,11 +11,13 @@ router.use(cookieParser());
 /**
  * @swagger
  * tags:
- *   - name: "Users"
+ *   - name: "Profile"
  *     description: "사용자 관련 API"
  * /profile/search:
  *   get:
  *     description: "로그인된 사용자의 프로필 정보 조회"
+ * tags:
+ *       - "Profile"
  *     security:
  *       - bearerAuth: []  # JWT 토큰 인증이 필요함
  *     responses:

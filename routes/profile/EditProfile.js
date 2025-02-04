@@ -13,11 +13,13 @@ const multer = require("multer");
 /**
  * @swagger
  * tags:
- *   - name: "Users"
+ *   - name: "Profile"
  *     description: "사용자 관련 API"
  * /profile/edit:
  *   patch:
  *     description: "사용자 정보 수정 API (로그인된 사용자만)"
+ * tags:
+ *       - "Profile"
  *     security:
  *       - bearerAuth: []  # JWT 토큰 인증이 필요함
  *     requestBody:

@@ -14,6 +14,8 @@ const crypto = require("crypto"); // 인증코드 생성에 사용할 모듈
  * /auth/request-reset-password/:
  *   post:
  *     description: "비밀번호 재설정 요청"
+ *      tags:
+ *       - "Auth"
  *     requestBody:
  *       required: true
  *       content:

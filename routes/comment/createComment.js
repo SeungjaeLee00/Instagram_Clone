@@ -17,6 +17,8 @@ router.use(cookieParser());
  * /comment/create/{postId}:
  *   post:
  *     description: "게시물에 댓글을 추가하는 API (로그인된 사용자만)"
+ *      tags:
+ *       - "Comments"
  *     security:
  *       - bearerAuth: []  # JWT 토큰 인증이 필요함
  *     parameters:

@@ -26,6 +26,8 @@ const REDIRECT_URI = process.env.REDIRECT_URI;
  * /auth/kakao/callback:
  *   post:
  *     description: "카카오 소셜 로그인 인증 콜백을 처리하는 API"
+ *     tags:
+ *       - "Auth"
  *     parameters:
  *       - in: body
  *         name: code

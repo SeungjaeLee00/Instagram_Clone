@@ -19,6 +19,8 @@ router.use(cookieParser());
  * /auth/withdraw/:
  *   delete:
  *     description: "사용자가 계정을 탈퇴하는 API"
+ *      tags:
+ *       - "Auth"
  *     security:
  *       - bearerAuth: []
  *     responses:

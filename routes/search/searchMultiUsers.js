@@ -17,6 +17,8 @@ const { Follow } = require("../../models/Follow");
  * /search/multiple:
  *   get:
  *     description: "사용자 ID로 사용자들을 검색하여 관련 정보 반환"
+ * tags:
+ *       - "Search"
  *     parameters:
  *       - in: query
  *         name: user_id

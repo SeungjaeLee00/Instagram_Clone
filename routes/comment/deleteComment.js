@@ -16,6 +16,8 @@ router.use(cookieParser());
  * /comment/delete/{commentId}:
  *   delete:
  *     description: "댓글을 삭제하는 API (로그인된 사용자만, 자신이 작성한 댓글만 삭제 가능)"
+ *     tags:
+ *       - "Comments"
  *     security:
  *       - bearerAuth: []  # JWT 토큰 인증이 필요함
  *     parameters:

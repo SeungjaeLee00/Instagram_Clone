@@ -17,6 +17,8 @@ router.use(cookieParser());
  * /dm/list:
  *   get:
  *     description: "사용자가 속한 모든 채팅방 목록을 조회하는 API (로그인된 사용자만)"
+ * tags:
+ *       - "DM (Direct Message)"
  *     security:
  *       - bearerAuth: []  # JWT 토큰 인증이 필요함
  *     responses:
