@@ -9,6 +9,72 @@ const { Chatroom } = require("../../models/Chatroom");
 const cookieParser = require("cookie-parser");
 router.use(cookieParser());
 
+/**
+ * @swagger
+ * tags:
+ *   - name: "DM (Direct Message)"
+ *     description: "1:1 메시지 관련 API"
+ * /dm/list:
+ *   get:
+ *     description: "사용자가 속한 모든 채팅방 목록을 조회하는 API (로그인된 사용자만)"
+ *     security:
+ *       - bearerAuth: []  # JWT 토큰 인증이 필요함
+ *     responses:
+ *       200:
+ *         description: "참여 중인 채팅방 목록"
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "참여 중인 채팅방 목록"
+ *                 chatrooms:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       chatroomId:
+ *                         type: string
+ *                         example: "60b8d6c3f07f6f3b4d455777"
+ *                       chatroomName:
+ *                         type: string
+ *                         example: "seungjae"
+ *                       user_profile:
+ *                         type: string
+ *                         example: "https://example.com/profile.jpg"
+ *                 user_id:
+ *                   type: string
+ *                   example: "60b8d6c3f07f6f3b4d455777"
+ *                 userName:
+ *                   type: string
+ *                   example: "seungjae"
+ *       401:
+ *         description: "인증되지 않은 사용자. 로그인 후 다시 시도하세요."
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "로그인 후 다시 시도해주세요."
+ *       500:
+ *         description: "서버 오류 발생"
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "채팅방 조회 실패"
+ *                 error:
+ *                   type: string
+ *                   example: "Error message here"
+ */
+
 // 내가 속한 모든 채팅방 가져오기
 router.get("/", auth, async (req, res) => {
   try {
