@@ -19,7 +19,7 @@ const { User } = require("../../models/User"); // user_id불러 오기 위한 �
  * /likes/posts/{postId}/like:
  *   post:
  *     description: "게시물에 좋아요를 추가하거나 취소하는 API (로그인된 사용자만)"
- * tags:
+ *     tags:
  *       - "Likes"
  *     security:
  *       - bearerAuth: []  # JWT 토큰 인증이 필요함

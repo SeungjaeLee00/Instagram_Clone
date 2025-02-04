@@ -17,7 +17,7 @@ const { emitCommentLike } = require("../../server");
  * /likes/comments/{commentId}/like:
  *   post:
  *     description: "댓글에 좋아요를 추가하거나 취소하는 API (로그인된 사용자만)"
- * tags:
+ *     tags:
  *       - "Likes"
  *     security:
  *       - bearerAuth: []  # JWT 토큰 인증이 필요함

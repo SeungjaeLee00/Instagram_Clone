@@ -14,7 +14,7 @@ router.use(cookieParser());
  * /post/archive/{id}/archive:
  *   put:
  *     description: "게시물을 보관 처리하거나 보관을 취소하는 API (로그인된 사용자만)"
- * tags:
+ *     tags:
  *       - "Posts"
  *     security:
  *       - bearerAuth: []  # JWT 토큰 인증이 필요함

@@ -14,7 +14,7 @@ router.use(cookieParser());
  * /notifications/:
  *   get:
  *     description: "사용자에게 해당하는 알림을 가져오는 API (로그인된 사용자만)"
- * tags:
+ *     tags:
  *       - "Notifications"
  *     security:
  *       - bearerAuth: []  # JWT 토큰 인증이 필요함

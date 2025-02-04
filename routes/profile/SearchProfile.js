@@ -16,7 +16,7 @@ router.use(cookieParser());
  * /profile/search:
  *   get:
  *     description: "로그인된 사용자의 프로필 정보 조회"
- * tags:
+ *     tags:
  *       - "Profile"
  *     security:
  *       - bearerAuth: []  # JWT 토큰 인증이 필요함

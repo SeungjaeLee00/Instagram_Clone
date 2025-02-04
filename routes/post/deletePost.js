@@ -19,7 +19,7 @@ const s3 = require("../../config/s3");
  * /post/delete/{id}:
  *   delete:
  *     description: "게시물을 삭제하는 API (로그인된 사용자만)"
- * tags:
+ *     tags:
  *       - "Posts"
  *     security:
  *       - bearerAuth: []  # JWT 토큰 인증이 필요함

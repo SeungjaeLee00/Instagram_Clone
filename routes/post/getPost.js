@@ -16,7 +16,7 @@ router.use(cookieParser());
  * /post/get-post/{id}:
  *   get:
  *     description: "게시물 단건을 조회하는 API (로그인된 사용자만)"
- * tags:
+ *     tags:
  *       - "Posts"
  *     security:
  *       - bearerAuth: []  # JWT 토큰 인증이 필요함

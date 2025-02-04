@@ -21,7 +21,7 @@ const s3 = require("../../config/s3"); // S3 클라이언트 가져오기
  * /post/upload:
  *   post:
  *     description: "게시물 업로드 API (로그인된 사용자만)"
- * tags:
+ *     tags:
  *       - "Posts"
  *     security:
  *       - bearerAuth: []  # JWT 토큰 인증이 필요함

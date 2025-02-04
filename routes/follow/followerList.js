@@ -15,7 +15,7 @@ router.use(cookieParser());
  * /follow/follower:
  *   get:
  *     description: "사용자의 팔로워 목록을 가져오는 API (로그인된 사용자만)"
- * tags:
+ *     tags:
  *       - "Follow"
  *     security:
  *       - bearerAuth: []  # JWT 토큰 인증이 필요함

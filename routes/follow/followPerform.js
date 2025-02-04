@@ -16,7 +16,7 @@ router.use(cookieParser());
  * /follow/follow:
  *   post:
  *     description: "사용자를 팔로우하거나 팔로우를 취소하는 API (로그인된 사용자만)"
- * tags:
+ *     tags:
  *       - "Follow"
  *     security:
  *       - bearerAuth: []  # JWT 토큰 인증이 필요함

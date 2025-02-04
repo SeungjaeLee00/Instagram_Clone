@@ -21,7 +21,7 @@ const { DeleteObjectCommand } = require("@aws-sdk/client-s3");
  * /post/edit/{id}:
  *   patch:
  *     description: "게시물을 수정하는 API (로그인된 사용자만)"
- * tags:
+ *     tags:
  *       - "Posts"
  *     security:
  *       - bearerAuth: []  # JWT 토큰 인증이 필요함

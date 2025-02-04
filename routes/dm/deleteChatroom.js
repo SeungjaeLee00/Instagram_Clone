@@ -16,7 +16,7 @@ router.use(cookieParser());
  * /dm/chatroom/delete/{chatroomId}:
  *   delete:
  *     description: "채팅방을 삭제하는 API (로그인된 사용자만)"
- * tags:
+ *     tags:
  *       - "DM (Direct Message)"
  *     security:
  *       - bearerAuth: []  # JWT 토큰 인증이 필요함

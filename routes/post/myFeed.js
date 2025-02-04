@@ -14,7 +14,7 @@ router.use(cookieParser());
  * /post/my/myFeed:
  *   get:
  *     description: "내 게시물 전체를 조회하는 API (로그인된 사용자만)"
- * tags:
+ *     tags:
  *       - "Posts"
  *     security:
  *       - bearerAuth: []  # JWT 토큰 인증이 필요함

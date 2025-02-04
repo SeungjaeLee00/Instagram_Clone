@@ -18,7 +18,7 @@ const { Follow } = require("../../models/Follow");
  * /search/single:
  *   get:
  *     description: "사용자 닉네임으로 단일 사용자 검색 및 관련 정보 반환"
- * tags:
+ *     tags:
  *       - "Search"
  *     parameters:
  *       - in: query
