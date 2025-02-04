@@ -18,6 +18,73 @@ const JWT_SECRET = process.env.JWT_SECRET;
 const KAKAO_CLIENT_ID = process.env.KAKAO_CLIENT_ID;
 const REDIRECT_URI = process.env.REDIRECT_URI;
 
+/**
+ * @swagger
+ * tags:
+ *   - name: "Auth"
+ *     description: "인증 관련 API"
+ * /auth/kakao/callback:
+ *   post:
+ *     description: "카카오 소셜 로그인 인증 콜백을 처리하는 API"
+ *     parameters:
+ *       - in: body
+ *         name: code
+ *         description: "카카오로부터 전달받은 인가 코드"
+ *         required: true
+ *         schema:
+ *           type: string
+ *           example: "authorization_code_from_kakao"
+ *     responses:
+ *       200:
+ *         description: "카카오 로그인 성공, JWT 토큰 발급 및 사용자 정보 반환"
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Kakao login success"
+ *                 loginSuccess:
+ *                   type: boolean
+ *                   example: true
+ *                 jwtToken:
+ *                   type: string
+ *                   example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrYWthb0lkIjo2NDYwYmZjZzY5NTU1M2NmY2FhZWY0ZGVkZGExN2E3ZGFmNTZkZDdmNzUzN2Y2ZjdmZDciLCJlbWFpbCI6InNldW5naW9uQG1haWwuY29tIiwibmlja25hbWUiOiJVa25vd24iLCJpYXQiOjE2NTU4Mzg5NzEsImV4cCI6MTY1NTgzOTU3MX0.1A4h9aRxjfJ2HvXBbcU3tQWiFq9r5rk_AfwZTg6YDEc"
+ *                 user:
+ *                   type: object
+ *                   properties:
+ *                     kakaoId:
+ *                       type: number
+ *                       example: 1234567890
+ *                     email:
+ *                       type: string
+ *                       example: "seungjae@example.com"
+ *                     nickname:
+ *                       type: string
+ *                       example: "이승재"
+ *       400:
+ *         description: "카카오 인가 코드가 누락된 경우"
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Kakao code is missing"
+ *       500:
+ *         description: "카카오 인증 실패 시 발생하는 서버 오류"
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Kakao 인증 실패"
+ */
+
 router.post("/callback", async (req, res) => {
   //   console.log("체크");
   const { code } = req.body; // 클라이언트에서 전달받은 인가 코드
