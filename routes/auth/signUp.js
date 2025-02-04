@@ -15,6 +15,8 @@ router.use(express.json());
  * /auth/sign-up/:
  *   post:
  *     description: 회원 가입을 위한 API
+ *     tags:
+ *       - "Auth"
  *     requestBody:
  *       required: true
  *       content:
