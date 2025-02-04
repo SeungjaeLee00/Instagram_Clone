@@ -10,6 +10,13 @@ const verifyCodeRoute = require("./verifyCode");
 const verifyTokenRoute = require("./verify-token");
 const withCredentialsRoute = require("./withdrawMembership");
 
+/**
+ * @swagger
+ * tags:
+ *   - name: "Auth"
+ *   - description: "회원가입, 로그인 및 인증 관련 api"
+ */
+
 // 인증 관련 라우트 설정
 router.use("/sign-up", signUpRoutes);
 router.use("/login", loginRoutes);

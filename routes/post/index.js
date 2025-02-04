@@ -10,6 +10,13 @@ const getFeedRoutes = require("./getFeed");
 const getMyFeedRoutes = require("./myFeed");
 const getArchivedPostRoutes = require("./getArchivedPosts");
 
+/**
+ * @swagger
+ * tags:
+ *   - name: "Post"
+ *   - description: "게시물 및 피드 관련 api"
+ */
+
 router.use("/upload", uploadPostRoutes);
 router.use("/edit", editPostRoutes);
 router.use("/delete", deletePostRoutes);
