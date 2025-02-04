@@ -11,6 +11,79 @@ router.use(cookieParser());
 const { DeleteObjectCommand } = require("@aws-sdk/client-s3");
 const s3 = require("../../config/s3");
 
+/**
+ * @swagger
+ * tags:
+ *   - name: "Posts"
+ *     description: "게시물 관련 API"
+ * /post/delete/{id}:
+ *   delete:
+ *     description: "게시물을 삭제하는 API (로그인된 사용자만)"
+ *     security:
+ *       - bearerAuth: []  # JWT 토큰 인증이 필요함
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         description: "삭제할 게시물의 ID"
+ *         schema:
+ *           type: string
+ *           example: "60e5b0f5b1f16b001c9a8f7a"
+ *       - name: body
+ *         in: body
+ *         required: true
+ *         description: "삭제를 요청하는 사용자 ID 포함"
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 userId:
+ *                   type: string
+ *                   example: "userId123"
+ *     responses:
+ *       200:
+ *         description: "게시물이 성공적으로 삭제되었습니다."
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "게시물이 삭제되었습니다."
+ *       400:
+ *         description: "잘못된 요청"
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "게시물을 찾을 수 없습니다."
+ *       403:
+ *         description: "권한 없음"
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "권한이 없습니다."
+ *       500:
+ *         description: "서버 오류 발생"
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "게시물 삭제 중 오류가 발생했습니다."
+ */
+
 // 게시물 삭제
 router.delete("/:id", auth, async (req, res) => {
   const { id } = req.params;

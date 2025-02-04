@@ -13,6 +13,116 @@ const upload = multer({ storage }).array("images", 10); // 최대 10장의 이�
 const s3 = require("../../config/s3");
 const { DeleteObjectCommand } = require("@aws-sdk/client-s3");
 
+/**
+ * @swagger
+ * tags:
+ *   - name: "Posts"
+ *     description: "게시물 관련 API"
+ * /post/edit/{id}:
+ *   patch:
+ *     description: "게시물을 수정하는 API (로그인된 사용자만)"
+ *     security:
+ *       - bearerAuth: []  # JWT 토큰 인증이 필요함
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         description: "수정할 게시물의 ID"
+ *         schema:
+ *           type: string
+ *           example: "60e5b0f5b1f16b001c9a8f7a"
+ *       - name: body
+ *         in: body
+ *         required: true
+ *         description: "수정할 게시물의 내용과 삭제할 이미지 정보"
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 text:
+ *                   type: string
+ *                   example: "수정된 게시물 내용입니다."
+ *                 imagesToDelete:
+ *                   type: string
+ *                   example: "[\"https://post-jae.s3.amazonaws.com/old_image.jpg\"]"
+ *     responses:
+ *       200:
+ *         description: "게시물이 성공적으로 수정되었습니다."
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "게시물이 수정되었습니다."
+ *                 post:
+ *                   type: object
+ *                   properties:
+ *                     _id:
+ *                       type: string
+ *                       example: "60e5b0f5b1f16b001c9a8f7a"
+ *                     text:
+ *                       type: string
+ *                       example: "수정된 게시물 내용입니다."
+ *                     images:
+ *                       type: array
+ *                       items:
+ *                         type: string
+ *                       example: ["https://post-jae.s3.amazonaws.com/new_image.jpg"]
+ *       400:
+ *         description: "잘못된 요청 (예: 삭제할 이미지가 1장 이하)"
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "이미지가 1장 이상 남아야 합니다."
+ *       401:
+ *         description: "인증되지 않은 사용자"
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "인증된 사용자가 아닙니다."
+ *       403:
+ *         description: "권한 없음"
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "게시물 수정 권한이 없습니다."
+ *       404:
+ *         description: "게시물 없음"
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "게시물을 찾을 수 없습니다."
+ *       500:
+ *         description: "서버 오류 발생"
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "게시물 수정 중 오류가 발생했습니다."
+ */
+
 // 게시물 수정
 router.patch("/:id", auth, upload, async (req, res) => {
   const { id } = req.params;
