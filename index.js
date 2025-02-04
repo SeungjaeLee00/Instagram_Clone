@@ -5,7 +5,7 @@ const mongoose = require("mongoose");
 
 // swagger 문서 설정
 const swaggerUi = require("swagger-ui-express");
-const swaggerDocument = require("./swagger-output.json");
+const swaggerSpec = require("./swagger");
 
 // CORS 설정
 const cors = require("cors");
@@ -71,7 +71,7 @@ app.use("/follow", followRoutes);
 app.use("/notifications", notificationRoutes);
 
 // Swagger UI 경로
-app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // 서버 초기화
 initSocket(server);

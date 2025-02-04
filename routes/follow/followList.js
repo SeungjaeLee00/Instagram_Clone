@@ -7,6 +7,50 @@ const { auth } = require("../../routes/auth");
 const cookieParser = require("cookie-parser");
 router.use(cookieParser());
 
+/**
+ * @swagger
+ * tags:
+ *   - name: "Follow"
+ *     description: "팔로우 관련 API"
+ * /follow/following:
+ *   get:
+ *     description: "사용자가 팔로우한 사람들의 목록을 가져오는 API (로그인된 사용자만)"
+ *     security:
+ *       - bearerAuth: []  # JWT 토큰 인증이 필요함
+ *     responses:
+ *       200:
+ *         description: "팔로우한 사람 목록 조회 성공"
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 following:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       user_id:
+ *                         type: string
+ *                         example: "seungjae"
+ *                       username:
+ *                         type: string
+ *                         example: "승재"
+ *                       profile_image:
+ *                         type: string
+ *                         example: "https://example.com/profile.jpg"
+ *       500:
+ *         description: "서버 오류 발생"
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "팔로우 목록 조회 실패"
+ */
+
 router.get("/", auth, async (req, res) => {
   const user_id = req.user._id;
 
