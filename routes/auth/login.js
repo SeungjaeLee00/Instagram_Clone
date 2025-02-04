@@ -17,6 +17,8 @@ router.use(cookieParser());
  * /auth/login/:
  *   post:
  *     description: "사용자 로그인"
+ *     tags:
+ *       - "Auth"
  *     requestBody:
  *       required: true
  *       content:
