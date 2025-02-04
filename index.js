@@ -3,6 +3,10 @@ const http = require("http");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 
+// swagger 문서 설정
+const swaggerUi = require("swagger-ui-express");
+const swaggerDocument = require("./swagger-output.json");
+
 // CORS 설정
 const cors = require("cors");
 
@@ -65,6 +69,9 @@ app.use("/likes", likeRoutes);
 app.use("/admin", adminRoutes);
 app.use("/follow", followRoutes);
 app.use("/notifications", notificationRoutes);
+
+// Swagger UI 경로
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // 서버 초기화
 initSocket(server);
