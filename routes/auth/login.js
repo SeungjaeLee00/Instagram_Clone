@@ -9,6 +9,76 @@ router.use(bodyParser.urlencoded({ extended: true }));
 router.use(bodyParser.json());
 router.use(cookieParser());
 
+/**
+ * @swagger
+ * tags:
+ *   - name: "Auth"
+ *     description: "회원가입, 로그인 및 인증 관련 API"
+ * /auth/login/:
+ *   post:
+ *     description: "사용자 로그인"
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               emailOrUsername:
+ *                 type: string
+ *                 example: "사용자의이메일@example.com"
+ *                 description: "사용자의 이메일 또는 사용자 아이디"
+ *               password:
+ *                 type: string
+ *                 example: "비밀번호"
+ *                 description: "사용자의 로그인 비밀번호"
+ *     responses:
+ *       200:
+ *         description: "로그인 성공"
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 loginSuccess:
+ *                   type: boolean
+ *                   example: true
+ *                 userId:
+ *                   type: string
+ *                   example: "60c72b2f9f1b2b4f5c6e7d8a"
+ *                   description: "사용자 ID"
+ *                 userName:
+ *                   type: string
+ *                   example: "사용자아이디"
+ *                   description: "사용자 아이디"
+ *       400:
+ *         description: "잘못된 요청 (Bad Request)"
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 loginSuccess:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "제공된 이메일 또는 아이디에 해당하는 유저가 없습니다."
+ *       500:
+ *         description: "서버 오류 (Internal Server Error)"
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 loginSuccess:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "서버 오류"
+ */
+
 // 사용자 로그인
 router.post("/", (req, res) => {
   User.findOne({

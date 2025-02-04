@@ -3,6 +3,71 @@ const router = express.Router();
 const bcrypt = require("bcryptjs"); // bcryptjs 사용
 const { User } = require("../../models/User");
 
+/**
+ * @swagger
+ * tags:
+ *   - name: "Auth"
+ *     description: "회원가입, 로그인 및 인증 관련 API"
+ * /auth/reset-password/:
+ *   post:
+ *     description: "비밀번호 변경"
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 example: "사용자의이메일@example.com"
+ *                 description: "비밀번호를 변경할 사용자의 이메일 주소"
+ *               newPassword:
+ *                 type: string
+ *                 example: "새로운비밀번호123"
+ *                 description: "새로운 비밀번호"
+ *     responses:
+ *       200:
+ *         description: "비밀번호 변경 성공"
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: "비밀번호가 성공적으로 변경되었습니다."
+ *       400:
+ *         description: "유효하지 않은 사용자"
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "유효한 사용자가 아닙니다."
+ *       500:
+ *         description: "서버 오류"
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "비밀번호 변경 중 오류가 발생했습니다."
+ */
+
 // 비밀번호 변경 라우트
 router.post("/", async (req, res) => {
   const { email, newPassword } = req.body;

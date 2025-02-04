@@ -1,34 +1,23 @@
-const swaggerAutogen = require("swagger-autogen")();
-const fs = require("fs");
-const path = require("path");
+const swaggerJsdoc = require("swagger-jsdoc");
 
-const doc = {
-  info: {
-    title: "Instagram Clone API",
-    description: "Instagram Clone 프로젝트의 API 문서",
+const swaggerOptions = {
+  definition: {
+    openapi: "3.0.0",
+    info: {
+      title: "Instagram Clone API",
+      version: "1.0.0",
+      description: "Instagram 클론 프로젝트 API 문서",
+    },
+    servers: [
+      {
+        url: "https://instagram-clone-ztsr.onrender.com",
+      },
+    ],
   },
-  host: "instagram-clone-ztsr.onrender.com",
-  schemes: ["https"],
+
+  apis: ["./routes/**/*.js"],
 };
 
-const outputFile = "./swagger-output.json";
+const swaggerSpec = swaggerJsdoc(swaggerOptions);
 
-const getFiles = (dir) => {
-  let results = [];
-  const list = fs.readdirSync(dir);
-  list.forEach((file) => {
-    const fullPath = path.join(dir, file);
-    const stat = fs.statSync(fullPath);
-    if (stat && stat.isDirectory()) {
-      results = results.concat(getFiles(fullPath)); // 폴더면 재귀 호출
-    } else if (file.endsWith(".js")) {
-      results.push(fullPath);
-    }
-  });
-  return results;
-};
-
-// index.js(루트) 포함 + routes 폴더 내 모든 .js 파일 자동 추가
-const endpointsFiles = ["./index.js", ...getFiles("./routes")];
-
-swaggerAutogen(outputFile, endpointsFiles);
+module.exports = swaggerSpec;

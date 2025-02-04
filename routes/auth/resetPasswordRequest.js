@@ -6,6 +6,67 @@ const {
 } = require("../../utils/sendPasswordResetEmail");
 const crypto = require("crypto"); // 인증코드 생성에 사용할 모듈
 
+/**
+ * @swagger
+ * tags:
+ *   - name: "Auth"
+ *     description: "회원가입, 로그인 및 인증 관련 API"
+ * /auth/request-reset-password/:
+ *   post:
+ *     description: "비밀번호 재설정 요청"
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 example: "사용자의이메일@example.com"
+ *                 description: "비밀번호 재설정을 원하는 사용자의 이메일 주소"
+ *     responses:
+ *       200:
+ *         description: "인증코드 전송 성공"
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: "인증코드가 이메일로 전송되었습니다."
+ *       400:
+ *         description: "유효하지 않은 이메일"
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "유효한 이메일이 아닙니다."
+ *       500:
+ *         description: "서버 오류"
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "서버 오류가 발생했습니다."
+ */
+
 // 비밀번호 재설정 요청 라우트
 router.post("/", async (req, res) => {
   const { email } = req.body;

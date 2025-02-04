@@ -7,6 +7,52 @@ const { sendVerificationEmail } = require("../../utils/sendEmail");
 
 router.use(express.json());
 
+/**
+ * @swagger
+ * tags:
+ *   - name: "Auth"
+ *     description: "회원가입, 로그인 및 인증 관련 api"
+ * /auth/sign-up/:
+ *   post:
+ *     description: 회원 가입을 위한 API
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 example: "사용자의이메일@example.com"
+ *                 pattern: "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$"
+ *                 description: "이메일 형식은 '@'를 포함해야 합니다."
+ *               user_id:
+ *                 type: string
+ *                 example: "사용자아이디"
+ *               password:
+ *                 type: string
+ *                 example: "비밀번호"
+ *     responses:
+ *       200:
+ *         description: 회원 가입 성공
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: "이메일 전송 성공"
+ *       400:
+ *         description: 잘못된 요청 (Bad Request)
+ *       500:
+ *         description: 서버 오류 (Internal Server Error)
+ */
+
 // 회원가입 처리 및 이메일 인증 코드 발송
 router.post("/", async (req, res) => {
   // const { email } = req.body;
@@ -80,6 +126,69 @@ router.post("/", async (req, res) => {
     res.status(500).json({ success: false, err });
   }
 });
+
+/**
+ * @swagger
+ * tags:
+ *   - name: "Auth"
+ *     description: "회원가입, 로그인 및 인증 관련 API"
+ * /auth/sign-up/verify-email/:
+ *   post:
+ *     description: "이메일 인증을 처리하는 API"
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 example: "사용자의이메일@example.com"
+ *               verificationCode:
+ *                 type: string
+ *                 example: "인증코드"
+ *     responses:
+ *       200:
+ *         description: "이메일 인증 성공"
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: "이메일 인증이 완료되었습니다."
+ *       400:
+ *         description: "잘못된 요청 (사용자 미존재, 인증 코드 불일치, 인증 코드 만료 등)"
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "인증코드가 일치하지 않습니다."
+ *       500:
+ *         description: "서버 오류"
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 err:
+ *                   type: string
+ *                   example: "서버 오류 메시지"
+ */
 
 // 이메일 인증 처리
 router.post("/verify-email", async (req, res) => {
