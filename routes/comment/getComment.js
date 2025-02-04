@@ -3,6 +3,131 @@ const router = express.Router();
 const { Comment } = require("../../models/Comment");
 const { Post } = require("../../models/Post");
 
+/**
+ * @swagger
+ * tags:
+ *   - name: "Comments"
+ *     description: "댓글 관련 API"
+ * /comment/get/{postId}/comments:
+ *   get:
+ *     description: "게시물에 달린 댓글을 조회하는 API (로그인된 사용자만)"
+ *     security:
+ *       - bearerAuth: []  # JWT 토큰 인증이 필요함
+ *     parameters:
+ *       - name: "postId"
+ *         in: "path"
+ *         required: true
+ *         description: "댓글을 조회할 게시물의 ID"
+ *         schema:
+ *           type: string
+ *           example: "60b8d6c3f07f6f3b4d455776"
+ *     responses:
+ *       200:
+ *         description: "댓글 조회가 성공적으로 이루어졌습니다."
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "댓글 조회가 성공적으로 이루어졌습니다."
+ *                 comments:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       _id:
+ *                         type: string
+ *                         example: "60c72b1f1f1d1f1f1f1f1f1f"
+ *                       user:
+ *                         type: object
+ *                         properties:
+ *                           _id:
+ *                             type: string
+ *                             example: "60b8d6c3f07f6f3b4d455777"
+ *                           user_id:
+ *                             type: string
+ *                             example: "seungjae"
+ *                           profile_image:
+ *                             type: string
+ *                             example: "https://example.com/profile.jpg"
+ *                       post:
+ *                         type: string
+ *                         example: "60b8d6c3f07f6f3b4d455776"
+ *                       text:
+ *                         type: string
+ *                         example: "멋진 게시물입니다!"
+ *                       createdAt:
+ *                         type: string
+ *                         example: "2025-02-04T10:00:00.000Z"
+ *                 commentDetail:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       _id:
+ *                         type: string
+ *                         example: "60c72b1f1f1d1f1f1f1f1f1f"
+ *                       user:
+ *                         type: object
+ *                         properties:
+ *                           _id:
+ *                             type: string
+ *                             example: "60b8d6c3f07f6f3b4d455777"
+ *                           user_id:
+ *                             type: string
+ *                             example: "seungjae"
+ *                           profile_image:
+ *                             type: string
+ *                             example: "https://example.com/profile.jpg"
+ *                       post:
+ *                         type: string
+ *                         example: "60b8d6c3f07f6f3b4d455776"
+ *                       text:
+ *                         type: string
+ *                         example: "멋진 게시물입니다!"
+ *                       createdAt:
+ *                         type: string
+ *                         example: "2025-02-04T10:00:00.000Z"
+ *                       likesCount:
+ *                         type: integer
+ *                         example: 5
+ *       400:
+ *         description: "게시물을 찾을 수 없습니다."
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "게시물을 찾을 수 없습니다."
+ *       401:
+ *         description: "인증되지 않은 사용자. 로그인 후 다시 시도하세요."
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "로그인 후 다시 시도해주세요."
+ *       500:
+ *         description: "서버 오류 발생"
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "댓글 조회 중 오류가 발생했습니다."
+ *                 error:
+ *                   type: string
+ *                   example: "Error message here"
+ */
+
 router.get("/:postId/comments", async (req, res) => {
   const postId = req.params.postId;
 

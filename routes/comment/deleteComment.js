@@ -8,6 +8,70 @@ const { auth } = require("../auth");
 const cookieParser = require("cookie-parser");
 router.use(cookieParser());
 
+/**
+ * @swagger
+ * tags:
+ *   - name: "Comments"
+ *     description: "댓글 관련 API"
+ * /comment/delete/{commentId}:
+ *   delete:
+ *     description: "댓글을 삭제하는 API (로그인된 사용자만, 자신이 작성한 댓글만 삭제 가능)"
+ *     security:
+ *       - bearerAuth: []  # JWT 토큰 인증이 필요함
+ *     parameters:
+ *       - name: "commentId"
+ *         in: "path"
+ *         required: true
+ *         description: "삭제할 댓글의 ID"
+ *         schema:
+ *           type: string
+ *           example: "60c72b1f1f1d1f1f1f1f1f1f"
+ *     responses:
+ *       200:
+ *         description: "댓글이 성공적으로 삭제되었습니다."
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "댓글이 성공적으로 삭제되었습니다."
+ *       400:
+ *         description: "댓글을 찾을 수 없습니다."
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "댓글을 찾을 수 없습니다."
+ *       403:
+ *         description: "삭제 권한이 없는 경우"
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "댓글을 삭제할 권한이 없습니다."
+ *       500:
+ *         description: "서버 오류 발생"
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "댓글 삭제 중 오류가 발생했습니다."
+ *                 error:
+ *                   type: string
+ *                   example: "Error message here"
+ */
+
 router.delete("/:commentId", auth, async (req, res) => {
   const commentId = req.params.commentId; // 경로 매개변수에서 commentId 가져오기
   const userId = req.user._id; // 로그인된 사용자 ID
