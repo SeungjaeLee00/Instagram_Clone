@@ -11,7 +11,7 @@ const { User } = require("../../models/User");
  * /auth/reset-password/:
  *   post:
  *     description: "비밀번호 변경"
- *      tags:
+ *     tags:
  *       - "Auth"
  *     requestBody:
  *       required: true

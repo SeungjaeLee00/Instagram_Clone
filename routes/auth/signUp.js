@@ -135,7 +135,7 @@ router.post("/", async (req, res) => {
  * /auth/sign-up/verify-email/:
  *   post:
  *     description: "이메일 인증을 처리하는 API"
- *      tags:
+ *     tags:
  *       - "Auth"
  *     requestBody:
  *       required: true

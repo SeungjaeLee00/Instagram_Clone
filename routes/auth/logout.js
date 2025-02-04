@@ -15,7 +15,7 @@ router.use(cookieParser());
  * /auth/logout/:
  *   get:
  *     description: "사용자 로그아웃"
- *      tags:
+ *     tags:
  *       - "Auth"
  *     security:
  *       - Bearer: []
