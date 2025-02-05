@@ -20,11 +20,12 @@ const { DeleteObjectCommand } = require("@aws-sdk/client-s3");
  *     description: "게시물 관련 API"
  * /post/edit/{id}:
  *   patch:
+ *     summary: "게시물 수정"
  *     description: "게시물을 수정하는 API (로그인된 사용자만)"
  *     tags:
  *       - "Posts"
  *     security:
- *       - bearerAuth: []  # JWT 토큰 인증이 필요함
+ *       - bearerAuth: []  # JWT 토큰 인증 필요
  *     parameters:
  *       - name: id
  *         in: path
@@ -33,24 +34,26 @@ const { DeleteObjectCommand } = require("@aws-sdk/client-s3");
  *         schema:
  *           type: string
  *           example: "60e5b0f5b1f16b001c9a8f7a"
- *       - name: body
- *         in: body
- *         required: true
- *         description: "수정할 게시물의 내용과 삭제할 이미지 정보"
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 text:
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               text:
+ *                 type: string
+ *                 description: "수정할 게시물 내용"
+ *                 example: "수정된 게시물 내용입니다."
+ *               imagesToDelete:
+ *                 type: array
+ *                 items:
  *                   type: string
- *                   example: "수정된 게시물 내용입니다."
- *                 imagesToDelete:
- *                   type: string
- *                   example: "[\"https://post-jae.s3.amazonaws.com/old_image.jpg\"]"
+ *                 description: "삭제할 이미지 URL 목록 (JSON 배열 형식)"
+ *                 example: ["https://post-jae.s3.amazonaws.com/old_image.jpg"]
  *     responses:
  *       200:
- *         description: "게시물이 성공적으로 수정되었습니다."
+ *         description: "게시물이 성공적으로 수정됨"
  *         content:
  *           application/json:
  *             schema:
@@ -93,16 +96,6 @@ const { DeleteObjectCommand } = require("@aws-sdk/client-s3");
  *                 message:
  *                   type: string
  *                   example: "인증된 사용자가 아닙니다."
- *       403:
- *         description: "권한 없음"
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: "게시물 수정 권한이 없습니다."
  *       404:
  *         description: "게시물 없음"
  *         content:
