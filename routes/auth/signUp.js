@@ -59,6 +59,7 @@ router.use(express.json());
 router.post("/", async (req, res) => {
   // const { email } = req.body;
   const { email, user_id } = req.body;
+  const userData = { ...req.body };
 
   try {
     console.log("회원가입 시도", req.body);
@@ -105,9 +106,12 @@ router.post("/", async (req, res) => {
     // 새로운 사용자에 대한 인증코드 생성 및 이메일 전송
     const emailVerificationCode = crypto.randomBytes(3).toString("hex"); // 6자리 코드 생성
 
+    if (!userData.kakaoId) {
+      delete userData.kakaoId; // kakaoId 필드 자체를 삭제
+    }
+
     const user = new User({
       ...req.body,
-      kakaoId: req.body.kakaoId || undefined, // null 방지
       emailVerificationCode, // 생성된 인증코드 저장
       emailVerificationCodeExpires: Date.now() + 300000, // 인증 코드 유효시간 5분
       // role: "user", // 기본적으로 일반 사용자로 설정
