@@ -107,6 +107,7 @@ router.post("/", async (req, res) => {
 
     const user = new User({
       ...req.body,
+      kakaoId: req.body.kakaoId || undefined, // null 방지
       emailVerificationCode, // 생성된 인증코드 저장
       emailVerificationCodeExpires: Date.now() + 300000, // 인증 코드 유효시간 5분
       // role: "user", // 기본적으로 일반 사용자로 설정
