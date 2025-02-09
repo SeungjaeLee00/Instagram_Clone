@@ -9,6 +9,7 @@ const userSchema = mongoose.Schema({
   kakaoId: {
     type: String,
     unique: 1, // 중복 방지
+    sparse: true,
   },
   // 닉네임
   user_id: {
@@ -172,21 +173,6 @@ userSchema.methods.generateToken = function () {
 };
 
 // 토큰 찾기
-// userSchema.statics.findByToken = (token) => {
-//   const user = this;
-
-//   return Util.promisify(jwt.verify)(token, process.env.JWT_SECRET)
-//     .then((decoded) => {
-//       return user.findOne({
-//         _id: decoded._id,
-//         token: token,
-//       });
-//     })
-//     .catch((err) => {
-//       throw new Error("유효하지 않은 토큰입니다.");
-//     });
-// };
-
 userSchema.statics.findByToken = async (token) => {
   const user = this;
 
