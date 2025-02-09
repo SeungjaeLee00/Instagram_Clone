@@ -177,7 +177,7 @@ const Signup = () => {
           />
           <div className="errorMessageWrap">
             {!emailValid && email.length > 0 && (
-              <div> Enter a valid email address. </div>
+              <div> 유효한 이메일을 입력해주세요. </div>
             )}
           </div>
 

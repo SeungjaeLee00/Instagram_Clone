@@ -26,7 +26,7 @@ router.use(express.json());
  *             properties:
  *               email:
  *                 type: string
- *                 example: "사용자의이메일@example.com"
+ *                 example: "사용자의이메일"
  *                 pattern: "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$"
  *                 description: "이메일 형식은 '@'를 포함해야 합니다."
  *               user_id:
@@ -148,7 +148,9 @@ router.post("/", async (req, res) => {
  *             properties:
  *               email:
  *                 type: string
- *                 example: "사용자의이메일@example.com"
+ *                 example: "사용자의이메일"
+ *                 pattern: "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$"
+ *                 description: "이메일 형식은 '@'를 포함해야 합니다."
  *               verificationCode:
  *                 type: string
  *                 example: "인증코드"
